@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <project xmlns:ns1="http://www.plcopen.org/xml/tc6_0201" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.plcopen.org/xml/tc6_0201">
-  <fileHeader companyName="Beremiz" productName="Additional Function Blocks Library" productVersion="1.0" creationDateTime="2013-09-09T09:56:11"/>
-  <contentHeader name="Standard Funtion Blocks" author="Laurent Bessard" modificationDateTime="2013-09-10T22:45:31">
+  <fileHeader companyName="testCompany" productName="Additional Function Blocks Library" productVersion="1.0" creationDateTime="2013-09-09T09:56:11"/>
+  <contentHeader name="Standard Funtion Blocks" author="-" modificationDateTime="2013-09-10T22:45:31">
     <coordinateInfo>
       <fbd>
         <scaling x="0" y="0"/>

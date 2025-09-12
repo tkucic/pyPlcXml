@@ -1,5 +1,22 @@
 import pyPlcXml, json, pstats, cProfile, os
 
+def traverseProject(data):
+    print('List contents')
+    for ns in data['namespaces']:
+        print('NAMESPACE: ', ns.get('name'), '-------------------------')
+        print('\tPROGRAMS-------------------------')
+        for prg in ns.get('prgs'):
+            print('\t\t', prg.get('name'))
+        print('\tFUNCTION BLOCKS-------------------------')
+        for fb in ns.get('fbs'):
+            print('\t\t', fb.get('name'))
+        print('\tFUNCTIONS-------------------------')
+        for fc in ns.get('fcs'):
+            print('\t\t', fc.get('name'))
+        print('\tDATA TYPES-------------------------')
+        for dt in ns.get('dts'):
+            print('\t\t', dt.get('name'))
+
 def parseAllExamples():
     xmls = [
         ('TestData1', r'example_data\FiFoLib.xml'),
@@ -25,6 +42,8 @@ def parseAllExamples():
         print('Trying to parse: ', ml[1])
         data = pyPlcXml.parse(ml[1], ignoredNs = ())
         fpath= os.path.join(os.path.dirname(os.path.realpath(__file__)), 'testOut', f'{ml[0]}_dataDump.json')
+        
+        traverseProject(data)
         
         print('Dumping json to: ', fpath)
         json.dump(data, open(fpath, 'w' ), indent=2)

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
   <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP16" creationDateTime="2020-05-25T13:06:30.288415" />
-  <contentHeader name="Vladik_5may_b.project" modificationDateTime="2020-05-25T13:05:00.4147267">
+  <contentHeader name="TestProject.project" modificationDateTime="2020-05-25T13:05:00.4147267">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />

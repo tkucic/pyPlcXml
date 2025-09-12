@@ -46,6 +46,24 @@ Project doesn't have any links to plcopen.org but it is using data publicly avai
     >> data = pyPlcXml.parse(r'example_data\ia_tools_testProject.xml', ignoredNs = ())
     >> data['info']['projectName']
     .. ia_tools test project
+
+    def traverseProject(data):
+    print('List contents')
+    for ns in data['namespaces']:
+        print('NAMESPACE: ', ns.get('name'), '-------------------------')
+        print('\tPROGRAMS-------------------------')
+        for prg in ns.get('prgs'):
+            print('\t\t', prg.get('name'))
+        print('\tFUNCTION BLOCKS-------------------------')
+        for fb in ns.get('fbs'):
+            print('\t\t', fb.get('name'))
+        print('\tFUNCTIONS-------------------------')
+        for fc in ns.get('fcs'):
+            print('\t\t', fc.get('name'))
+        print('\tDATA TYPES-------------------------')
+        for dt in ns.get('dts'):
+            print('\t\t', dt.get('name'))
+            
 ```
 
 ## Contributing

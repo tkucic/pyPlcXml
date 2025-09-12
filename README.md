@@ -14,9 +14,13 @@ Supported file types are:
 
 pyPlcXml returns a dictionary, representing the underlying data. Then the data can be used in any way available to imagination.
 
+At the moment, only Structured text and Instruction list is available to be parsed.
+
 ## Notes
 
 This project is still in development so help is appreciated. Not all features and data available to the parser is parsed.
+Project doesn't own any PLC Open Xml standard documents, all code parsing was reverse engineered from the available data on the internet and the community data provided for testing of the parser.
+Project doesn't have any links to plcopen.org but it is using data publicly available from plcopen.org.
 
 ## Available functions
 

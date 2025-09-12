@@ -1,0 +1,4789 @@
+<project xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.plcopen.org/xml/tc6_0201">
+	<fileHeader companyName="Phoenix Contact" companyURL="https://www.phoenixcontact-software.com" productName="PC WORX" productVersion="6.30" productRelease="Build 593" creationDateTime="2020-08-26T14:19:07" contentDescription="###XMLINFO=2;1;2;;"/>
+	<contentHeader name="6229" version="0.1.240" modificationDateTime="2020-08-26T14:19:07">
+		<coordinateInfo>
+			<pageSize x="400" y="400"/>
+			<fbd>
+				<scaling x="2" y="2"/>
+			</fbd>
+			<ld>
+				<scaling x="2" y="2"/>
+			</ld>
+			<sfc>
+				<scaling x="2" y="2"/>
+			</sfc>
+		</coordinateInfo>
+	</contentHeader>
+	<types>
+		<dataTypes/>
+		<pous>
+			<pou name="SBT_DiagInfo_AddCRLF" pouType="functionBlock">
+				<interface>
+					<inputVars retain="false">
+						<variable name="DiagInfo_In">
+							<type>
+								<derived name="SBT_V3_ARR_DIAG_INFO"/>
+							</type>
+						</variable>
+					</inputVars>
+					<outputVars retain="false">
+						<variable name="DiagInfo_Out">
+							<type>
+								<derived name="SBT_V3_ARR_DIAG_INFO"/>
+							</type>
+						</variable>
+					</outputVars>
+					<localVars retain="false">
+						<variable name="sTmp">
+							<type>
+								<derived name="SBT_V3_STR_400"/>
+							</type>
+						</variable>
+						<variable name="sRet">
+							<type>
+								<derived name="SBT_V3_STR_400"/>
+							</type>
+						</variable>
+						<variable name="i">
+							<type>
+								<INT/>
+							</type>
+						</variable>
+						<variable name="iPos">
+							<type>
+								<INT/>
+							</type>
+						</variable>
+					</localVars>
+				</interface>
+				<body WorksheetName="SBT_DiagInfo_AddCRLF">
+					<ST>
+						<html xmlns="http://www.w3.org/1999/xhtml">
+							<head xmlns="http://www.w3.org/1999/xhtml">
+								<title xmlns="http://www.w3.org/1999/xhtml"/>
+							</head>
+							<body xmlns="http://www.w3.org/1999/xhtml">
+								<div class="MWTDESCRIPTION" title="SBT_DiagInfo_AddCRLF" xmlns="http://www.w3.org/1999/xhtml">FOR i := 0 TO 16 BY 1 DO<br/>	sTmp := DiagInfo_In[i];<br/>	sRet := '';<br/>	IF LEN(sTmp) &gt; 0 THEN<br/>		WHILE LEN(sTmp) &gt; 70 DO<br/>			sRet := CONCAT(sRet, LEFT(sTmp, 70));<br/>		   	sTmp := DELETE(sTmp, 70, 1);<br/>		   	iPos := FIND(sTmp, ' ');<br/>		   	IF iPos &gt; 0 THEN<br/>		   		sRet := CONCAT(sRet, LEFT(sTmp, iPos));<br/>				sRet := CONCAT(sRet, BYTE_TO_STRING(BYTE#16#0D, '%c'));<br/>				sRet := CONCAT(sRet, BYTE_TO_STRING(BYTE#16#0A, '%c'));<br/>		   		sTmp := DELETE(sTmp, iPos, 1);<br/>			END_IF;<br/>		END_WHILE;<br/>
+									<br/>		IF LEN(sTmp) &gt; 0 THEN<br/>			sRet := CONCAT(sRet, sTmp);<br/>		END_IF;<br/>	END_IF;<br/>	DiagInfo_Out[i] := sRet;<br/>END_FOR;<br/>
+								</div>
+							</body>
+						</html>
+					</ST>
+				</body>
+				<documentation>
+					<html xmlns="http://www.w3.org/1999/xhtml">
+						<head xmlns="http://www.w3.org/1999/xhtml">
+							<title xmlns="http://www.w3.org/1999/xhtml"/>
+						</head>
+						<body xmlns="http://www.w3.org/1999/xhtml">
+							<div class="MWTDESCRIPTION" title="SBT_DiagInfo_AddCRLFT" xmlns="http://www.w3.org/1999/xhtml"/>
+						</body>
+					</html>
+				</documentation>
+			</pou>
+			<pou name="Temperatur" pouType="functionBlock">
+				<interface>
+					<inputVars retain="false">
+						<variable name="IN">
+							<type>
+								<INT/>
+							</type>
+						</variable>
+					</inputVars>
+					<outputVars retain="false">
+						<variable name="ERROR">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="ERRCODE">
+							<type>
+								<WORD/>
+							</type>
+						</variable>
+						<variable name="STR">
+							<type>
+								<string length="80"/>
+							</type>
+						</variable>
+					</outputVars>
+					<localVars retain="false">
+						<variable name="strTmp">
+							<type>
+								<string length="80"/>
+							</type>
+						</variable>
+					</localVars>
+				</interface>
+				<body WorksheetName="Temperatur">
+					<ST>
+						<html xmlns="http://www.w3.org/1999/xhtml">
+							<head xmlns="http://www.w3.org/1999/xhtml">
+								<title xmlns="http://www.w3.org/1999/xhtml"/>
+							</head>
+							<body xmlns="http://www.w3.org/1999/xhtml">
+								<div class="MWTDESCRIPTION" title="Temperatur" xmlns="http://www.w3.org/1999/xhtml">IF (INT_TO_WORD(IN) &amp; WORD#16#F000) &lt;&gt; WORD#16#8000 THEN<br/>	ERROR := FALSE;<br/>	ERRCODE := WORD#0;<br/>	strTmp := REAL_TO_STRING(INT_TO_REAL(IN) / REAL#10.0, '%.1f °C');<br/>	strTmp := REPLACE(strTmp, ',', 1, FIND(strTmp, '.'));<br/>ELSE<br/>	ERROR := TRUE;<br/>	ERRCODE := INT_TO_WORD(IN);<br/>	strTmp := '-,- °C';<br/>END_IF;<br/>
+									<br/>STR := strTmp;<br/>
+								</div>
+							</body>
+						</html>
+					</ST>
+				</body>
+				<documentation>
+					<html xmlns="http://www.w3.org/1999/xhtml">
+						<head xmlns="http://www.w3.org/1999/xhtml">
+							<title xmlns="http://www.w3.org/1999/xhtml"/>
+						</head>
+						<body xmlns="http://www.w3.org/1999/xhtml">
+							<div class="MWTDESCRIPTION" title="TemperaturT" xmlns="http://www.w3.org/1999/xhtml"/>
+						</body>
+					</html>
+				</documentation>
+			</pou>
+			<pou name="SBT_Islands" pouType="program">
+				<interface>
+					<externalVars retain="false">
+						<variable name="xSBTCommOK">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="xSBTDevError">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+					</externalVars>
+					<localVars retain="false">
+						<variable name="udtSBT">
+							<type>
+								<derived name="SBT_V3_UDT_SBT_V2"/>
+							</type>
+						</variable>
+					</localVars>
+					<externalVars retain="false">
+						<variable name="arrSBTOnlCntrlBuf">
+							<type>
+								<derived name="SBT_V3_ARR_DW_0_175"/>
+							</type>
+						</variable>
+						<variable name="arrSBTOnlValBuf">
+							<type>
+								<derived name="SBT_V3_ARR_W_0_175"/>
+							</type>
+						</variable>
+						<variable name="LPSDO_Out">
+							<type>
+								<derived name="SBT_V3_ARR_W_0_23"/>
+							</type>
+						</variable>
+						<variable name="LPSDO_In">
+							<type>
+								<derived name="SBT_V3_ARR_W_0_23"/>
+							</type>
+						</variable>
+						<variable name="Dev1_In">
+							<type>
+								<derived name="SBT_V3_ARR_W_0_3"/>
+							</type>
+						</variable>
+						<variable name="Dev1_Out">
+							<type>
+								<derived name="SBT_V3_ARR_W_0_3"/>
+							</type>
+						</variable>
+					</externalVars>
+					<localVars retain="false">
+						<variable name="dwAppAck">
+							<type>
+								<DWORD/>
+							</type>
+						</variable>
+						<variable name="dwAppDiag">
+							<type>
+								<DWORD/>
+							</type>
+						</variable>
+						<variable name="xOpAckReq">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="xQuitErrorDev1">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="xQuitErrorLPSDO">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+					</localVars>
+					<externalVars retain="false">
+						<variable name="MASTER_DIAG_STATUS_REG_DTC">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Diagnostic routine active</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="MASTER_DIAG_STATUS_REG_RUN">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Data transmission active</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+					</externalVars>
+					<localVars retain="false">
+						<variable name="arr_wSBTdiagCode">
+							<type>
+								<derived name="SBT_V3_ARR_W_0_16"/>
+							</type>
+						</variable>
+						<variable name="wDiagCodeLPSDO">
+							<type>
+								<WORD/>
+							</type>
+						</variable>
+						<variable name="wDiagCodeDev1">
+							<type>
+								<WORD/>
+							</type>
+						</variable>
+					</localVars>
+					<externalVars retain="false">
+						<variable name="xEStop">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="I_NotAus">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="I_Zweihand">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+					</externalVars>
+					<localVars retain="false">
+						<variable name="CLOCK_PULSE_1">
+							<type>
+								<derived name="CLOCK_PULSE"/>
+							</type>
+						</variable>
+						<variable name="SBT_V3_IBS_Restart_2_1">
+							<type>
+								<derived name="SBT_V3_IBS_Restart_2"/>
+							</type>
+						</variable>
+						<variable name="SBT_V3_BinFile_4_1">
+							<type>
+								<derived name="SBT_V3_BinFile_4"/>
+							</type>
+						</variable>
+						<variable name="SBT_V3_DiagCode_4_1">
+							<type>
+								<derived name="SBT_V3_DiagCode_4"/>
+							</type>
+						</variable>
+						<variable name="SBT_V3_OutBuff_4_1">
+							<type>
+								<derived name="SBT_V3_OutBuff_4"/>
+							</type>
+						</variable>
+						<variable name="SBT_V3_Operate_4_1">
+							<type>
+								<derived name="SBT_V3_Operate_4"/>
+							</type>
+						</variable>
+						<variable name="udtProjHeader">
+							<type>
+								<derived name="UDT_SBT_PROJ_HEADER"/>
+							</type>
+						</variable>
+						<variable name="wAckDevErr">
+							<type>
+								<WORD/>
+							</type>
+						</variable>
+						<variable name="xAckOpErr">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="xOpAckErr">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="SBT_V3_InBuff_4_1">
+							<type>
+								<derived name="SBT_V3_InBuff_4"/>
+							</type>
+						</variable>
+					</localVars>
+					<externalVars retain="false">
+						<variable name="xReset">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+					</externalVars>
+					<localVars retain="false">
+						<variable name="SBT_V3_DiagInfo_DE_1_1">
+							<type>
+								<derived name="SBT_V3_DiagInfo_DE_1"/>
+							</type>
+						</variable>
+						<variable name="arr_strSBTDiagInfo">
+							<type>
+								<derived name="SBT_V3_ARR_DIAG_INFO"/>
+							</type>
+						</variable>
+						<variable name="SBT_DiagInfo_AddCRLF_1">
+							<type>
+								<derived name="SBT_DiagInfo_AddCRLF"/>
+							</type>
+						</variable>
+						<variable name="arr_strSBTDiagInfo2">
+							<type>
+								<derived name="SBT_V3_ARR_DIAG_INFO"/>
+							</type>
+						</variable>
+						<variable name="xError">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="iDownload">
+							<type>
+								<INT/>
+							</type>
+						</variable>
+						<variable name="xDiffLogicDetected">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="xAcceptDiffLogic">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+					</localVars>
+					<externalVars retain="false">
+						<variable name="xSBTDev1_CommOK">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="xSBTLogicRunning">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="xSBTReset">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="I_Reset">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+					</externalVars>
+					<localVars retain="false">
+						<variable name="SBT_V3_ProjHeader_4_1">
+							<type>
+								<derived name="SBT_V3_ProjHeader_4"/>
+							</type>
+						</variable>
+					</localVars>
+				</interface>
+				<body WorksheetName="SBT_Islands">
+					<FBD>
+						<inVariable localId="0" width="4" height="2">
+							<position x="89" y="63"/>
+							<connectionPointOut>
+								<relPosition x="4" y="1"/>
+							</connectionPointOut>
+							<expression>1</expression>
+						</inVariable>
+						<outVariable localId="1" width="15" height="2">
+							<position x="142" y="87"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="159" formalParameter="xCommOK"/>
+							</connectionPointIn>
+							<expression>xSBTCommOK</expression>
+						</outVariable>
+						<outVariable localId="2" width="15" height="2">
+							<position x="142" y="95"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="159" formalParameter="xDevError"/>
+							</connectionPointIn>
+							<expression>xSBTDevError</expression>
+						</outVariable>
+						<inVariable localId="3" width="18" height="2">
+							<position x="75" y="135"/>
+							<connectionPointOut>
+								<relPosition x="18" y="1"/>
+							</connectionPointOut>
+							<expression>arrSBTOnlCntrlBuf</expression>
+						</inVariable>
+						<outVariable localId="4" width="18" height="2">
+							<position x="142" y="135"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="159" formalParameter="arrSBTOnlCntrlBuf"/>
+							</connectionPointIn>
+							<expression>arrSBTOnlCntrlBuf</expression>
+						</outVariable>
+						<inVariable localId="5" width="16" height="2">
+							<position x="77" y="139"/>
+							<connectionPointOut>
+								<relPosition x="16" y="1"/>
+							</connectionPointOut>
+							<expression>arrSBTOnlValBuf</expression>
+						</inVariable>
+						<outVariable localId="6" width="16" height="2">
+							<position x="142" y="139"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="159" formalParameter="arrSBTOnlValBuf"/>
+							</connectionPointIn>
+							<expression>arrSBTOnlValBuf</expression>
+						</outVariable>
+						<inVariable localId="7" width="9" height="2">
+							<position x="8" y="130"/>
+							<connectionPointOut>
+								<relPosition x="9" y="1"/>
+							</connectionPointOut>
+							<expression>udtSBT</expression>
+						</inVariable>
+						<outVariable localId="8" width="9" height="2">
+							<position x="45" y="130"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="183" formalParameter="udtSBT"/>
+							</connectionPointIn>
+							<expression>udtSBT</expression>
+						</outVariable>
+						<outVariable localId="9" width="13" height="2">
+							<position x="240" y="61"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="126" formalParameter="arr_wOutBuffLPSDO"/>
+							</connectionPointIn>
+							<expression>LPSDO_Out</expression>
+						</outVariable>
+						<inVariable localId="10" width="11" height="2">
+							<position x="6" y="62"/>
+							<connectionPointOut>
+								<relPosition x="11" y="1"/>
+							</connectionPointOut>
+							<expression>LPSDO_In</expression>
+						</inVariable>
+						<inVariable localId="11" width="10" height="2">
+							<position x="7" y="66"/>
+							<connectionPointOut>
+								<relPosition x="10" y="1"/>
+							</connectionPointOut>
+							<expression>Dev1_In</expression>
+						</inVariable>
+						<outVariable localId="12" width="11" height="2">
+							<position x="240" y="65"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="126" formalParameter="arr_wOutBuffDev1"/>
+							</connectionPointIn>
+							<expression>Dev1_Out</expression>
+						</outVariable>
+						<inVariable localId="13" width="11" height="2">
+							<position x="82" y="83"/>
+							<connectionPointOut>
+								<relPosition x="11" y="1"/>
+							</connectionPointOut>
+							<expression>dwAppAck</expression>
+						</inVariable>
+						<outVariable localId="14" width="12" height="2">
+							<position x="117" y="177"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="21"/>
+							</connectionPointIn>
+							<expression>I_Zweihand</expression>
+						</outVariable>
+						<outVariable localId="15" width="11" height="2">
+							<position x="123" y="169"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="186" formalParameter="NOT"/>
+							</connectionPointIn>
+							<expression>I_NotAus</expression>
+						</outVariable>
+						<inVariable localId="16" width="15" height="2">
+							<position x="102" y="150"/>
+							<connectionPointOut>
+								<relPosition x="15" y="1"/>
+							</connectionPointOut>
+							<expression>xSBTCommOK</expression>
+						</inVariable>
+						<outVariable localId="17" width="14" height="2">
+							<position x="117" y="150"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="16"/>
+							</connectionPointIn>
+							<expression>dwAppAck.X0</expression>
+						</outVariable>
+						<outVariable localId="18" width="14" height="2">
+							<position x="123" y="157"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="189" formalParameter="NOT"/>
+							</connectionPointIn>
+							<expression>dwAppAck.X1</expression>
+						</outVariable>
+						<outVariable localId="19" width="12" height="2">
+							<position x="142" y="115"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="159" formalParameter="dwApplicationDiag"/>
+							</connectionPointIn>
+							<expression>dwAppDiag</expression>
+						</outVariable>
+						<inVariable localId="20" width="15" height="2">
+							<position x="96" y="169"/>
+							<connectionPointOut>
+								<relPosition x="15" y="1"/>
+							</connectionPointOut>
+							<expression>dwAppDiag.X0</expression>
+						</inVariable>
+						<inVariable localId="21" width="15" height="2">
+							<position x="102" y="177"/>
+							<connectionPointOut>
+								<relPosition x="15" y="1"/>
+							</connectionPointOut>
+							<expression>dwAppDiag.X1</expression>
+						</inVariable>
+						<inVariable localId="22" width="12" height="2">
+							<position x="76" y="192"/>
+							<connectionPointOut>
+								<relPosition x="12" y="1"/>
+							</connectionPointOut>
+							<expression>xOpAckReq</expression>
+						</inVariable>
+						<inVariable localId="23" width="15" height="2">
+							<position x="53" y="207"/>
+							<connectionPointOut>
+								<relPosition x="15" y="1"/>
+							</connectionPointOut>
+							<expression>xQuitErrorDev1</expression>
+						</inVariable>
+						<inVariable localId="24" width="17" height="2">
+							<position x="50" y="75"/>
+							<connectionPointOut>
+								<relPosition x="17" y="1"/>
+							</connectionPointOut>
+							<expression>xQuitErrorLPSDO</expression>
+						</inVariable>
+						<block width="8" height="24" typeName="OR" localId="27">
+							<position x="70" y="204"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="23"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="49" formalParameter="EQ">
+											<position x="68" y="212"/>
+											<position x="52" y="212"/>
+											<position x="52" y="208"/>
+											<position x="43" y="208"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN3" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+										<connection refLocalId="55" formalParameter="EQ">
+											<position x="68" y="216"/>
+											<position x="55" y="216"/>
+											<position x="55" y="224"/>
+											<position x="43" y="224"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN4" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="16"/>
+										<connection refLocalId="229"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN5" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="20"/>
+										<connection refLocalId="233"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OR" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<outVariable localId="28" width="12" height="2">
+							<position x="142" y="99"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="159" formalParameter="xAcknowledgeRequested"/>
+							</connectionPointIn>
+							<expression>xOpAckReq</expression>
+						</outVariable>
+						<inVariable localId="29" width="8" height="2">
+							<position x="17" y="12"/>
+							<connectionPointOut>
+								<relPosition x="8" y="1"/>
+							</connectionPointOut>
+							<expression>TRUE</expression>
+						</inVariable>
+						<inVariable localId="30" width="14" height="2">
+							<position x="11" y="16"/>
+							<connectionPointOut>
+								<relPosition x="14" y="1"/>
+							</connectionPointOut>
+							<expression>'BINFILE.BIN'</expression>
+						</inVariable>
+						<inVariable localId="31" width="8" height="2">
+							<position x="88" y="10"/>
+							<connectionPointOut>
+								<relPosition x="8" y="1"/>
+							</connectionPointOut>
+							<expression>TRUE</expression>
+						</inVariable>
+						<inVariable localId="32" width="8" height="2">
+							<position x="88" y="14"/>
+							<connectionPointOut>
+								<relPosition x="8" y="1"/>
+							</connectionPointOut>
+							<expression>FALSE</expression>
+						</inVariable>
+						<inVariable localId="33" width="8" height="2">
+							<position x="88" y="18"/>
+							<connectionPointOut>
+								<relPosition x="8" y="1"/>
+							</connectionPointOut>
+							<expression>T#2S</expression>
+						</inVariable>
+						<inVariable localId="34" width="32" height="2">
+							<position x="64" y="22"/>
+							<connectionPointOut>
+								<relPosition x="32" y="1"/>
+							</connectionPointOut>
+							<expression>MASTER_DIAG_STATUS_REG_DTC</expression>
+						</inVariable>
+						<inVariable localId="35" width="32" height="2">
+							<position x="64" y="26"/>
+							<connectionPointOut>
+								<relPosition x="32" y="1"/>
+							</connectionPointOut>
+							<expression>MASTER_DIAG_STATUS_REG_RUN</expression>
+						</inVariable>
+						<outVariable localId="36" width="18" height="2">
+							<position x="142" y="119"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="159" formalParameter="arrSBT_DiagCode"/>
+							</connectionPointIn>
+							<expression>arr_wSBTdiagCode</expression>
+						</outVariable>
+						<inVariable localId="37" width="18" height="2">
+							<position x="287" y="19"/>
+							<connectionPointOut>
+								<relPosition x="18" y="1"/>
+							</connectionPointOut>
+							<expression>arr_wSBTdiagCode</expression>
+						</inVariable>
+						<outVariable localId="38" width="17" height="2">
+							<position x="345" y="19"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="106" formalParameter="wDiagCodeLPSDO"/>
+							</connectionPointIn>
+							<expression>wDiagCodeLPSDO</expression>
+						</outVariable>
+						<outVariable localId="39" width="16" height="2">
+							<position x="345" y="23"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="106" formalParameter="wDiagCodeDev1"/>
+							</connectionPointIn>
+							<expression>wDiagCodeDev1</expression>
+						</outVariable>
+						<inVariable localId="40" width="9" height="2">
+							<position x="84" y="131"/>
+							<connectionPointOut>
+								<relPosition x="9" y="1"/>
+							</connectionPointOut>
+							<expression>udtSBT</expression>
+						</inVariable>
+						<outVariable localId="41" width="9" height="2">
+							<position x="142" y="131"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="159" formalParameter="udtSBT"/>
+							</connectionPointIn>
+							<expression>udtSBT</expression>
+						</outVariable>
+						<inVariable localId="42" width="9" height="2">
+							<position x="201" y="129"/>
+							<connectionPointOut>
+								<relPosition x="9" y="1"/>
+							</connectionPointOut>
+							<expression>udtSBT</expression>
+						</inVariable>
+						<outVariable localId="43" width="9" height="2">
+							<position x="240" y="129"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="126" formalParameter="udtSBT"/>
+							</connectionPointIn>
+							<expression>udtSBT</expression>
+						</outVariable>
+						<inVariable localId="44" width="9" height="2">
+							<position x="16" y="20"/>
+							<connectionPointOut>
+								<relPosition x="9" y="1"/>
+							</connectionPointOut>
+							<expression>udtSBT</expression>
+						</inVariable>
+						<outVariable localId="45" width="9" height="2">
+							<position x="48" y="20"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="85" formalParameter="udtSBT"/>
+							</connectionPointIn>
+							<expression>udtSBT</expression>
+						</outVariable>
+						<block width="8" height="12" typeName="EQ" localId="49">
+							<position x="33" y="204"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="50"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="51"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="EQ" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="50" width="16" height="2">
+							<position x="15" y="207"/>
+							<connectionPointOut>
+								<relPosition x="16" y="1"/>
+							</connectionPointOut>
+							<expression>wDiagCodeDev1</expression>
+						</inVariable>
+						<inVariable localId="51" width="17" height="2">
+							<position x="14" y="211"/>
+							<connectionPointOut>
+								<relPosition x="17" y="1"/>
+							</connectionPointOut>
+							<expression>WORD#16#0131</expression>
+						</inVariable>
+						<block width="8" height="12" typeName="EQ" localId="55">
+							<position x="33" y="220"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="56"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="57"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="EQ" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="56" width="16" height="2">
+							<position x="15" y="223"/>
+							<connectionPointOut>
+								<relPosition x="16" y="1"/>
+							</connectionPointOut>
+							<expression>wDiagCodeDev1</expression>
+						</inVariable>
+						<inVariable localId="57" width="17" height="2">
+							<position x="14" y="227"/>
+							<connectionPointOut>
+								<relPosition x="17" y="1"/>
+							</connectionPointOut>
+							<expression>WORD#16#0132</expression>
+						</inVariable>
+						<inVariable localId="58" width="11" height="2">
+							<position x="113" y="211"/>
+							<connectionPointOut>
+								<relPosition x="11" y="1"/>
+							</connectionPointOut>
+							<expression>T#250MS</expression>
+						</inVariable>
+						<block width="8" height="12" typeName="AND" localId="62">
+							<position x="99" y="204"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="27" formalParameter="OR">
+											<position x="97" y="208"/>
+											<position x="80" y="208"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="63"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OUT" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="63" width="15" height="2">
+							<position x="82" y="211"/>
+							<connectionPointOut>
+								<relPosition x="15" y="1"/>
+							</connectionPointOut>
+							<expression>xSBTDevError</expression>
+						</inVariable>
+						<block width="17" height="16" typeName="CLOCK_PULSE" instanceName="CLOCK_PULSE_1" localId="69">
+							<position x="126" y="204"/>
+							<inputVariables>
+								<variable formalParameter="EN">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="62" formalParameter="OUT">
+											<position x="124" y="208"/>
+											<position x="109" y="208"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="TIME_HIGH">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="58"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="TIME_LOW">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+										<connection refLocalId="70"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OUT">
+									<connectionPointOut>
+										<relPosition x="19" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="70" width="11" height="2">
+							<position x="113" y="215"/>
+							<connectionPointOut>
+								<relPosition x="11" y="1"/>
+							</connectionPointOut>
+							<expression>T#250MS</expression>
+						</inVariable>
+						<block width="41" height="24" typeName="SBT_V3_IBS_Restart_2" instanceName="SBT_V3_IBS_Restart_2_1" localId="80">
+							<position x="98" y="7"/>
+							<inputVariables>
+								<variable formalParameter="xAuto">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="31"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="xManual">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="32"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="tRepeat">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+										<connection refLocalId="33"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="MASTER_DIAG_STATUS_REG_DTC">
+									<connectionPointIn>
+										<relPosition x="-2" y="16"/>
+										<connection refLocalId="34"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="MASTER_DIAG_STATUS_REG_RUN">
+									<connectionPointIn>
+										<relPosition x="-2" y="20"/>
+										<connection refLocalId="35"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="xIBS_Run">
+									<connectionPointOut>
+										<relPosition x="43" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<block width="19" height="16" typeName="SBT_V3_BinFile_4" instanceName="SBT_V3_BinFile_4_1" localId="85">
+							<position x="27" y="9"/>
+							<inputVariables>
+								<variable formalParameter="xActivate">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="29"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="strFilename">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="30"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables>
+								<variable formalParameter="udtSBT">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+										<connection refLocalId="44"/>
+									</connectionPointIn>
+									<connectionPointOut>
+										<relPosition x="23" y="12"/>
+									</connectionPointOut>
+								</variable>
+							</inOutVariables>
+							<outputVariables/>
+						</block>
+						<block width="36" height="72" typeName="SBT_V3_DiagCode_4" instanceName="SBT_V3_DiagCode_4_1" localId="106">
+							<position x="307" y="16"/>
+							<inputVariables>
+								<variable formalParameter="arrSBT_DiagCode">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="37"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="xShowErrorcodesOnly">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="wDiagCodeLPSDO">
+									<connectionPointOut>
+										<relPosition x="38" y="4"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="wDiagCodeDev1">
+									<connectionPointOut>
+										<relPosition x="38" y="8"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="wDiagCodeDev2">
+									<connectionPointOut>
+										<relPosition x="38" y="12"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="wDiagCodeDev3">
+									<connectionPointOut>
+										<relPosition x="38" y="16"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="wDiagCodeDev4">
+									<connectionPointOut>
+										<relPosition x="38" y="20"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="wDiagCodeDev5">
+									<connectionPointOut>
+										<relPosition x="38" y="24"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="wDiagCodeDev6">
+									<connectionPointOut>
+										<relPosition x="38" y="28"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="wDiagCodeDev7">
+									<connectionPointOut>
+										<relPosition x="38" y="32"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="wDiagCodeDev8">
+									<connectionPointOut>
+										<relPosition x="38" y="36"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="wDiagCodeDev9">
+									<connectionPointOut>
+										<relPosition x="38" y="40"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="wDiagCodeDev10">
+									<connectionPointOut>
+										<relPosition x="38" y="44"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="wDiagCodeDev11">
+									<connectionPointOut>
+										<relPosition x="38" y="48"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="wDiagCodeDev12">
+									<connectionPointOut>
+										<relPosition x="38" y="52"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="wDiagCodeDev13">
+									<connectionPointOut>
+										<relPosition x="38" y="56"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="wDiagCodeDev14">
+									<connectionPointOut>
+										<relPosition x="38" y="60"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="wDiagCodeDev15">
+									<connectionPointOut>
+										<relPosition x="38" y="64"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="wDiagCodeDev16">
+									<connectionPointOut>
+										<relPosition x="38" y="68"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<block width="26" height="76" typeName="SBT_V3_OutBuff_4" instanceName="SBT_V3_OutBuff_4_1" localId="126">
+							<position x="212" y="58"/>
+							<inputVariables/>
+							<inOutVariables>
+								<variable formalParameter="udtSBT">
+									<connectionPointIn>
+										<relPosition x="-2" y="72"/>
+										<connection refLocalId="42"/>
+									</connectionPointIn>
+									<connectionPointOut>
+										<relPosition x="30" y="72"/>
+									</connectionPointOut>
+								</variable>
+							</inOutVariables>
+							<outputVariables>
+								<variable formalParameter="arr_wOutBuffLPSDO">
+									<connectionPointOut>
+										<relPosition x="28" y="4"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arr_wOutBuffDev1">
+									<connectionPointOut>
+										<relPosition x="28" y="8"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arr_wOutBuffDev2">
+									<connectionPointOut>
+										<relPosition x="28" y="12"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arr_wOutBuffDev3">
+									<connectionPointOut>
+										<relPosition x="28" y="16"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arr_wOutBuffDev4">
+									<connectionPointOut>
+										<relPosition x="28" y="20"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arr_wOutBuffDev5">
+									<connectionPointOut>
+										<relPosition x="28" y="24"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arr_wOutBuffDev6">
+									<connectionPointOut>
+										<relPosition x="28" y="28"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arr_wOutBuffDev7">
+									<connectionPointOut>
+										<relPosition x="28" y="32"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arr_wOutBuffDev8">
+									<connectionPointOut>
+										<relPosition x="28" y="36"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arr_wOutBuffDev9">
+									<connectionPointOut>
+										<relPosition x="28" y="40"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arr_wOutBuffDev10">
+									<connectionPointOut>
+										<relPosition x="28" y="44"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arr_wOutBuffDev11">
+									<connectionPointOut>
+										<relPosition x="28" y="48"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arr_wOutBuffDev12">
+									<connectionPointOut>
+										<relPosition x="28" y="52"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arr_wOutBuffDev13">
+									<connectionPointOut>
+										<relPosition x="28" y="56"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arr_wOutBuffDev14">
+									<connectionPointOut>
+										<relPosition x="28" y="60"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arr_wOutBuffDev15">
+									<connectionPointOut>
+										<relPosition x="28" y="64"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arr_wOutBuffDev16">
+									<connectionPointOut>
+										<relPosition x="28" y="68"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<block width="45" height="92" typeName="SBT_V3_Operate_4" instanceName="SBT_V3_Operate_4_1" localId="159">
+							<position x="95" y="52"/>
+							<inputVariables>
+								<variable formalParameter="xActivate">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="246" formalParameter="OUT">
+											<position x="93" y="56"/>
+											<position x="79" y="56"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="xReset">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="221"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="iIslandNo">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+										<connection refLocalId="0"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="xAcceptDiffLogic">
+									<connectionPointIn>
+										<relPosition x="-2" y="16"/>
+										<connection refLocalId="210"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="xOperatorAcknowledge">
+									<connectionPointIn>
+										<relPosition x="-2" y="20"/>
+										<connection refLocalId="162"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="xAcknowledgeLPSDO_Error">
+									<connectionPointIn>
+										<relPosition x="-2" y="24"/>
+										<connection refLocalId="237" formalParameter="OR">
+											<position x="93" y="76"/>
+											<position x="79" y="76"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="wAcknowledgeDevError">
+									<connectionPointIn>
+										<relPosition x="-2" y="28"/>
+										<connection refLocalId="160"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="dwApplicationAck">
+									<connectionPointIn>
+										<relPosition x="-2" y="32"/>
+										<connection refLocalId="13"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="arrOutData">
+									<connectionPointIn>
+										<relPosition x="-2" y="36"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables>
+								<variable formalParameter="udtSBT">
+									<connectionPointIn>
+										<relPosition x="-2" y="80"/>
+										<connection refLocalId="40"/>
+									</connectionPointIn>
+									<connectionPointOut>
+										<relPosition x="49" y="80"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arrSBTOnlCntrlBuf">
+									<connectionPointIn>
+										<relPosition x="-2" y="84"/>
+										<connection refLocalId="3"/>
+									</connectionPointIn>
+									<connectionPointOut>
+										<relPosition x="49" y="84"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arrSBTOnlValBuf">
+									<connectionPointIn>
+										<relPosition x="-2" y="88"/>
+										<connection refLocalId="5"/>
+									</connectionPointIn>
+									<connectionPointOut>
+										<relPosition x="49" y="88"/>
+									</connectionPointOut>
+								</variable>
+							</inOutVariables>
+							<outputVariables>
+								<variable formalParameter="xActive">
+									<connectionPointOut>
+										<relPosition x="47" y="4"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="xSBT_LogicRunning">
+									<connectionPointOut>
+										<relPosition x="47" y="8"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="xDiffLogicDetected">
+									<connectionPointOut>
+										<relPosition x="47" y="12"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="iDownloaded">
+									<connectionPointOut>
+										<relPosition x="47" y="16"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="xError">
+									<connectionPointOut>
+										<relPosition x="47" y="20"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="wDiagCode">
+									<connectionPointOut>
+										<relPosition x="47" y="24"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="wAddDiagCode">
+									<connectionPointOut>
+										<relPosition x="47" y="28"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="xPowerUpRequested">
+									<connectionPointOut>
+										<relPosition x="47" y="32"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="xCommOK">
+									<connectionPointOut>
+										<relPosition x="47" y="36"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="wCommStatus">
+									<connectionPointOut>
+										<relPosition x="47" y="40"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="xDevError">
+									<connectionPointOut>
+										<relPosition x="47" y="44"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="xAcknowledgeRequested">
+									<connectionPointOut>
+										<relPosition x="47" y="48"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="xResetRequest">
+									<connectionPointOut>
+										<relPosition x="47" y="52"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="xSafetyDemand">
+									<connectionPointOut>
+										<relPosition x="47" y="56"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="xSFB_Error">
+									<connectionPointOut>
+										<relPosition x="47" y="60"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="dwApplicationDiag">
+									<connectionPointOut>
+										<relPosition x="47" y="64"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arrSBT_DiagCode">
+									<connectionPointOut>
+										<relPosition x="47" y="68"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arrFeedBackData">
+									<connectionPointOut>
+										<relPosition x="47" y="72"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arrInData">
+									<connectionPointOut>
+										<relPosition x="47" y="76"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="160" width="13" height="2">
+							<position x="80" y="79"/>
+							<connectionPointOut>
+								<relPosition x="13" y="1"/>
+							</connectionPointOut>
+							<expression>wAckDevErr</expression>
+						</inVariable>
+						<outVariable localId="161" width="15" height="2">
+							<position x="145" y="207"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="69" formalParameter="OUT"/>
+							</connectionPointIn>
+							<expression>wAckDevErr.X0</expression>
+						</outVariable>
+						<inVariable localId="162" width="12" height="2">
+							<position x="81" y="71"/>
+							<connectionPointOut>
+								<relPosition x="12" y="1"/>
+							</connectionPointOut>
+							<expression>xAckOpErr</expression>
+						</inVariable>
+						<outVariable localId="163" width="12" height="2">
+							<position x="88" y="192"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="22"/>
+							</connectionPointIn>
+							<expression>xOpAckErr</expression>
+						</outVariable>
+						<block width="24" height="76" typeName="SBT_V3_InBuff_4" instanceName="SBT_V3_InBuff_4_1" localId="183">
+							<position x="19" y="59"/>
+							<inputVariables>
+								<variable formalParameter="arr_wInBuffLPSDO">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="10"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="arr_wInBuffDev1">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="11"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="arr_wInBuffDev2">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="arr_wInBuffDev3">
+									<connectionPointIn>
+										<relPosition x="-2" y="16"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="arr_wInBuffDev4">
+									<connectionPointIn>
+										<relPosition x="-2" y="20"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="arr_wInBuffDev5">
+									<connectionPointIn>
+										<relPosition x="-2" y="24"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="arr_wInBuffDev6">
+									<connectionPointIn>
+										<relPosition x="-2" y="28"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="arr_wInBuffDev7">
+									<connectionPointIn>
+										<relPosition x="-2" y="32"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="arr_wInBuffDev8">
+									<connectionPointIn>
+										<relPosition x="-2" y="36"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="arr_wInBuffDev9">
+									<connectionPointIn>
+										<relPosition x="-2" y="40"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="arr_wInBuffDev10">
+									<connectionPointIn>
+										<relPosition x="-2" y="44"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="arr_wInBuffDev11">
+									<connectionPointIn>
+										<relPosition x="-2" y="48"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="arr_wInBuffDev12">
+									<connectionPointIn>
+										<relPosition x="-2" y="52"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="arr_wInBuffDev13">
+									<connectionPointIn>
+										<relPosition x="-2" y="56"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="arr_wInBuffDev14">
+									<connectionPointIn>
+										<relPosition x="-2" y="60"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="arr_wInBuffDev15">
+									<connectionPointIn>
+										<relPosition x="-2" y="64"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="arr_wInBuffDev16">
+									<connectionPointIn>
+										<relPosition x="-2" y="68"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables>
+								<variable formalParameter="udtSBT">
+									<connectionPointIn>
+										<relPosition x="-2" y="72"/>
+										<connection refLocalId="7"/>
+									</connectionPointIn>
+									<connectionPointOut>
+										<relPosition x="28" y="72"/>
+									</connectionPointOut>
+								</variable>
+							</inOutVariables>
+							<outputVariables/>
+						</block>
+						<block width="8" height="8" typeName="NOT" localId="186">
+							<position x="113" y="166"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="20"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="NOT" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<block width="8" height="8" typeName="NOT" localId="189">
+							<position x="113" y="154"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="190"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="NOT" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="190" width="9" height="2">
+							<position x="102" y="157"/>
+							<connectionPointOut>
+								<relPosition x="9" y="1"/>
+							</connectionPointOut>
+							<expression>xEStop</expression>
+						</inVariable>
+						<outVariable localId="191" width="8" height="2">
+							<position x="142" y="71"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="159" formalParameter="xError"/>
+							</connectionPointIn>
+							<expression>xError</expression>
+						</outVariable>
+						<block width="33" height="20" typeName="SBT_V3_DiagInfo_DE_1" instanceName="SBT_V3_DiagInfo_DE_1_1" localId="197">
+							<position x="308" y="99"/>
+							<inputVariables>
+								<variable formalParameter="dwTypeSel">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables>
+								<variable formalParameter="arrSBT_DiagInfo">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="202"/>
+									</connectionPointIn>
+									<connectionPointOut>
+										<relPosition x="37" y="8"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="arrSBT_DiagCode">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+										<connection refLocalId="198"/>
+									</connectionPointIn>
+									<connectionPointOut>
+										<relPosition x="37" y="12"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="udtSBT">
+									<connectionPointIn>
+										<relPosition x="-2" y="16"/>
+										<connection refLocalId="200"/>
+									</connectionPointIn>
+									<connectionPointOut>
+										<relPosition x="37" y="16"/>
+									</connectionPointOut>
+								</variable>
+							</inOutVariables>
+							<outputVariables/>
+						</block>
+						<inVariable localId="198" width="18" height="2">
+							<position x="288" y="110"/>
+							<connectionPointOut>
+								<relPosition x="18" y="1"/>
+							</connectionPointOut>
+							<expression>arr_wSBTdiagCode</expression>
+						</inVariable>
+						<outVariable localId="199" width="18" height="2">
+							<position x="343" y="110"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="197" formalParameter="arrSBT_DiagCode"/>
+							</connectionPointIn>
+							<expression>arr_wSBTdiagCode</expression>
+						</outVariable>
+						<inVariable localId="200" width="9" height="2">
+							<position x="297" y="114"/>
+							<connectionPointOut>
+								<relPosition x="9" y="1"/>
+							</connectionPointOut>
+							<expression>udtSBT</expression>
+						</inVariable>
+						<outVariable localId="201" width="9" height="2">
+							<position x="343" y="114"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="197" formalParameter="udtSBT"/>
+							</connectionPointIn>
+							<expression>udtSBT</expression>
+						</outVariable>
+						<inVariable localId="202" width="19" height="2">
+							<position x="287" y="106"/>
+							<connectionPointOut>
+								<relPosition x="19" y="1"/>
+							</connectionPointOut>
+							<expression>arr_strSBTDiagInfo</expression>
+						</inVariable>
+						<outVariable localId="203" width="19" height="2">
+							<position x="343" y="106"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="197" formalParameter="arrSBT_DiagInfo"/>
+							</connectionPointIn>
+							<expression>arr_strSBTDiagInfo</expression>
+						</outVariable>
+						<inVariable localId="204" width="19" height="2">
+							<position x="292" y="129"/>
+							<connectionPointOut>
+								<relPosition x="19" y="1"/>
+							</connectionPointOut>
+							<expression>arr_strSBTDiagInfo</expression>
+						</inVariable>
+						<outVariable localId="205" width="20" height="2">
+							<position x="339" y="129"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="209" formalParameter="DiagInfo_Out"/>
+							</connectionPointIn>
+							<expression>arr_strSBTDiagInfo2</expression>
+						</outVariable>
+						<block width="24" height="8" typeName="SBT_DiagInfo_AddCRLF" instanceName="SBT_DiagInfo_AddCRLF_1" localId="209">
+							<position x="313" y="126"/>
+							<inputVariables>
+								<variable formalParameter="DiagInfo_In">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="204"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="DiagInfo_Out">
+									<connectionPointOut>
+										<relPosition x="26" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="210" width="16" height="2">
+							<position x="77" y="67"/>
+							<connectionPointOut>
+								<relPosition x="16" y="1"/>
+							</connectionPointOut>
+							<expression>xAcceptDiffLogic</expression>
+						</inVariable>
+						<outVariable localId="211" width="18" height="2">
+							<position x="142" y="63"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="159" formalParameter="xDiffLogicDetected"/>
+							</connectionPointIn>
+							<expression>xDiffLogicDetected</expression>
+						</outVariable>
+						<outVariable localId="212" width="11" height="2">
+							<position x="142" y="67"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="159" formalParameter="iDownloaded"/>
+							</connectionPointIn>
+							<expression>iDownload</expression>
+						</outVariable>
+						<block width="10" height="12" typeName="BIT_TEST" localId="216">
+							<position x="171" y="88"/>
+							<inputVariables>
+								<variable formalParameter="IN">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="159" formalParameter="wCommStatus">
+											<position x="169" y="92"/>
+											<position x="142" y="92"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="NO">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="217"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="BIT_TEST" hidden="true">
+									<connectionPointOut>
+										<relPosition x="12" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="217" width="10" height="2">
+							<position x="159" y="95"/>
+							<connectionPointOut>
+								<relPosition x="10" y="1"/>
+							</connectionPointOut>
+							<expression>SINT#0</expression>
+						</inVariable>
+						<outVariable localId="219" width="21" height="2">
+							<position x="183" y="91"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="216" formalParameter="BIT_TEST"/>
+							</connectionPointIn>
+							<expression>xSBTDev1_CommOK</expression>
+						</outVariable>
+						<outVariable localId="220" width="18" height="2">
+							<position x="142" y="59"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="159" formalParameter="xSBT_LogicRunning"/>
+							</connectionPointIn>
+							<expression>xSBTLogicRunning</expression>
+						</outVariable>
+						<inVariable localId="221" width="12" height="2">
+							<position x="81" y="59"/>
+							<connectionPointOut>
+								<relPosition x="12" y="1"/>
+							</connectionPointOut>
+							<expression>xSBTReset</expression>
+						</inVariable>
+						<inVariable localId="229" width="9" height="2">
+							<position x="59" y="219"/>
+							<connectionPointOut>
+								<relPosition x="9" y="1"/>
+							</connectionPointOut>
+							<expression>I_Reset</expression>
+						</inVariable>
+						<inVariable localId="233" width="9" height="2">
+							<position x="59" y="223"/>
+							<connectionPointOut>
+								<relPosition x="9" y="1"/>
+							</connectionPointOut>
+							<expression>xReset</expression>
+						</inVariable>
+						<block width="8" height="16" typeName="OR" localId="237">
+							<position x="69" y="72"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="24"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="239"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN3" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+										<connection refLocalId="241"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OR" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="239" width="9" height="2">
+							<position x="58" y="79"/>
+							<connectionPointOut>
+								<relPosition x="9" y="1"/>
+							</connectionPointOut>
+							<expression>I_Reset</expression>
+						</inVariable>
+						<inVariable localId="241" width="9" height="2">
+							<position x="58" y="83"/>
+							<connectionPointOut>
+								<relPosition x="9" y="1"/>
+							</connectionPointOut>
+							<expression>xReset</expression>
+						</inVariable>
+						<inVariable localId="242" width="8" height="2">
+							<position x="38" y="42"/>
+							<connectionPointOut>
+								<relPosition x="8" y="1"/>
+							</connectionPointOut>
+							<expression>xError</expression>
+						</inVariable>
+						<block width="8" height="12" typeName="AND" localId="246">
+							<position x="69" y="52"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="80" formalParameter="xIBS_Run">
+											<position x="67" y="56"/>
+											<position x="65" y="56"/>
+											<position x="65" y="33"/>
+											<position x="143" y="33"/>
+											<position x="143" y="11"/>
+											<position x="141" y="11"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="251" formalParameter="OUT">
+											<position x="67" y="60"/>
+											<position x="62" y="60"/>
+											<position x="62" y="39"/>
+											<position x="58" y="39"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OUT" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<block width="8" height="12" typeName="AND" localId="251">
+							<position x="48" y="35"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="260"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="242"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OUT" negated="true" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="260" width="12" height="2">
+							<position x="34" y="38"/>
+							<connectionPointOut>
+								<relPosition x="12" y="1"/>
+							</connectionPointOut>
+							<expression>xSBTReset</expression>
+						</inVariable>
+						<block width="26" height="52" typeName="SBT_V3_ProjHeader_4" instanceName="SBT_V3_ProjHeader_4_1" localId="275">
+							<position x="231" y="163"/>
+							<inputVariables>
+								<variable formalParameter="xActivate">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="276"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables>
+								<variable formalParameter="udtSBT">
+									<connectionPointIn>
+										<relPosition x="-2" y="48"/>
+										<connection refLocalId="278"/>
+									</connectionPointIn>
+									<connectionPointOut>
+										<relPosition x="30" y="48"/>
+									</connectionPointOut>
+								</variable>
+							</inOutVariables>
+							<outputVariables>
+								<variable formalParameter="strProjDescription">
+									<connectionPointOut>
+										<relPosition x="28" y="4"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="strProjName">
+									<connectionPointOut>
+										<relPosition x="28" y="8"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="strProjVersion">
+									<connectionPointOut>
+										<relPosition x="28" y="12"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="strProjFileName">
+									<connectionPointOut>
+										<relPosition x="28" y="16"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="dwProjCRC">
+									<connectionPointOut>
+										<relPosition x="28" y="20"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="dwProjTimeStamp">
+									<connectionPointOut>
+										<relPosition x="28" y="24"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="strSBTdescription">
+									<connectionPointOut>
+										<relPosition x="28" y="28"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="strSBTname">
+									<connectionPointOut>
+										<relPosition x="28" y="32"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="strSBTversion">
+									<connectionPointOut>
+										<relPosition x="28" y="36"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="dwSBT_CRC">
+									<connectionPointOut>
+										<relPosition x="28" y="40"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="dwSBTtimeStamp">
+									<connectionPointOut>
+										<relPosition x="28" y="44"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="276" width="18" height="2">
+							<position x="211" y="166"/>
+							<connectionPointOut>
+								<relPosition x="18" y="1"/>
+							</connectionPointOut>
+							<expression>xSBTLogicRunning</expression>
+						</inVariable>
+						<outVariable localId="277" width="9" height="2">
+							<position x="259" y="210"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="275" formalParameter="udtSBT"/>
+							</connectionPointIn>
+							<expression>udtSBT</expression>
+						</outVariable>
+						<inVariable localId="278" width="9" height="2">
+							<position x="220" y="210"/>
+							<connectionPointOut>
+								<relPosition x="9" y="1"/>
+							</connectionPointOut>
+							<expression>udtSBT</expression>
+						</inVariable>
+						<outVariable localId="279" width="29" height="2">
+							<position x="259" y="166"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="275" formalParameter="strProjDescription"/>
+							</connectionPointIn>
+							<expression>udtProjHeader.strProjDescription</expression>
+						</outVariable>
+						<outVariable localId="280" width="25" height="2">
+							<position x="259" y="170"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="275" formalParameter="strProjName"/>
+							</connectionPointIn>
+							<expression>udtProjHeader.strProjName</expression>
+						</outVariable>
+						<outVariable localId="281" width="26" height="2">
+							<position x="259" y="174"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="275" formalParameter="strProjVersion"/>
+							</connectionPointIn>
+							<expression>udtProjHeader.strProjVersion</expression>
+						</outVariable>
+						<outVariable localId="282" width="28" height="2">
+							<position x="259" y="178"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="275" formalParameter="strProjFileName"/>
+							</connectionPointIn>
+							<expression>udtProjHeader.strProjFileName</expression>
+						</outVariable>
+						<outVariable localId="283" width="25" height="2">
+							<position x="259" y="182"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="275" formalParameter="dwProjCRC"/>
+							</connectionPointIn>
+							<expression>udtProjHeader.dwSBT_CRC</expression>
+						</outVariable>
+						<outVariable localId="284" width="30" height="2">
+							<position x="259" y="186"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="275" formalParameter="dwProjTimeStamp"/>
+							</connectionPointIn>
+							<expression>udtProjHeader.dwProjTimeStamp</expression>
+						</outVariable>
+						<outVariable localId="285" width="29" height="2">
+							<position x="259" y="190"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="275" formalParameter="strSBTdescription"/>
+							</connectionPointIn>
+							<expression>udtProjHeader.strSBTdescription</expression>
+						</outVariable>
+						<outVariable localId="286" width="25" height="2">
+							<position x="259" y="194"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="275" formalParameter="strSBTname"/>
+							</connectionPointIn>
+							<expression>udtProjHeader.strSBTname</expression>
+						</outVariable>
+						<outVariable localId="287" width="27" height="2">
+							<position x="259" y="198"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="275" formalParameter="strSBTversion"/>
+							</connectionPointIn>
+							<expression>udtProjHeader.strSBTversion</expression>
+						</outVariable>
+						<outVariable localId="288" width="25" height="2">
+							<position x="259" y="202"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="275" formalParameter="dwSBT_CRC"/>
+							</connectionPointIn>
+							<expression>udtProjHeader.dwSBT_CRC</expression>
+						</outVariable>
+						<outVariable localId="289" width="30" height="2">
+							<position x="259" y="206"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="275" formalParameter="dwSBTtimeStamp"/>
+							</connectionPointIn>
+							<expression>udtProjHeader.dwSBTtimeStamp</expression>
+						</outVariable>
+					</FBD>
+				</body>
+				<documentation>
+					<html xmlns="http://www.w3.org/1999/xhtml">
+						<head xmlns="http://www.w3.org/1999/xhtml">
+							<title xmlns="http://www.w3.org/1999/xhtml"/>
+						</head>
+						<body xmlns="http://www.w3.org/1999/xhtml">
+							<div class="MWTDESCRIPTION" title="SBT_IslandsT" xmlns="http://www.w3.org/1999/xhtml"/>
+						</body>
+					</html>
+				</documentation>
+			</pou>
+			<pou name="Automatik" pouType="functionBlock">
+				<interface>
+					<localVars retain="false">
+						<variable name="iStep">
+							<type>
+								<INT/>
+							</type>
+						</variable>
+					</localVars>
+					<externalVars retain="false">
+						<variable name="Q_ZylRechtsGs">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Zylinder in Grundstellung</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="Q_ZylRechtsAs">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Zylinder in Arbeitsstellung</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="Q_ZylLinksGs">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Zylinder in Grundstellung</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="Q_ZylLinksAs">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Zylinder in Arbeitsstellung</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="Q_DruckerStart">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+					</externalVars>
+					<localVars retain="false">
+						<variable name="R_TRIG_1">
+							<type>
+								<derived name="R_TRIG"/>
+							</type>
+						</variable>
+					</localVars>
+					<externalVars retain="false">
+						<variable name="I_Zweihand">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="I_TawGewBuchseLinks">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Teilanwesenheit Gewindebuchse links</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="I_TawGewBuchseRechts">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Teilanwesenheit Gewindebuchse rechts</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="I_TawLagerbuchseLinks">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Teilanwesenheit Lagerbuchse links</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="I_TawLagerbuchseRechts">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Teilanwesenheit Lagerbuchse rechts</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="I_ZylLinksGs">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Zylinder links ist in Grundstellung</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="I_ZylLinksAs">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Zylinder links ist in Arbeitsstellung</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="I_ZylRechtsGs">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Zylinder rechts ist in Grundstellung</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="I_DruckerBereit">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="I_DruckerFehler">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="I_NotAus">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+					</externalVars>
+					<localVars retain="false">
+						<variable name="TON_1">
+							<type>
+								<derived name="TON"/>
+							</type>
+						</variable>
+					</localVars>
+					<externalVars retain="false">
+						<variable name="I_ZylRechtsAs">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Zylinder rechts ist in Arbeitsstellung</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="xStoerung">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="I_DruckluftOK">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Druckluft ist vorhanden</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="I_Nachpressen">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="xAuto">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="xZuHeissOderDefekt">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+					</externalVars>
+					<localVars retain="false">
+						<variable name="xTeilOK">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+					</localVars>
+				</interface>
+				<body WorksheetName="Automatik">
+					<ST>
+						<html xmlns="http://www.w3.org/1999/xhtml">
+							<head xmlns="http://www.w3.org/1999/xhtml">
+								<title xmlns="http://www.w3.org/1999/xhtml"/>
+							</head>
+							<body xmlns="http://www.w3.org/1999/xhtml">
+								<div class="MWTDESCRIPTION" title="Automatik" xmlns="http://www.w3.org/1999/xhtml">R_TRIG_1(CLK:=I_Zweihand);<br/>TON_1(IN:=I_ZylLinksAs AND I_ZylRechtsAs,PT:=T#750MS);<br/>
+									<br/>IF NOT xAuto THEN<br/>	RETURN;<br/>END_IF;<br/>
+									<br/>IF I_NotAus OR xStoerung OR xZuHeissOderDefekt THEN<br/>	Q_ZylLinksGs := xStoerung;<br/>	Q_ZylLinksAs := FALSE;<br/>	Q_ZylRechtsGs := xStoerung;<br/>	Q_ZylRechtsAs := FALSE;<br/>	Q_DruckerStart := FALSE;<br/>	iStep := 0;<br/>END_IF;<br/>
+									<br/>CASE iStep OF<br/>	0:<br/>		IF I_ZylLinksGs AND I_ZylRechtsGs THEN<br/>			IF xTeilOK AND NOT I_TawLagerbuchseLinks AND NOT I_TawLagerbuchseRechts THEN<br/>				Q_DruckerStart := Not I_Nachpressen;<br/>			END_IF;<br/>
+									<br/>			xTeilOK := FALSE;<br/>		END_IF;<br/>
+									<br/>		IF I_DruckluftOK AND R_TRIG_1.Q AND I_TawGewBuchseLinks AND I_TawGewBuchseRechts AND<br/>		(I_TawLagerbuchseLinks Or (I_Nachpressen And Not I_TawLagerbuchseLinks)) AND<br/>		(I_TawLagerbuchseRechts Or (I_Nachpressen And Not I_TawLagerbuchseRechts)) AND<br/>		I_ZylLinksGs AND I_ZylRechtsGs AND ((I_DruckerBereit AND NOT I_DruckerFehler) Or I_Nachpressen) THEN<br/>			Q_DruckerStart := FALSE;<br/>			iStep := iStep + 1;<br/>		END_IF;<br/>
+									<br/>		IF I_DruckluftOK AND R_TRIG_1.Q AND (NOT I_ZylLinksGs OR NOT I_ZylRechtsGs) THEN<br/>			iStep := 100;<br/>		END_IF;<br/>
+									<br/>	1:<br/>		Q_ZylLinksAs := TRUE;<br/>		Q_ZylRechtsAs := TRUE;<br/>
+									<br/>		IF TON_1.Q THEN<br/>			xTeilOK := TRUE;<br/>			Q_ZylLinksAs := FALSE;<br/>			Q_ZylRechtsAs := FALSE;<br/>			iStep := iStep + 1;<br/>		END_IF;<br/>
+									<br/>	2:<br/>		Q_ZylLinksGs := TRUE;<br/>		Q_ZylRechtsGs := TRUE;<br/>
+									<br/>		IF I_ZylLinksGs AND I_ZylRechtsGs THEN<br/>			Q_ZylLinksGs := FALSE;<br/>			Q_ZylRechtsGs := FALSE;<br/>			iStep := 0;<br/>		END_IF;<br/>
+									<br/>	100:<br/>		Q_ZylLinksAs := FALSE;<br/>		Q_ZylLinksGs := TRUE;<br/>		Q_ZylRechtsAs := FALSE;<br/>		Q_ZylRechtsGs := TRUE;<br/>
+									<br/>		IF xTeilOK THEN<br/>			xTeilOK := FALSE;<br/>			Q_DruckerStart := Not I_Nachpressen;<br/>		END_IF;<br/>
+									<br/>		IF I_ZylLinksGs AND I_ZylRechtsGs THEN<br/>			Q_ZylLinksGs := FALSE;<br/>			Q_ZylRechtsGs := FALSE;<br/>			iStep := 0;<br/>		END_IF;<br/>END_CASE;<br/> <br/>
+								</div>
+							</body>
+						</html>
+					</ST>
+				</body>
+				<documentation>
+					<html xmlns="http://www.w3.org/1999/xhtml">
+						<head xmlns="http://www.w3.org/1999/xhtml">
+							<title xmlns="http://www.w3.org/1999/xhtml"/>
+						</head>
+						<body xmlns="http://www.w3.org/1999/xhtml">
+							<div class="MWTDESCRIPTION" title="AutomatikT" xmlns="http://www.w3.org/1999/xhtml"/>
+						</body>
+					</html>
+				</documentation>
+			</pou>
+			<pou name="Main" pouType="program">
+				<interface>
+					<externalVars retain="false">
+						<variable name="ONBOARD_OUTPUT_BIT0">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Local output OUT1</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="I_DruckluftOK">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Druckluft ist vorhanden</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="ONBOARD_INPUT_BIT3">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Local input IN4</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="ONBOARD_INPUT_BIT0">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Local input IN1</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="ONBOARD_INPUT_BIT1">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Local input IN2</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="I_DruckerBereit">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="I_DruckerFehler">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="Q_DruckerStart">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="Q_ZylLinksAs">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Zylinder in Arbeitsstellung</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="Q_ZylLinksGs">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Zylinder in Grundstellung</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="I_Zweihand">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="xEStop">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="ONBOARD_INPUT_BIT4">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Local input IN5</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="Q_LmGruen">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Leuchtmelder grün</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="xSBTCommOK">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="xSBTDevError">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="I_NotAus">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+					</externalVars>
+					<localVars retain="false">
+						<variable name="TON_1">
+							<type>
+								<derived name="TON"/>
+							</type>
+						</variable>
+					</localVars>
+					<externalVars retain="false">
+						<variable name="I_ZylLinksGs">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Zylinder links ist in Grundstellung</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="I_ZylRechtsGs">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Zylinder rechts ist in Grundstellung</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+					</externalVars>
+					<localVars retain="false">
+						<variable name="SR_2">
+							<type>
+								<derived name="SR"/>
+							</type>
+						</variable>
+					</localVars>
+					<externalVars retain="false">
+						<variable name="xStoerung">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+					</externalVars>
+					<localVars retain="false">
+						<variable name="TON_2">
+							<type>
+								<derived name="TON"/>
+							</type>
+						</variable>
+					</localVars>
+					<externalVars retain="false">
+						<variable name="I_ZylLinksAs">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Zylinder links ist in Arbeitsstellung</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="I_ZylRechtsAs">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Zylinder rechts ist in Arbeitsstellung</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+					</externalVars>
+					<localVars retain="false">
+						<variable name="CLOCK_PULSE_5">
+							<type>
+								<derived name="CLOCK_PULSE"/>
+							</type>
+						</variable>
+					</localVars>
+					<externalVars retain="false">
+						<variable name="I_Reset">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="ONBOARD_INPUT_BIT5">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Local input IN6</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="I_Nachpressen">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="I_TemperaturLuft">
+							<type>
+								<INT/>
+							</type>
+						</variable>
+						<variable name="strTemperaturLuft">
+							<type>
+								<string length="80"/>
+							</type>
+						</variable>
+						<variable name="I_TemperaturTeil">
+							<type>
+								<INT/>
+							</type>
+						</variable>
+						<variable name="strTemperaturTeil">
+							<type>
+								<string length="80"/>
+							</type>
+						</variable>
+					</externalVars>
+					<localVars retain="false">
+						<variable name="Temperatur_1">
+							<type>
+								<derived name="Temperatur"/>
+							</type>
+						</variable>
+						<variable name="Temperatur_2">
+							<type>
+								<derived name="Temperatur"/>
+							</type>
+						</variable>
+					</localVars>
+					<externalVars retain="false">
+						<variable name="xAuto">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+					</externalVars>
+					<localVars retain="false">
+						<variable name="Automatik_1">
+							<type>
+								<derived name="Automatik"/>
+							</type>
+						</variable>
+					</localVars>
+					<externalVars retain="false">
+						<variable name="ONBOARD_OUTPUT_BIT3">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Local output OUT4</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="Q_ZylRechtsGs">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Zylinder in Grundstellung</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="xReset">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+					</externalVars>
+					<localVars retain="false">
+						<variable name="SR_1">
+							<type>
+								<derived name="SR"/>
+							</type>
+						</variable>
+					</localVars>
+					<externalVars retain="false">
+						<variable name="xSBTDev1_CommOK">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="xSBTLogicRunning">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="iMaxTemp">
+							<type>
+								<INT/>
+							</type>
+						</variable>
+						<variable name="xCheckTemp">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+					</externalVars>
+					<localVars retain="false">
+						<variable name="CLOCK_PULSE_1">
+							<type>
+								<derived name="CLOCK_PULSE"/>
+							</type>
+						</variable>
+					</localVars>
+					<externalVars retain="false">
+						<variable name="xZuHeiss_Pulsed">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+						<variable name="Q_ZylRechtsAs">
+							<type>
+								<BOOL/>
+							</type>
+							<documentation>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p xmlns="http://www.w3.org/1999/xhtml">Zylinder in Arbeitsstellung</p>
+									</body>
+								</html>
+							</documentation>
+						</variable>
+						<variable name="xZuHeissOderDefekt">
+							<type>
+								<BOOL/>
+							</type>
+						</variable>
+					</externalVars>
+				</interface>
+				<body WorksheetName="Main">
+					<FBD>
+						<outVariable localId="0" width="14" height="2">
+							<position x="30" y="26"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="1"/>
+							</connectionPointIn>
+							<expression>I_DruckluftOK</expression>
+						</outVariable>
+						<inVariable localId="1" width="23" height="2">
+							<position x="7" y="26"/>
+							<connectionPointOut>
+								<relPosition x="23" y="1"/>
+							</connectionPointOut>
+							<expression>ONBOARD_INPUT_BIT3</expression>
+						</inVariable>
+						<inVariable localId="2" width="23" height="2">
+							<position x="7" y="11"/>
+							<connectionPointOut>
+								<relPosition x="23" y="1"/>
+							</connectionPointOut>
+							<expression>ONBOARD_INPUT_BIT0</expression>
+						</inVariable>
+						<inVariable localId="3" width="23" height="2">
+							<position x="1" y="18"/>
+							<connectionPointOut>
+								<relPosition x="23" y="1"/>
+							</connectionPointOut>
+							<expression>ONBOARD_INPUT_BIT1</expression>
+						</inVariable>
+						<outVariable localId="4" width="16" height="2">
+							<position x="30" y="11"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="2"/>
+							</connectionPointIn>
+							<expression>I_DruckerBereit</expression>
+						</outVariable>
+						<outVariable localId="5" width="16" height="2">
+							<position x="36" y="18"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="192" formalParameter="NOT"/>
+							</connectionPointIn>
+							<expression>I_DruckerFehler</expression>
+						</outVariable>
+						<inVariable localId="6" width="16" height="2">
+							<position x="55" y="11"/>
+							<connectionPointOut>
+								<relPosition x="16" y="1"/>
+							</connectionPointOut>
+							<expression>Q_DruckerStart</expression>
+						</inVariable>
+						<inVariable localId="7" width="12" height="2">
+							<position x="268" y="26"/>
+							<connectionPointOut>
+								<relPosition x="12" y="1"/>
+							</connectionPointOut>
+							<expression>I_Zweihand</expression>
+						</inVariable>
+						<outVariable localId="8" width="9" height="2">
+							<position x="310" y="20"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="202" formalParameter="Q1"/>
+							</connectionPointIn>
+							<expression>xEStop</expression>
+						</outVariable>
+						<block width="8" height="20" typeName="OR" localId="12">
+							<position x="207" y="17"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="13"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="15"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN3" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+										<connection refLocalId="241"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN4" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="16"/>
+										<connection refLocalId="242"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OR" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="13" width="14" height="2">
+							<position x="191" y="20"/>
+							<connectionPointOut>
+								<relPosition x="14" y="1"/>
+							</connectionPointOut>
+							<expression>Q_ZylLinksGs</expression>
+						</inVariable>
+						<inVariable localId="14" width="12" height="2">
+							<position x="217" y="24"/>
+							<connectionPointOut>
+								<relPosition x="12" y="1"/>
+							</connectionPointOut>
+							<expression>I_Zweihand</expression>
+						</inVariable>
+						<inVariable localId="15" width="14" height="2">
+							<position x="191" y="24"/>
+							<connectionPointOut>
+								<relPosition x="14" y="1"/>
+							</connectionPointOut>
+							<expression>Q_ZylLinksAs</expression>
+						</inVariable>
+						<block width="8" height="16" typeName="AND" localId="19">
+							<position x="231" y="17"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="12" formalParameter="OR">
+											<position x="229" y="21"/>
+											<position x="217" y="21"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" negated="true" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="14"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN3" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+										<connection refLocalId="184"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OUT" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="20" width="15" height="2">
+							<position x="187" y="61"/>
+							<connectionPointOut>
+								<relPosition x="15" y="1"/>
+							</connectionPointOut>
+							<expression>xSBTCommOK</expression>
+						</inVariable>
+						<inVariable localId="21" width="15" height="2">
+							<position x="187" y="73"/>
+							<connectionPointOut>
+								<relPosition x="15" y="1"/>
+							</connectionPointOut>
+							<expression>xSBTDevError</expression>
+						</inVariable>
+						<outVariable localId="22" width="13" height="2">
+							<position x="270" y="88"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="26" formalParameter="OR"/>
+							</connectionPointIn>
+							<expression>Q_LmGruen</expression>
+						</outVariable>
+						<block width="8" height="12" typeName="OR" localId="26">
+							<position x="260" y="85"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="30" formalParameter="OUT">
+											<position x="258" y="89"/>
+											<position x="236" y="89"/>
+											<position x="236" y="62"/>
+											<position x="214" y="62"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="101" formalParameter="OUT">
+											<position x="258" y="93"/>
+											<position x="252" y="93"/>
+											<position x="252" y="102"/>
+											<position x="246" y="102"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OR" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<block width="8" height="32" typeName="AND" localId="30">
+							<position x="204" y="58"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="20"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" negated="true" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="16"/>
+										<connection refLocalId="21"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN3" negated="true" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="20"/>
+										<connection refLocalId="32"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN4" negated="true" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="24"/>
+										<connection refLocalId="103"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN5" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="28"/>
+										<connection refLocalId="186"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN6" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="204"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN7" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+										<connection refLocalId="206"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OUT" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="32" width="11" height="2">
+							<position x="191" y="77"/>
+							<connectionPointOut>
+								<relPosition x="11" y="1"/>
+							</connectionPointOut>
+							<expression>I_NotAus</expression>
+						</inVariable>
+						<inVariable localId="33" width="11" height="2">
+							<position x="191" y="109"/>
+							<connectionPointOut>
+								<relPosition x="11" y="1"/>
+							</connectionPointOut>
+							<expression>I_NotAus</expression>
+						</inVariable>
+						<block width="9" height="12" typeName="TON" instanceName="TON_1" localId="39">
+							<position x="43" y="53"/>
+							<inputVariables>
+								<variable formalParameter="IN">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="124" formalParameter="OUT">
+											<position x="41" y="57"/>
+											<position x="29" y="57"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="PT">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="41"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="Q">
+									<connectionPointOut>
+										<relPosition x="11" y="4"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="ET">
+									<connectionPointOut>
+										<relPosition x="11" y="8"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="40" width="14" height="2">
+							<position x="3" y="56"/>
+							<connectionPointOut>
+								<relPosition x="14" y="1"/>
+							</connectionPointOut>
+							<expression>Q_ZylLinksGs</expression>
+						</inVariable>
+						<inVariable localId="41" width="8" height="2">
+							<position x="33" y="60"/>
+							<connectionPointOut>
+								<relPosition x="8" y="1"/>
+							</connectionPointOut>
+							<expression>T#4S</expression>
+						</inVariable>
+						<block width="8" height="12" typeName="AND" localId="45">
+							<position x="76" y="53"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="39" formalParameter="Q">
+											<position x="74" y="57"/>
+											<position x="60" y="57"/>
+											<position x="54" y="57"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" negated="true" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="46"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OUT" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="46" width="13" height="2">
+							<position x="61" y="60"/>
+							<connectionPointOut>
+								<relPosition x="13" y="1"/>
+							</connectionPointOut>
+							<expression>I_ZylLinksGs</expression>
+						</inVariable>
+						<block width="8" height="12" typeName="AND" localId="50">
+							<position x="76" y="67"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="39" formalParameter="Q">
+											<position x="74" y="71"/>
+											<position x="60" y="71"/>
+											<position x="60" y="57"/>
+											<position x="54" y="57"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" negated="true" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="51"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OUT" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="51" width="15" height="2">
+							<position x="59" y="74"/>
+							<connectionPointOut>
+								<relPosition x="15" y="1"/>
+							</connectionPointOut>
+							<expression>I_ZylRechtsGs</expression>
+						</inVariable>
+						<block width="12" height="12" typeName="SR" instanceName="SR_2" localId="56">
+							<position x="150" y="53"/>
+							<inputVariables>
+								<variable formalParameter="SET1">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="60" formalParameter="OR">
+											<position x="148" y="57"/>
+											<position x="120" y="57"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="RESET">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="197" formalParameter="OR">
+											<position x="148" y="61"/>
+											<position x="145" y="61"/>
+											<position x="145" y="64"/>
+											<position x="143" y="64"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="Q1">
+									<connectionPointOut>
+										<relPosition x="14" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<block width="8" height="28" typeName="OR" localId="60">
+							<position x="110" y="53"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="45" formalParameter="OUT">
+											<position x="108" y="57"/>
+											<position x="86" y="57"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="50" formalParameter="OUT">
+											<position x="108" y="61"/>
+											<position x="97" y="61"/>
+											<position x="97" y="71"/>
+											<position x="86" y="71"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN3" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+										<connection refLocalId="72" formalParameter="OUT">
+											<position x="108" y="65"/>
+											<position x="98" y="65"/>
+											<position x="98" y="85"/>
+											<position x="86" y="85"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN4" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="16"/>
+										<connection refLocalId="76" formalParameter="OUT">
+											<position x="108" y="69"/>
+											<position x="99" y="69"/>
+											<position x="99" y="99"/>
+											<position x="86" y="99"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN5" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="20"/>
+										<connection refLocalId="85" formalParameter="OUT">
+											<position x="108" y="73"/>
+											<position x="100" y="73"/>
+											<position x="100" y="113"/>
+											<position x="86" y="113"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN6" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="24"/>
+										<connection refLocalId="93" formalParameter="OUT">
+											<position x="108" y="77"/>
+											<position x="101" y="77"/>
+											<position x="101" y="127"/>
+											<position x="86" y="127"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OR" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<outVariable localId="61" width="11" height="2">
+							<position x="164" y="56"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="56" formalParameter="Q1"/>
+							</connectionPointIn>
+							<expression>xStoerung</expression>
+						</outVariable>
+						<block width="9" height="12" typeName="TON" instanceName="TON_2" localId="67">
+							<position x="43" y="81"/>
+							<inputVariables>
+								<variable formalParameter="IN">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="129" formalParameter="OUT">
+											<position x="41" y="85"/>
+											<position x="29" y="85"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="PT">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="81"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="Q">
+									<connectionPointOut>
+										<relPosition x="11" y="4"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="ET">
+									<connectionPointOut>
+										<relPosition x="11" y="8"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="68" width="14" height="2">
+							<position x="2" y="84"/>
+							<connectionPointOut>
+								<relPosition x="14" y="1"/>
+							</connectionPointOut>
+							<expression>Q_ZylLinksAs</expression>
+						</inVariable>
+						<block width="8" height="12" typeName="AND" localId="72">
+							<position x="76" y="81"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="67" formalParameter="Q">
+											<position x="74" y="85"/>
+											<position x="60" y="85"/>
+											<position x="54" y="85"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" negated="true" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="77"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OUT" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<block width="8" height="12" typeName="AND" localId="76">
+							<position x="76" y="95"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="67" formalParameter="Q">
+											<position x="74" y="99"/>
+											<position x="60" y="99"/>
+											<position x="60" y="85"/>
+											<position x="54" y="85"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" negated="true" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="78"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OUT" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="77" width="13" height="2">
+							<position x="61" y="88"/>
+							<connectionPointOut>
+								<relPosition x="13" y="1"/>
+							</connectionPointOut>
+							<expression>I_ZylLinksAs</expression>
+						</inVariable>
+						<inVariable localId="78" width="15" height="2">
+							<position x="59" y="102"/>
+							<connectionPointOut>
+								<relPosition x="15" y="1"/>
+							</connectionPointOut>
+							<expression>I_ZylRechtsAs</expression>
+						</inVariable>
+						<inVariable localId="81" width="8" height="2">
+							<position x="33" y="88"/>
+							<connectionPointOut>
+								<relPosition x="8" y="1"/>
+							</connectionPointOut>
+							<expression>T#4S</expression>
+						</inVariable>
+						<block width="8" height="12" typeName="AND" localId="85">
+							<position x="76" y="109"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="86"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="87"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OUT" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="86" width="13" height="2">
+							<position x="61" y="112"/>
+							<connectionPointOut>
+								<relPosition x="13" y="1"/>
+							</connectionPointOut>
+							<expression>I_ZylLinksGs</expression>
+						</inVariable>
+						<inVariable localId="87" width="13" height="2">
+							<position x="61" y="116"/>
+							<connectionPointOut>
+								<relPosition x="13" y="1"/>
+							</connectionPointOut>
+							<expression>I_ZylLinksAs</expression>
+						</inVariable>
+						<block width="8" height="12" typeName="AND" localId="93">
+							<position x="76" y="123"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="94"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="95"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OUT" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="94" width="15" height="2">
+							<position x="59" y="126"/>
+							<connectionPointOut>
+								<relPosition x="15" y="1"/>
+							</connectionPointOut>
+							<expression>I_ZylRechtsGs</expression>
+						</inVariable>
+						<inVariable localId="95" width="15" height="2">
+							<position x="59" y="130"/>
+							<connectionPointOut>
+								<relPosition x="15" y="1"/>
+							</connectionPointOut>
+							<expression>I_ZylRechtsAs</expression>
+						</inVariable>
+						<block width="17" height="16" typeName="CLOCK_PULSE" instanceName="CLOCK_PULSE_5" localId="101">
+							<position x="227" y="98"/>
+							<inputVariables>
+								<variable formalParameter="EN">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="210" formalParameter="OR">
+											<position x="225" y="102"/>
+											<position x="214" y="102"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="TIME_HIGH">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="104"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="TIME_LOW">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+										<connection refLocalId="105"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OUT">
+									<connectionPointOut>
+										<relPosition x="19" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="103" width="11" height="2">
+							<position x="191" y="81"/>
+							<connectionPointOut>
+								<relPosition x="11" y="1"/>
+							</connectionPointOut>
+							<expression>xStoerung</expression>
+						</inVariable>
+						<inVariable localId="104" width="11" height="2">
+							<position x="214" y="105"/>
+							<connectionPointOut>
+								<relPosition x="11" y="1"/>
+							</connectionPointOut>
+							<expression>T#500MS</expression>
+						</inVariable>
+						<inVariable localId="105" width="11" height="2">
+							<position x="214" y="109"/>
+							<connectionPointOut>
+								<relPosition x="11" y="1"/>
+							</connectionPointOut>
+							<expression>T#500MS</expression>
+						</inVariable>
+						<inVariable localId="106" width="11" height="2">
+							<position x="191" y="101"/>
+							<connectionPointOut>
+								<relPosition x="11" y="1"/>
+							</connectionPointOut>
+							<expression>xStoerung</expression>
+						</inVariable>
+						<inVariable localId="107" width="15" height="2">
+							<position x="187" y="105"/>
+							<connectionPointOut>
+								<relPosition x="15" y="1"/>
+							</connectionPointOut>
+							<expression>xSBTDevError</expression>
+						</inVariable>
+						<comment localId="108" width="38" height="4">
+							<position x="34" y="5"/>
+							<content>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p style="color:#000000;background:#FFFFFF;font-weight:bold;font-style:normal;normal;font-family:Tahoma;width:0px; height:337px; font-size:20.25em" xmlns="http://www.w3.org/1999/xhtml">Sonstige Zuweisungen</p>
+									</body>
+								</html>
+							</content>
+						</comment>
+						<comment localId="109" width="32" height="4">
+							<position x="123" y="4"/>
+							<content>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p style="color:#000000;background:#FFFFFF;font-weight:bold;font-style:normal;normal;font-family:Tahoma;width:0px; height:337px; font-size:20.25em" xmlns="http://www.w3.org/1999/xhtml">Automatik Ablauf</p>
+									</body>
+								</html>
+							</content>
+						</comment>
+						<comment localId="110" width="32" height="4">
+							<position x="221" y="6"/>
+							<content>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p style="color:#000000;background:#FFFFFF;font-weight:bold;font-style:normal;normal;font-family:Tahoma;width:0px; height:337px; font-size:20.25em" xmlns="http://www.w3.org/1999/xhtml">ESTOP aktivieren</p>
+									</body>
+								</html>
+							</content>
+						</comment>
+						<comment localId="111" width="34" height="4">
+							<position x="219" y="48"/>
+							<content>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p style="color:#000000;background:#FFFFFF;font-weight:bold;font-style:normal;normal;font-family:Tahoma;width:0px; height:337px; font-size:20.25em" xmlns="http://www.w3.org/1999/xhtml">Leuchtmelder grün</p>
+									</body>
+								</html>
+							</content>
+						</comment>
+						<comment localId="112" width="22" height="4">
+							<position x="59" y="45"/>
+							<content>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p style="color:#000000;background:#FFFFFF;font-weight:bold;font-style:normal;normal;font-family:Tahoma;width:0px; height:337px; font-size:20.25em" xmlns="http://www.w3.org/1999/xhtml">Störungen</p>
+									</body>
+								</html>
+							</content>
+						</comment>
+						<inVariable localId="113" width="23" height="2">
+							<position x="7" y="30"/>
+							<connectionPointOut>
+								<relPosition x="23" y="1"/>
+							</connectionPointOut>
+							<expression>ONBOARD_INPUT_BIT4</expression>
+						</inVariable>
+						<outVariable localId="114" width="9" height="2">
+							<position x="30" y="30"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="113"/>
+							</connectionPointIn>
+							<expression>I_Reset</expression>
+						</outVariable>
+						<inVariable localId="115" width="9" height="2">
+							<position x="122" y="63"/>
+							<connectionPointOut>
+								<relPosition x="9" y="1"/>
+							</connectionPointOut>
+							<expression>I_Reset</expression>
+						</inVariable>
+						<block width="8" height="12" typeName="OR" localId="119">
+							<position x="256" y="17"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="19" formalParameter="OUT">
+											<position x="254" y="21"/>
+											<position x="241" y="21"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="120"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OR" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="120" width="11" height="2">
+							<position x="243" y="24"/>
+							<connectionPointOut>
+								<relPosition x="11" y="1"/>
+							</connectionPointOut>
+							<expression>xStoerung</expression>
+						</inVariable>
+						<block width="8" height="16" typeName="AND" localId="124">
+							<position x="19" y="53"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="40"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="125"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN3" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+										<connection refLocalId="178"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OUT" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="125" width="14" height="2">
+							<position x="3" y="60"/>
+							<connectionPointOut>
+								<relPosition x="14" y="1"/>
+							</connectionPointOut>
+							<expression>I_DruckluftOK</expression>
+						</inVariable>
+						<block width="8" height="16" typeName="AND" localId="129">
+							<position x="19" y="81"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="68">
+											<position x="17" y="85"/>
+											<position x="16" y="85"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="130"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN3" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+										<connection refLocalId="180"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OUT" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="130" width="14" height="2">
+							<position x="3" y="88"/>
+							<connectionPointOut>
+								<relPosition x="14" y="1"/>
+							</connectionPointOut>
+							<expression>I_DruckluftOK</expression>
+						</inVariable>
+						<inVariable localId="157" width="23" height="2">
+							<position x="7" y="34"/>
+							<connectionPointOut>
+								<relPosition x="23" y="1"/>
+							</connectionPointOut>
+							<expression>ONBOARD_INPUT_BIT5</expression>
+						</inVariable>
+						<outVariable localId="158" width="15" height="2">
+							<position x="30" y="34"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="157"/>
+							</connectionPointIn>
+							<expression>I_Nachpressen</expression>
+						</outVariable>
+						<comment localId="160" width="13" height="4">
+							<position x="48" y="144"/>
+							<content>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p style="color:#000000;background:#FFFFFF;font-weight:bold;font-style:normal;normal;font-family:Tahoma;width:0px; height:337px; font-size:20.25em" xmlns="http://www.w3.org/1999/xhtml">HMI</p>
+									</body>
+								</html>
+							</content>
+						</comment>
+						<inVariable localId="161" width="18" height="2">
+							<position x="2" y="162"/>
+							<connectionPointOut>
+								<relPosition x="18" y="1"/>
+							</connectionPointOut>
+							<expression>I_TemperaturLuft</expression>
+						</inVariable>
+						<outVariable localId="162" width="18" height="2">
+							<position x="37" y="170"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="170" formalParameter="STR"/>
+							</connectionPointIn>
+							<expression>strTemperaturLuft</expression>
+						</outVariable>
+						<inVariable localId="163" width="17" height="2">
+							<position x="52" y="162"/>
+							<connectionPointOut>
+								<relPosition x="17" y="1"/>
+							</connectionPointOut>
+							<expression>I_TemperaturTeil</expression>
+						</inVariable>
+						<outVariable localId="164" width="18" height="2">
+							<position x="86" y="170"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="176" formalParameter="STR"/>
+							</connectionPointIn>
+							<expression>strTemperaturTeil</expression>
+						</outVariable>
+						<block width="13" height="16" typeName="Temperatur" instanceName="Temperatur_1" localId="170">
+							<position x="22" y="159"/>
+							<inputVariables>
+								<variable formalParameter="IN">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="161"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="ERROR">
+									<connectionPointOut>
+										<relPosition x="15" y="4"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="ERRCODE">
+									<connectionPointOut>
+										<relPosition x="15" y="8"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="STR">
+									<connectionPointOut>
+										<relPosition x="15" y="12"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<block width="13" height="16" typeName="Temperatur" instanceName="Temperatur_2" localId="176">
+							<position x="71" y="159"/>
+							<inputVariables>
+								<variable formalParameter="IN">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="163"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="ERROR">
+									<connectionPointOut>
+										<relPosition x="15" y="4"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="ERRCODE">
+									<connectionPointOut>
+										<relPosition x="15" y="8"/>
+									</connectionPointOut>
+								</variable>
+								<variable formalParameter="STR">
+									<connectionPointOut>
+										<relPosition x="15" y="12"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="178" width="8" height="2">
+							<position x="9" y="64"/>
+							<connectionPointOut>
+								<relPosition x="8" y="1"/>
+							</connectionPointOut>
+							<expression>xAuto</expression>
+						</inVariable>
+						<inVariable localId="180" width="8" height="2">
+							<position x="9" y="92"/>
+							<connectionPointOut>
+								<relPosition x="8" y="1"/>
+							</connectionPointOut>
+							<expression>xAuto</expression>
+						</inVariable>
+						<block width="9" height="4" typeName="Automatik" instanceName="Automatik_1" localId="182">
+							<position x="131" y="11"/>
+							<inputVariables/>
+							<inOutVariables/>
+							<outputVariables/>
+						</block>
+						<inVariable localId="184" width="8" height="2">
+							<position x="221" y="28"/>
+							<connectionPointOut>
+								<relPosition x="8" y="1"/>
+							</connectionPointOut>
+							<expression>xAuto</expression>
+						</inVariable>
+						<inVariable localId="186" width="8" height="2">
+							<position x="194" y="85"/>
+							<connectionPointOut>
+								<relPosition x="8" y="1"/>
+							</connectionPointOut>
+							<expression>xAuto</expression>
+						</inVariable>
+						<inVariable localId="187" width="8" height="2">
+							<position x="63" y="15"/>
+							<connectionPointOut>
+								<relPosition x="8" y="1"/>
+							</connectionPointOut>
+							<expression>xAuto</expression>
+						</inVariable>
+						<outVariable localId="188" width="25" height="2">
+							<position x="71" y="11"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="6"/>
+							</connectionPointIn>
+							<expression>ONBOARD_OUTPUT_BIT0</expression>
+						</outVariable>
+						<outVariable localId="189" width="25" height="2">
+							<position x="71" y="15"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="187"/>
+							</connectionPointIn>
+							<expression>ONBOARD_OUTPUT_BIT3</expression>
+						</outVariable>
+						<block width="8" height="8" typeName="NOT" localId="192">
+							<position x="26" y="15"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="3"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="NOT" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="193" width="9" height="2">
+							<position x="122" y="67"/>
+							<connectionPointOut>
+								<relPosition x="9" y="1"/>
+							</connectionPointOut>
+							<expression>xReset</expression>
+						</inVariable>
+						<block width="8" height="12" typeName="OR" localId="197">
+							<position x="133" y="60"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="115"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="193"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OR" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<block width="12" height="12" typeName="SR" instanceName="SR_1" localId="202">
+							<position x="296" y="17"/>
+							<inputVariables>
+								<variable formalParameter="SET1">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="119" formalParameter="OR">
+											<position x="294" y="21"/>
+											<position x="266" y="21"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="RESET">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="246" formalParameter="OR">
+											<position x="294" y="25"/>
+											<position x="293" y="25"/>
+											<position x="293" y="27"/>
+											<position x="292" y="27"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="Q1">
+									<connectionPointOut>
+										<relPosition x="14" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="204" width="21" height="2">
+							<position x="181" y="65"/>
+							<connectionPointOut>
+								<relPosition x="21" y="1"/>
+							</connectionPointOut>
+							<expression>xSBTDev1_CommOK</expression>
+						</inVariable>
+						<inVariable localId="206" width="18" height="2">
+							<position x="184" y="69"/>
+							<connectionPointOut>
+								<relPosition x="18" y="1"/>
+							</connectionPointOut>
+							<expression>xSBTLogicRunning</expression>
+						</inVariable>
+						<block width="8" height="16" typeName="OR" localId="210">
+							<position x="204" y="98"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="106"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="107"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN3" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+										<connection refLocalId="33"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OR" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<outVariable localId="219" width="20" height="2">
+							<position x="316" y="168"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="224" formalParameter="OUT"/>
+							</connectionPointIn>
+							<expression>xZuHeissOderDefekt</expression>
+						</outVariable>
+						<comment localId="220" width="35" height="4">
+							<position x="190" y="147"/>
+							<content>
+								<html xmlns="http://www.w3.org/1999/xhtml">
+									<head xmlns="http://www.w3.org/1999/xhtml">
+										<title xmlns="http://www.w3.org/1999/xhtml"/>
+									</head>
+									<body xmlns="http://www.w3.org/1999/xhtml">
+										<p style="color:#000000;background:#FFFFFF;font-weight:bold;font-style:normal;normal;font-family:Tahoma;width:0px; height:337px; font-size:20.25em" xmlns="http://www.w3.org/1999/xhtml">Temperaturprüfung</p>
+									</body>
+								</html>
+							</content>
+						</comment>
+						<block width="8" height="12" typeName="AND" localId="224">
+							<position x="306" y="165"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="259" formalParameter="OR">
+											<position x="304" y="169"/>
+											<position x="290" y="169"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="229"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OUT" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="229" width="14" height="2">
+							<position x="290" y="172"/>
+							<connectionPointOut>
+								<relPosition x="14" y="1"/>
+							</connectionPointOut>
+							<expression>xCheckTemp</expression>
+						</inVariable>
+						<block width="17" height="16" typeName="CLOCK_PULSE" instanceName="CLOCK_PULSE_1" localId="235">
+							<position x="56" y="187"/>
+							<inputVariables>
+								<variable formalParameter="EN">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="264" formalParameter="OUT">
+											<position x="54" y="191"/>
+											<position x="43" y="191"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="TIME_HIGH">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="236"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="TIME_LOW">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+										<connection refLocalId="237"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OUT">
+									<connectionPointOut>
+										<relPosition x="19" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="236" width="11" height="2">
+							<position x="43" y="194"/>
+							<connectionPointOut>
+								<relPosition x="11" y="1"/>
+							</connectionPointOut>
+							<expression>T#300MS</expression>
+						</inVariable>
+						<inVariable localId="237" width="11" height="2">
+							<position x="43" y="198"/>
+							<connectionPointOut>
+								<relPosition x="11" y="1"/>
+							</connectionPointOut>
+							<expression>T#300MS</expression>
+						</inVariable>
+						<outVariable localId="238" width="16" height="2">
+							<position x="75" y="190"/>
+							<connectionPointIn>
+								<relPosition x="0" y="1"/>
+								<connection refLocalId="235" formalParameter="OUT"/>
+							</connectionPointIn>
+							<expression>xZuHeiss_Pulsed</expression>
+						</outVariable>
+						<inVariable localId="241" width="15" height="2">
+							<position x="190" y="28"/>
+							<connectionPointOut>
+								<relPosition x="15" y="1"/>
+							</connectionPointOut>
+							<expression>Q_ZylRechtsGs</expression>
+						</inVariable>
+						<inVariable localId="242" width="15" height="2">
+							<position x="190" y="32"/>
+							<connectionPointOut>
+								<relPosition x="15" y="1"/>
+							</connectionPointOut>
+							<expression>Q_ZylRechtsAs</expression>
+						</inVariable>
+						<block width="8" height="16" typeName="OR" localId="246">
+							<position x="282" y="23"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="7"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="247"/>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN3" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+										<connection refLocalId="249"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OR" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="247" width="9" height="2">
+							<position x="271" y="30"/>
+							<connectionPointOut>
+								<relPosition x="9" y="1"/>
+							</connectionPointOut>
+							<expression>I_Reset</expression>
+						</inVariable>
+						<inVariable localId="249" width="9" height="2">
+							<position x="271" y="34"/>
+							<connectionPointOut>
+								<relPosition x="9" y="1"/>
+							</connectionPointOut>
+							<expression>xReset</expression>
+						</inVariable>
+						<block width="8" height="16" typeName="OR" localId="259">
+							<position x="280" y="165"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="319" formalParameter="GT">
+											<position x="278" y="169"/>
+											<position x="263" y="169"/>
+											<position x="261" y="169"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="170" formalParameter="ERROR">
+											<position x="278" y="173"/>
+											<position x="262" y="173"/>
+											<position x="262" y="155"/>
+											<position x="51" y="155"/>
+											<position x="51" y="163"/>
+											<position x="37" y="163"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN3" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+										<connection refLocalId="176" formalParameter="ERROR">
+											<position x="278" y="177"/>
+											<position x="264" y="177"/>
+											<position x="264" y="163"/>
+											<position x="86" y="163"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OR" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<block width="8" height="12" typeName="AND" localId="264">
+							<position x="33" y="187"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="319" formalParameter="GT">
+											<position x="31" y="191"/>
+											<position x="16" y="191"/>
+											<position x="16" y="206"/>
+											<position x="263" y="206"/>
+											<position x="263" y="169"/>
+											<position x="261" y="169"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="266"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="OUT" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<inVariable localId="266" width="14" height="2">
+							<position x="17" y="194"/>
+							<connectionPointOut>
+								<relPosition x="14" y="1"/>
+							</connectionPointOut>
+							<expression>xCheckTemp</expression>
+						</inVariable>
+						<inVariable localId="288" width="7" height="2">
+							<position x="188" y="172"/>
+							<connectionPointOut>
+								<relPosition x="7" y="1"/>
+							</connectionPointOut>
+							<expression>10.0</expression>
+						</inVariable>
+						<inVariable localId="289" width="17" height="2">
+							<position x="154" y="168"/>
+							<connectionPointOut>
+								<relPosition x="17" y="1"/>
+							</connectionPointOut>
+							<expression>I_TemperaturTeil</expression>
+						</inVariable>
+						<inVariable localId="290" width="18" height="2">
+							<position x="121" y="179"/>
+							<connectionPointOut>
+								<relPosition x="18" y="1"/>
+							</connectionPointOut>
+							<expression>I_TemperaturLuft</expression>
+						</inVariable>
+						<inVariable localId="291" width="7" height="2">
+							<position x="157" y="183"/>
+							<connectionPointOut>
+								<relPosition x="7" y="1"/>
+							</connectionPointOut>
+							<expression>10.0</expression>
+						</inVariable>
+						<inVariable localId="292" width="12" height="2">
+							<position x="182" y="189"/>
+							<connectionPointOut>
+								<relPosition x="12" y="1"/>
+							</connectionPointOut>
+							<expression>iMaxTemp</expression>
+						</inVariable>
+						<inVariable localId="293" width="6" height="2">
+							<position x="208" y="199"/>
+							<connectionPointOut>
+								<relPosition x="6" y="1"/>
+							</connectionPointOut>
+							<expression>3.0</expression>
+						</inVariable>
+						<block width="8" height="12" typeName="GT" localId="319">
+							<position x="251" y="165"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="320" formalParameter="DIV">
+											<position x="249" y="169"/>
+											<position x="207" y="169"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="324" formalParameter="SEL_REAL">
+											<position x="249" y="173"/>
+											<position x="247" y="173"/>
+											<position x="247" y="186"/>
+											<position x="245" y="186"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="GT" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<block width="8" height="12" typeName="DIV" localId="320">
+							<position x="197" y="165"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="327" formalParameter="INT_TO_REAL">
+											<position x="195" y="169"/>
+											<position x="188" y="169"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="288"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="DIV" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<block width="8" height="12" typeName="DIV" localId="321">
+							<position x="166" y="176"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="326" formalParameter="INT_TO_REAL">
+											<position x="164" y="180"/>
+											<position x="157" y="180"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="291"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="DIV" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<block width="8" height="12" typeName="ADD" localId="322">
+							<position x="216" y="192"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="321" formalParameter="DIV">
+											<position x="214" y="196"/>
+											<position x="181" y="196"/>
+											<position x="181" y="180"/>
+											<position x="176" y="180"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="293"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="ADD" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<block width="8" height="12" typeName="GT" localId="323">
+							<position x="216" y="176"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="321" formalParameter="DIV">
+											<position x="214" y="180"/>
+											<position x="181" y="180"/>
+											<position x="176" y="180"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN2" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="325" formalParameter="INT_TO_REAL">
+											<position x="214" y="184"/>
+											<position x="212" y="184"/>
+											<position x="212" y="190"/>
+											<position x="211" y="190"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="GT" hidden="true">
+									<connectionPointOut>
+										<relPosition x="10" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<block width="9" height="16" typeName="SEL_REAL" localId="324">
+							<position x="234" y="182"/>
+							<inputVariables>
+								<variable formalParameter="G">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="323" formalParameter="GT">
+											<position x="232" y="186"/>
+											<position x="229" y="186"/>
+											<position x="229" y="180"/>
+											<position x="226" y="180"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN0">
+									<connectionPointIn>
+										<relPosition x="-2" y="8"/>
+										<connection refLocalId="325" formalParameter="INT_TO_REAL">
+											<position x="232" y="190"/>
+											<position x="212" y="190"/>
+											<position x="211" y="190"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+								<variable formalParameter="IN1">
+									<connectionPointIn>
+										<relPosition x="-2" y="12"/>
+										<connection refLocalId="322" formalParameter="ADD">
+											<position x="232" y="194"/>
+											<position x="229" y="194"/>
+											<position x="229" y="196"/>
+											<position x="226" y="196"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="SEL_REAL" hidden="true">
+									<connectionPointOut>
+										<relPosition x="11" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<block width="13" height="8" typeName="INT_TO_REAL" localId="325">
+							<position x="196" y="186"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="292"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="INT_TO_REAL" hidden="true">
+									<connectionPointOut>
+										<relPosition x="15" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<block width="13" height="8" typeName="INT_TO_REAL" localId="326">
+							<position x="142" y="176"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="290">
+											<position x="140" y="180"/>
+											<position x="139" y="180"/>
+										</connection>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="INT_TO_REAL" hidden="true">
+									<connectionPointOut>
+										<relPosition x="15" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+						<block width="13" height="8" typeName="INT_TO_REAL" localId="327">
+							<position x="173" y="165"/>
+							<inputVariables>
+								<variable formalParameter="IN1" hidden="true">
+									<connectionPointIn>
+										<relPosition x="-2" y="4"/>
+										<connection refLocalId="289"/>
+									</connectionPointIn>
+								</variable>
+							</inputVariables>
+							<inOutVariables/>
+							<outputVariables>
+								<variable formalParameter="INT_TO_REAL" hidden="true">
+									<connectionPointOut>
+										<relPosition x="15" y="4"/>
+									</connectionPointOut>
+								</variable>
+							</outputVariables>
+						</block>
+					</FBD>
+				</body>
+				<documentation>
+					<html xmlns="http://www.w3.org/1999/xhtml">
+						<head xmlns="http://www.w3.org/1999/xhtml">
+							<title xmlns="http://www.w3.org/1999/xhtml"/>
+						</head>
+						<body xmlns="http://www.w3.org/1999/xhtml">
+							<div class="MWTDESCRIPTION" title="MainT" xmlns="http://www.w3.org/1999/xhtml"/>
+						</body>
+					</html>
+				</documentation>
+			</pou>
+		</pous>
+	</types>
+	<instances>
+		<configurations/>
+	</instances>
+</project>

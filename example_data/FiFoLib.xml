@@ -1,0 +1,3949 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 2" creationDateTime="2023-02-15T20:34:10.8325937" />
+  <contentHeader name="FiFo Library" version="1.0" modificationDateTime="2023-02-15T20:34:07.4157085" organization="TK Automation" author="Toni Kucic">
+    <Comment>Library that holds FIFO and LIFO buffer classes for use in IEC programs</Comment>
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation>
+          <property name="Author" type="string">Toni Kucic</property>
+          <property name="AutoResolveUnbound" type="boolean">true</property>
+          <property name="Company" type="string">TK Automation</property>
+          <property name="DefaultNamespace" type="string" />
+          <property name="Description" type="string">Library that holds FIFO and LIFO buffer classes for use in IEC programs</property>
+          <property name="DocFormat" type="string">reStructuredText</property>
+          <property name="IsEndUserLibrary" type="boolean">false</property>
+          <property name="LanguageModelAttribute" type="string">qualified-access-only</property>
+          <property name="Placeholder" type="string" />
+          <property name="Project" type="string">FiFoLib</property>
+          <property name="Released" type="boolean">false</property>
+          <property name="SourceLibrary" type="boolean">false</property>
+          <property name="Title" type="string">FiFo Library</property>
+          <property name="Version" type="version">1.0</property>
+          <property name="library-category-list" type="library-category-list" />
+        </ProjectInformation>
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes>
+      <dataType name="dtFIFO_P_Element_Int">
+        <baseType>
+          <struct>
+            <variable name="Value">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="Priority">
+              <type>
+                <INT />
+              </type>
+            </variable>
+          </struct>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>daa99834-a7fa-49eb-9488-9e83dfb9b089</ObjectId>
+          </data>
+        </addData>
+      </dataType>
+    </dataTypes>
+    <pous>
+      <pou name="FIFO_S_INT" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="Buffer">
+              <type>
+                <pointer>
+                  <baseType>
+                    <INT />
+                  </baseType>
+                </pointer>
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="input_constant" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Externally allocated buffer. Must be in format ARRAY[0..N]. ! Block doesn't check for Null pointer</xhtml>
+              </documentation>
+            </variable>
+            <variable name="Size">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="input_constant" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Size/Max elements of the buffer</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="NrElements">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Number of elements in the FIFO</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="vHead">
+              <type>
+                <INT />
+              </type>
+              <initialValue>
+                <simpleValue value="-1" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Position of the head</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vTail">
+              <type>
+                <INT />
+              </type>
+              <initialValue>
+                <simpleValue value="-1" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Position of the tail</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">Standard FIFO buffer. Allows Enqueing if buffer is not full. After being filled, it has to be emptied completely before further equeueing</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isEmpty" ObjectId="2a3f7d69-5795-41a1-a2a1-61a38bb53e7e">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns TRUE if FIFO is empty. Reading not allowed</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isEmpty := vHead = -1 OR vHead &gt; vTail;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Dequeue" ObjectId="71d22bc4-0fa3-4d50-a39a-8a4292814edd">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <outputVars>
+                  <variable name="Value">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </outputVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns the next FIFO element stored in the buffer</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF isEmpty() THEN
+    RETURN;
+END_IF
+Value       := Buffer[vHead];
+vHead       := vHead + 1;
+
+NrElements  := NrElements -1;
+
+IF vHead &gt; vTail THEN
+    (*Reset*)
+    vHead := -1;
+    vTail := -1;
+    NrElements := 0;
+END_IF
+
+Dequeue := TRUE;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Enqueue" ObjectId="fb8b78f3-551e-482b-98a0-0aaee2021186">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <inputVars>
+                  <variable name="Value">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </inputVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Inserts new value into the FIFO buffer</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF isFull() THEN
+    RETURN;
+END_IF
+IF isEmpty() THEN
+    vHead := 0;
+END_IF
+
+vTail           := vTail + 1;
+Buffer[vTail]   := Value;
+
+NrElements      := NrElements + 1;
+
+Enqueue := TRUE;
+RETURN;
+</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isFull" ObjectId="f6813005-ba47-40f3-83f7-e15477efa96e">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns TRUE if FIFO is full. Inserting not allowed</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isFull := vTail = Size - 1;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Peek" ObjectId="e76a4e54-ada0-492d-ae5f-a0624c396dc9">
+              <interface>
+                <returnType>
+                  <UINT />
+                </returnType>
+                <outputVars>
+                  <variable name="Value">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </outputVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns the index of the next element to Dequeue. Output paramter holds the element without removing it from the Buffer</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Peek := vHead;
+Value:= Buffer[Peek];
+
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>45b73b7f-50f3-4029-a39d-e68e0b18d6d4</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="FIFO_C_INT" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="Buffer">
+              <type>
+                <pointer>
+                  <baseType>
+                    <INT />
+                  </baseType>
+                </pointer>
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="input_constant" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Externally allocated buffer. Must be in format ARRAY[0..N]. ! Block doesn't check for Null pointer</xhtml>
+              </documentation>
+            </variable>
+            <variable name="Size">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="input_constant" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Size/Max elements of the buffer</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="NrElements">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Number of elements in the FIFO</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="vHead">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Position of the head</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vTail">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Position of the tail</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">Circular FIFO buffer. Allows Enqueuing when there is a free space in front of the tail</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Dequeue" ObjectId="49f37ad0-181b-42e7-a616-c8414a12aa5b">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <outputVars>
+                  <variable name="Value">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </outputVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns the next FIFO element stored in the buffer</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF isEmpty() THEN
+    RETURN;
+END_IF
+
+Value       := Buffer[vHead];
+vHead       := (vHead + 1) MOD Size;
+NrElements  := NrElements - 1;
+
+Dequeue := TRUE;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Enqueue" ObjectId="e9db49f4-e6cc-4aa1-82c9-f4a4e38d8c9f">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <inputVars>
+                  <variable name="Value">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </inputVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Inserts new value into the FIFO buffer</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF isFull() THEN
+    RETURN;
+END_IF
+Buffer[vTail]   := Value;
+NrElements      := NrElements + 1;
+vTail           := (vTail + 1) MOD Size;
+
+Enqueue := TRUE;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isEmpty" ObjectId="708e502e-6708-4f3f-a4d3-9ced416139d5">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns TRUE if FIFO is empty. Reading not allowed</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isEmpty := NrElements &lt;= 0;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isFull" ObjectId="8c515baa-8e53-4ea3-9bb6-51a710d4260e">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns TRUE if FIFO is full. Inserting not allowed</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isFull := NrElements &gt;= Size;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Peek" ObjectId="a1e4467c-c1b1-4403-9dd2-1084d4f6b193">
+              <interface>
+                <returnType>
+                  <UINT />
+                </returnType>
+                <outputVars>
+                  <variable name="Value">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </outputVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns the index of the next element to Dequeue. Output paramter holds the element without removing it from the Buffer</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">//Peek := vHead;
+//Value:= Buffer[Peek];
+Value:= Buffer[Peek := vHead];
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>b705eb1e-a884-4f36-8bb5-304f7791a6e0</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="FIFO_FWFT_INT" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="Buffer">
+              <type>
+                <pointer>
+                  <baseType>
+                    <INT />
+                  </baseType>
+                </pointer>
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="input_constant" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Externally allocated buffer. Must be in format ARRAY[0..N]. ! Block doesn't check for Null pointer</xhtml>
+              </documentation>
+            </variable>
+            <variable name="Size">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="input_constant" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Size/Max elements of the buffer</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="NrElements">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Number of elements in the FIFO</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">First word fall trough FIFO buffer. After Dequeuing the whole array is shifted one space to the left so the next element is always at the beggining</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Dequeue" ObjectId="a9149409-4035-4282-8857-0a422409a3a0">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <outputVars>
+                  <variable name="Value">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </outputVars>
+                <localVars>
+                  <variable name="i">
+                    <type>
+                      <UINT />
+                    </type>
+                  </variable>
+                </localVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns the next FIFO element stored in the buffer</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF isEmpty() THEN
+    RETURN;
+END_IF
+Value := Buffer[0];
+
+WHILE i &lt; NrElements - 1 DO
+    Buffer[i] := Buffer[i+1];
+    i := i + 1;
+END_WHILE
+
+NrElements := NrElements -1;
+
+Dequeue := TRUE;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Enqueue" ObjectId="fb0b2470-3aaf-4bcb-80f3-ae95c28bff7c">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <inputVars>
+                  <variable name="Value">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </inputVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Inserts new value into the FIFO buffer</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF isFull() THEN
+    RETURN;
+END_IF
+Buffer[NrElements] := Value;
+NrElements         := NrElements + 1;
+
+Enqueue := TRUE;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isEmpty" ObjectId="39a24852-f1cd-42d2-9a78-0f08822f4584">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns TRUE if FIFO is empty. Reading not allowed</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isEmpty := NrElements &lt;= 0;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isFull" ObjectId="5869ce51-03db-4694-8feb-cc4e252f9684">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns TRUE if FIFO is full. Inserting not allowed</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isFull := NrElements &gt;= Size;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Peek" ObjectId="ed7c42e7-78d3-4759-9a6e-1655eda9859f">
+              <interface>
+                <returnType>
+                  <UINT />
+                </returnType>
+                <outputVars>
+                  <variable name="Value">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </outputVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns the index of the next element to Dequeue. Output paramter holds the element without removing it from the Buffer</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Peek := 0;
+Value:= Buffer[Peek];
+
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>15904067-68f6-40c6-9f33-a58245de9dec</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="FIFO_UP_INT" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="Buffer">
+              <type>
+                <pointer>
+                  <baseType>
+                    <derived name="dtFIFO_P_Element_Int" />
+                  </baseType>
+                </pointer>
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="input_constant" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Externally allocated buffer. Must be in format ARRAY[0..N]. ! Block doesn't check for Null pointer</xhtml>
+              </documentation>
+            </variable>
+            <variable name="Size">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="input_constant" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Size/Max elements of the buffer</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="NrElements">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Number of elements in the FIFO</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="vLast">
+              <type>
+                <INT />
+              </type>
+              <initialValue>
+                <simpleValue value="-1" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Position of the last item</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">Unordered Priority FIFO buffer. Allows Enqueing if buffer is not full. Dequeues the highest priority elements first.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Dequeue" ObjectId="22f98c05-d336-4ec5-ad4f-ec9c5cf53418">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <outputVars>
+                  <variable name="Value">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                  <variable name="Priority">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </outputVars>
+                <localVars>
+                  <variable name="vHighestPrioIdx">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                  <variable name="i">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </localVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns the next FIFO element stored in the buffer</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF isEmpty() THEN
+    RETURN;
+END_IF
+
+//Get highest priority member
+vHighestPrioIdx := Peek();
+Value       := Buffer[vHighestPrioIdx].Value;
+Priority       := Buffer[vHighestPrioIdx].Priority;
+
+// reduce size of priority queue by first
+// shifting all elements one position left
+// from index where the highest priority item was found
+FOR i := vHighestPrioIdx TO vLast DO
+    IF i &gt;= vLast THEN
+        EXIT;
+    END_IF
+    Buffer[i] := Buffer[i+1];
+END_FOR
+vLast := vLast - 1;
+
+NrElements  := NrElements - 1;
+
+Dequeue := TRUE;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Enqueue" ObjectId="1528e783-f7e0-40a5-9efd-4beb85ef7d35">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <inputVars>
+                  <variable name="Value">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                  <variable name="Priority">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </inputVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Inserts new value into the FIFO buffer</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF isFull() THEN
+    RETURN;
+END_IF
+vLast := vLast + 1;
+
+Buffer[vLast].Value         := Value;
+Buffer[vLast].Priority      := Priority;
+NrElements                  := NrElements + 1;
+
+Enqueue := TRUE;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isEmpty" ObjectId="c2002e39-9cc9-49ad-8669-5ed4d4b79bbf">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns TRUE if FIFO is empty. Reading not allowed</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isEmpty := vLast = -1;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isFull" ObjectId="e6d83d9f-3a57-4940-b867-a27c81c94240">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns TRUE if FIFO is full. Inserting not allowed</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isFull := vLast = Size - 1;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Peek" ObjectId="fbac77fe-bfdf-4b26-8456-a2d2a00c4d62">
+              <interface>
+                <returnType>
+                  <UINT />
+                </returnType>
+                <outputVars>
+                  <variable name="Value">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                  <variable name="Priority">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </outputVars>
+                <localVars>
+                  <variable name="maxPrio">
+                    <type>
+                      <INT />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="-32768" />
+                    </initialValue>
+                  </variable>
+                  <variable name="i">
+                    <type>
+                      <UINT />
+                    </type>
+                  </variable>
+                </localVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns the index of the next element to Dequeue. Output paramter holds the element without removing it from the Buffer</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF isEmpty() THEN
+    RETURN;
+END_IF
+
+// Linear search for highest priority
+FOR i:= 0 TO vLast DO
+    // If two items have same priority choose the one with 
+    // higher data value 
+    IF maxPrio = Buffer[i].Priority AND Buffer[Peek].Value &lt; Buffer[i].Value THEN
+        maxPrio := Buffer[i].Priority;
+        Peek := i;
+        
+    // note: using MAX Priority so higher priority number
+    // means higher priority
+    ELSIF maxPrio &lt; Buffer[i].Priority THEN
+        maxPrio := Buffer[i].Priority;
+        Peek := i;
+    END_IF
+END_FOR
+Value       := Buffer[Peek].Value;
+Priority    := Buffer[Peek].Priority;
+
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>1b31b092-3bb8-497b-a1d1-f21027b0850a</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="FIFO_OP_INT" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="Buffer">
+              <type>
+                <pointer>
+                  <baseType>
+                    <derived name="dtFIFO_P_Element_Int" />
+                  </baseType>
+                </pointer>
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="input_constant" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Externally allocated buffer. Must be in format ARRAY[0..N]. ! Block doesn't check for Null pointer</xhtml>
+              </documentation>
+            </variable>
+            <variable name="Size">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="input_constant" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Size/Max elements of the buffer</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="NrElements">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Number of elements in the FIFO</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">Ordered Priority FIFO buffer. Allows Enqueing if buffer is not full. Dequeues the highest priority elements first. Buffer is ordered from lowest to highest priority. e.g. 0 = Lowest priority</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Dequeue" ObjectId="cf0a6254-23ce-4fe9-aece-2beb91ed550f">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <outputVars>
+                  <variable name="Value">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                  <variable name="Priority">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </outputVars>
+                <localVars>
+                  <variable name="vHighestIdx">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </localVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns the next FIFO element stored in the buffer</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF isEmpty() THEN
+    RETURN;
+END_IF
+
+//Get highest priority member
+Value       := Buffer[NrElements-1].Value;
+Priority    := Buffer[NrElements-1].Priority;
+
+NrElements  := NrElements - 1;
+
+Dequeue := TRUE;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Enqueue" ObjectId="43461924-ca33-46e1-a49b-3e63415ff07d">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <inputVars>
+                  <variable name="Value">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                  <variable name="Priority">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </inputVars>
+                <localVars>
+                  <variable name="i">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </localVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Inserts new value into the FIFO buffer</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF isFull() THEN
+    RETURN;
+END_IF
+
+IF isEmpty() THEN
+    Buffer[NrElements].Value         := Value;
+    Buffer[NrElements].Priority      := Priority;
+    NrElements                       := NrElements + 1;
+
+    Enqueue := TRUE;
+    RETURN;
+ELSE
+    FOR i:= NrElements -1 TO 0 BY -1 DO
+        // shift all items rightwards with higher priority
+        // than the element we trying to insert
+        IF Priority &lt; Buffer[i].Priority THEN
+            Buffer[i+1].Value       := Buffer[i].Value;
+            Buffer[i+1].Priority    := Buffer[i].Priority;
+        ELSE
+            EXIT;
+        END_IF
+    END_FOR
+    // insert item just before where
+    // lower priority index was found
+    Buffer[i+1].Value       := Value;
+    Buffer[i+1].Priority    := Priority;
+    NrElements              := NrElements + 1;
+            
+    Enqueue := TRUE;
+    RETURN;
+END_IF
+
+
+</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isEmpty" ObjectId="532cf649-ee0b-4969-aff6-c484c5773b24">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns TRUE if FIFO is empty. Reading not allowed</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isEmpty := NrElements = 0;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isFull" ObjectId="56f3efa8-9480-413f-b77f-0cdbb53d1ce6">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns TRUE if FIFO is full. Inserting not allowed</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isFull := NrElements = Size;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Peek" ObjectId="9a32f38a-2610-4e4e-9de6-cc22d9efba22">
+              <interface>
+                <returnType>
+                  <UINT />
+                </returnType>
+                <outputVars>
+                  <variable name="Value">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                  <variable name="Priority">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </outputVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns the index of the next element to Dequeue. Output paramter holds the element without removing it from the Buffer</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Peek        := NrElements-1;
+Value       := Buffer[Peek].Value;
+Priority    := Buffer[Peek].Priority;
+
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>155d2fbb-369c-4c3c-920a-4090031e75ae</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="LIFO_INT" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="Buffer">
+              <type>
+                <pointer>
+                  <baseType>
+                    <INT />
+                  </baseType>
+                </pointer>
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="input_constant" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Externally allocated buffer. Must be in format ARRAY[0..N]. ! Block doesn't check for Null pointer</xhtml>
+              </documentation>
+            </variable>
+            <variable name="Size">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="input_constant" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Size/Max elements of the buffer</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="NrElements">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Number of elements in the FIFO</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="vTop">
+              <type>
+                <INT />
+              </type>
+              <initialValue>
+                <simpleValue value="-1" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Position of the highest element</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">LIFO / Stack buffer. Pushing places new value on top of the stack and poping removes the element from the top.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Pop" ObjectId="fb1185ad-0e5a-4ceb-b496-c839da3c3135">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <outputVars>
+                  <variable name="Value">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </outputVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns the top LIFO element stored in the buffer</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF isEmpty() THEN
+    RETURN;
+END_IF
+
+Value       := Buffer[vTop];
+vTop        := vTop - 1;
+NrElements  := NrElements - 1;
+
+Pop := TRUE;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Push" ObjectId="5404b45e-e4de-494f-abcf-23793e98ccf3">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <inputVars>
+                  <variable name="Value">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </inputVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Inserts new value on the top of the LIFO buffer</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF isFull() THEN
+    RETURN;
+END_IF
+vTop          := vTop + 1;
+Buffer[vTop]  := Value;
+NrElements    := NrElements + 1;
+
+Push := TRUE;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isEmpty" ObjectId="cd1cc77e-e6d6-49ea-ba9e-16d692febcb6">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns TRUE if LIFO is empty. Reading not allowed</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isEmpty := vTop = -1;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isFull" ObjectId="49b017bf-38db-4373-9f01-6ffc35bdfa3f">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns TRUE if LIFO is full. Inserting not allowed</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isFull := vTop = Size - 1;
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="Peek" ObjectId="fcb35072-badc-4917-85f4-174261fd7725">
+              <interface>
+                <returnType>
+                  <UINT />
+                </returnType>
+                <outputVars>
+                  <variable name="Value">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </outputVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Returns the index of the next element to Pop. Output paramter holds the element without removing it from the Buffer</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Peek := vTop;
+Value:= Buffer[Peek];
+
+RETURN;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>ad990af8-f58d-4ef1-bf7c-f35b657f1a95</ObjectId>
+          </data>
+        </addData>
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations>
+      <configuration name="CODESYS_Control_Win_V3_x64">
+        <resource name="Application">
+          <task name="Task" interval="PT0.5S" priority="1">
+            <pouInstance name="FIFO_S_ManTest" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <pouInstance name="FIFO_FWFT_ManTest" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <pouInstance name="FIFO_C_ManTest" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <pouInstance name="FIFO_UP_ManTest" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <pouInstance name="LIFO_ManTest" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <pouInstance name="FIFO_OP_ManTest" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Cyclic" Interval="500" IntervalUnit="ms" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>56a6ae63-7973-4f08-821f-77b29d33570d</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="FIFO_C_UT_Task" single="FIFO_C_UnitTest.vRunTests" priority="1">
+            <pouInstance name="FIFO_C_UnitTest" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="t#20ms" IntervalUnit="ms" Event="FIFO_C_UnitTest.vRunTests" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>7c0460a5-e3c9-4096-bc7c-748aa4f71bf0</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="FIFO_S_UT_Task" single="FIFO_S_UnitTest.vRunTests" priority="1">
+            <pouInstance name="FIFO_S_UnitTest" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="t#20ms" IntervalUnit="ms" Event="FIFO_S_UnitTest.vRunTests" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>40ba00b2-d212-4833-b6c4-185d6e1eb92e</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="FIFO_FWFT_UT_Task" single="FIFO_FWFT_UnitTest.vRunTests" priority="1">
+            <pouInstance name="FIFO_FWFT_UnitTest" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="t#20ms" IntervalUnit="ms" Event="FIFO_FWFT_UnitTest.vRunTests" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>877402e9-83b4-4e0f-990a-23fc14f8b8a1</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="FIFO_UP_UT_Task" single="FIFO_UP_UnitTest.vRunTests" priority="1">
+            <pouInstance name="FIFO_UP_UnitTest" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="t#20ms" IntervalUnit="ms" Event="FIFO_UP_UnitTest.vRunTests" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>e0cfd99b-371d-4722-beb7-3c17b5d05e9a</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="FIFO_OP_UT_Task" single="FIFO_OP_UnitTest.vRunTests" priority="1">
+            <pouInstance name="FIFO_OP_UnitTest" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="t#20ms" IntervalUnit="ms" Event="FIFO_OP_UnitTest.vRunTests" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>4e628cc4-587f-4b86-8c82-edd06aada9a2</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <task name="LIFO_UT_Task" single="LIFO_UnitTest.vRunTests" priority="1">
+            <pouInstance name="LIFO_UnitTest" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Event" Interval="t#20ms" IntervalUnit="ms" Event="LIFO_UnitTest.vRunTests" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>3bfa3206-83ff-4486-b124-07743cdefb24</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+              <pou name="FIFO_C_UnitTest" pouType="program">
+                <interface>
+                  <localVars>
+                    <variable name="vRunTests">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                      <documentation>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">Tap to TRUE, to run test</xhtml>
+                      </documentation>
+                    </variable>
+                    <variable name="vReturnsTrueOnSuccEnqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                      <documentation>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">Results</xhtml>
+                      </documentation>
+                    </variable>
+                    <variable name="vFillsThreeValuesOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReportsFullOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReturnsFalseOnUnSuccEnqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReturnsTrueOnSuccDeqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vDequeue1Ok">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vDequeue2Ok">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vCountingWorks">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReportsEmptyOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReturnsTrueOnUnSuccDeqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vCirculationOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vPeekOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="fifo">
+                      <type>
+                        <derived name="FIFO_C_INT" />
+                      </type>
+                    </variable>
+                    <variable name="vFifoBuffer">
+                      <type>
+                        <array>
+                          <dimension lower="0" upper="5" />
+                          <baseType>
+                            <INT />
+                          </baseType>
+                        </array>
+                      </type>
+                    </variable>
+                    <variable name="vTempInt">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vTempIdx">
+                      <type>
+                        <UINT />
+                      </type>
+                    </variable>
+                  </localVars>
+                </interface>
+                <body>
+                  <ST>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Init FIFO*)
+fifo.FB_Init(bInitRetains := TRUE, bInCopyCode := TRUE); //Implicit function block init, curtesy of codesys. To init function block on every run
+SysMemSet(ADR(vFifoBuffer), 0, SIZEOF(vFifoBuffer));
+fifo.Buffer := ADR(vFifoBuffer);
+fifo.Size   := SIZEOF(vFifoBuffer)/SIZEOF(INT);
+
+(*Test if fifo returns TRUE on successfull enqueue*)
+vReturnsTrueOnSuccEnqOk := fifo.Enqueue(1);
+
+(*Test if fifo fills three values correctly*)
+fifo.Enqueue(2);
+fifo.Enqueue(3);
+
+vFillsThreeValuesOk := vFifoBuffer[0] = 1 AND vFifoBuffer[1] = 2 AND vFifoBuffer[2] = 3;
+
+(*Test if fifo reports FULL when full*)
+fifo.Enqueue(4);
+fifo.Enqueue(5);
+fifo.Enqueue(6);
+
+vReportsFullOk := fifo.isFull();
+
+(*Test if fifo reports FALSE on unsuccesfull enqueue*)
+vReturnsFalseOnUnSuccEnqOk := NOT fifo.Enqueue(7);
+
+(*Test if fifo returns TRUE on successfull dequeue*)
+vReturnsTrueOnSuccDeqOk := fifo.Dequeue(Value =&gt; vTempInt);
+
+(*Test if fifo dequeues values correctly*)
+fifo.Dequeue(Value =&gt; vTempInt);
+vDequeue1Ok := vTempInt = 2;
+fifo.Dequeue(Value =&gt; vTempInt);
+vDequeue2Ok := vTempInt = 3;
+
+(*Test if fifo can count correctly*)
+vCountingWorks := fifo.NrElements = 3; //At this point in the tests, there should be 3 elements
+
+(*Test if fifo reports EMPTY when EMPTY*)
+fifo.Dequeue(Value =&gt; vTempInt); //Returns 4
+fifo.Dequeue(Value =&gt; vTempInt); //Returns 5
+fifo.Dequeue(Value =&gt; vTempInt); //Returns 6
+vReportsEmptyOk := fifo.isEmpty();
+
+(*Test if fifo reports FALSE on unsuccesfull dequeue*)
+vReturnsTrueOnUnSuccDeqOk := NOT fifo.Dequeue();
+
+(*Test if fifo circulates to index 0 after being full and one item dequeued*)
+fifo.Enqueue(1);
+fifo.Enqueue(2);
+fifo.Enqueue(3);
+fifo.Enqueue(4);
+fifo.Enqueue(5);
+fifo.Enqueue(6);
+fifo.Dequeue(Value =&gt; vTempInt); //Returns 1
+fifo.Enqueue(7); //Writes 7 to index 0
+vCirculationOk := vFifoBuffer[0] = 7;
+
+(*Test if Peek is ok, should return the next element but not remove it, it should report correct index of the buffer*)
+vTempIdx := fifo.Peek(Value =&gt; vTempInt);
+vPeekOk := fifo.NrElements = 6 AND vTempInt = 2 AND vTempIdx = 1;
+
+vRunTests := FALSE;</xhtml>
+                  </ST>
+                </body>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                    <ObjectId>5f730f78-32bd-429b-8ca6-e703d0ec69a8</ObjectId>
+                  </data>
+                </addData>
+              </pou>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+              <pou name="FIFO_S_UnitTest" pouType="program">
+                <interface>
+                  <localVars>
+                    <variable name="vRunTests">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                      <documentation>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">Tap to TRUE, to run test</xhtml>
+                      </documentation>
+                    </variable>
+                    <variable name="vReturnsTrueOnSuccEnqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                      <documentation>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">Results</xhtml>
+                      </documentation>
+                    </variable>
+                    <variable name="vFillsThreeValuesOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReportsFullOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReturnsFalseOnUnSuccEnqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReturnsTrueOnSuccDeqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vDequeue1Ok">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vDequeue2Ok">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vCountingWorks">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReportsEmptyOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReturnsTrueOnUnSuccDeqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vFifoFullPrevent1Ok">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vFifoFullPrevent2Ok">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vFifoFullPrevent3Ok">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vPeekOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="fifo">
+                      <type>
+                        <derived name="FIFO_S_INT" />
+                      </type>
+                    </variable>
+                    <variable name="vFifoBuffer">
+                      <type>
+                        <array>
+                          <dimension lower="0" upper="5" />
+                          <baseType>
+                            <INT />
+                          </baseType>
+                        </array>
+                      </type>
+                    </variable>
+                    <variable name="vTempInt">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vTempIdx">
+                      <type>
+                        <UINT />
+                      </type>
+                    </variable>
+                  </localVars>
+                </interface>
+                <body>
+                  <ST>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Init FIFO*)
+fifo.FB_Init(bInitRetains := TRUE, bInCopyCode := TRUE); //Implicit function block init, curtesy of codesys. To init function block on every run
+SysMemSet(ADR(vFifoBuffer), 0, SIZEOF(vFifoBuffer));
+fifo.Buffer := ADR(vFifoBuffer);
+fifo.Size   := SIZEOF(vFifoBuffer)/SIZEOF(INT);
+
+(*Test if fifo returns TRUE on successfull enqueue*)
+vReturnsTrueOnSuccEnqOk := fifo.Enqueue(1);
+
+(*Test if fifo fills three values correctly*)
+fifo.Enqueue(2);
+fifo.Enqueue(3);
+
+vFillsThreeValuesOk := vFifoBuffer[0] = 1 AND vFifoBuffer[1] = 2 AND vFifoBuffer[2] = 3;
+
+(*Test if fifo reports FULL when full*)
+fifo.Enqueue(4);
+fifo.Enqueue(5);
+fifo.Enqueue(6);
+
+vReportsFullOk := fifo.isFull();
+
+(*Test if fifo reports FALSE on unsuccesfull enqueue*)
+vReturnsFalseOnUnSuccEnqOk := NOT fifo.Enqueue(7);
+
+(*Test if fifo returns TRUE on successfull dequeue*)
+vReturnsTrueOnSuccDeqOk := fifo.Dequeue(Value =&gt; vTempInt);
+
+(*Test if fifo dequeues values correctly*)
+fifo.Dequeue(Value =&gt; vTempInt);
+vDequeue1Ok := vTempInt = 2;
+fifo.Dequeue(Value =&gt; vTempInt);
+vDequeue2Ok := vTempInt = 3;
+
+(*Test if fifo can count correctly*)
+vCountingWorks := fifo.NrElements = 3; //At this point in the tests, there should be 3 elements
+
+(*Test if fifo reports EMPTY when EMPTY*)
+fifo.Dequeue(Value =&gt; vTempInt); //Returns 4
+fifo.Dequeue(Value =&gt; vTempInt); //Returns 5
+fifo.Dequeue(Value =&gt; vTempInt); //Returns 6
+vReportsEmptyOk := fifo.isEmpty();
+
+(*Test if fifo reports FALSE on unsuccesfull dequeue*)
+vReturnsTrueOnUnSuccDeqOk := NOT fifo.Dequeue();
+
+(*Test if fifo prevents enqueue if its full*)
+fifo.Enqueue(1);
+fifo.Enqueue(2);
+fifo.Enqueue(3);
+fifo.Dequeue(Value =&gt; vTempInt); //Returns 1
+fifo.Enqueue(4);
+fifo.Enqueue(5);
+fifo.Enqueue(6); //Here it is full, even though first array index is free
+fifo.Enqueue(7); //Writing fails as it is full
+vFifoFullPrevent1Ok := fifo.isFull() AND NOT fifo.Enqueue(8);
+
+(*Test if we are able to enqueue again only after empty flag*)
+fifo.Dequeue(Value =&gt; vTempInt); //4 elems remaining
+fifo.Dequeue(Value =&gt; vTempInt); //3 elems remaining
+fifo.Dequeue(Value =&gt; vTempInt); //2 elems remaining
+vFifoFullPrevent2Ok := fifo.isFull() AND NOT fifo.Enqueue(8); //Test pass if it still reports full and enqueue fails
+
+fifo.Dequeue(Value =&gt; vTempInt); //1 elems remaining
+fifo.Dequeue(Value =&gt; vTempInt); //0 elems remaining
+vFifoFullPrevent3Ok := NOT fifo.isFull() AND fifo.Enqueue(8); //Test pass if it reports empty and enqueue goes trough
+
+(*Test if Peek is ok, should return the next element but not remove it, it should report correct index of the buffer*)
+fifo.Enqueue(9);
+vTempIdx := fifo.Peek(Value =&gt; vTempInt);
+vPeekOk := fifo.NrElements = 2 AND vTempInt = 8 AND vTempIdx = 0;
+
+vRunTests := FALSE;</xhtml>
+                  </ST>
+                </body>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                    <ObjectId>4dc9e17f-00ba-4ad7-936a-0b6285c8ae52</ObjectId>
+                  </data>
+                </addData>
+              </pou>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+              <pou name="FIFO_FWFT_UnitTest" pouType="program">
+                <interface>
+                  <localVars>
+                    <variable name="vRunTests">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                      <documentation>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">Tap to TRUE, to run test</xhtml>
+                      </documentation>
+                    </variable>
+                    <variable name="vReturnsTrueOnSuccEnqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                      <documentation>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">Results</xhtml>
+                      </documentation>
+                    </variable>
+                    <variable name="vFillsThreeValuesOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReportsFullOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReturnsFalseOnUnSuccEnqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReturnsTrueOnSuccDeqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vDequeue1Ok">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vDequeue2Ok">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vCountingWorks">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReportsEmptyOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReturnsTrueOnUnSuccDeqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vFifoFWFTOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vPeekOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="fifo">
+                      <type>
+                        <derived name="FIFO_FWFT_INT" />
+                      </type>
+                    </variable>
+                    <variable name="vFifoBuffer">
+                      <type>
+                        <array>
+                          <dimension lower="0" upper="5" />
+                          <baseType>
+                            <INT />
+                          </baseType>
+                        </array>
+                      </type>
+                    </variable>
+                    <variable name="vTempInt">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vTempIdx">
+                      <type>
+                        <UINT />
+                      </type>
+                    </variable>
+                  </localVars>
+                </interface>
+                <body>
+                  <ST>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Init FIFO*)
+fifo.FB_Init(bInitRetains := TRUE, bInCopyCode := TRUE); //Implicit function block init, curtesy of codesys. To init function block on every run
+SysMemSet(ADR(vFifoBuffer), 0, SIZEOF(vFifoBuffer));
+fifo.Buffer := ADR(vFifoBuffer);
+fifo.Size   := SIZEOF(vFifoBuffer)/SIZEOF(INT);
+
+(*Test if fifo returns TRUE on successfull enqueue*)
+vReturnsTrueOnSuccEnqOk := fifo.Enqueue(1);
+
+(*Test if fifo fills three values correctly*)
+fifo.Enqueue(2);
+fifo.Enqueue(3);
+
+vFillsThreeValuesOk := vFifoBuffer[0] = 1 AND vFifoBuffer[1] = 2 AND vFifoBuffer[2] = 3;
+
+(*Test if fifo reports FULL when full*)
+fifo.Enqueue(4);
+fifo.Enqueue(5);
+fifo.Enqueue(6);
+
+vReportsFullOk := fifo.isFull();
+
+(*Test if fifo reports FALSE on unsuccesfull enqueue*)
+vReturnsFalseOnUnSuccEnqOk := NOT fifo.Enqueue(7);
+
+(*Test if fifo returns TRUE on successfull dequeue*)
+vReturnsTrueOnSuccDeqOk := fifo.Dequeue(Value =&gt; vTempInt);
+
+(*Test if fifo dequeues values correctly*)
+fifo.Dequeue(Value =&gt; vTempInt);
+vDequeue1Ok := vTempInt = 2;
+fifo.Dequeue(Value =&gt; vTempInt);
+vDequeue2Ok := vTempInt = 3;
+
+(*Test if fifo can count correctly*)
+vCountingWorks := fifo.NrElements = 3; //At this point in the tests, there should be 3 elements
+
+(*Test if fifo reports EMPTY when EMPTY*)
+fifo.Dequeue(Value =&gt; vTempInt); //Returns 4
+fifo.Dequeue(Value =&gt; vTempInt); //Returns 5
+fifo.Dequeue(Value =&gt; vTempInt); //Returns 6
+vReportsEmptyOk := fifo.isEmpty();
+
+(*Test if fifo reports FALSE on unsuccesfull dequeue*)
+vReturnsTrueOnUnSuccDeqOk := NOT fifo.Dequeue();
+
+(*Test if fifo first word fall trough is working*)
+fifo.Enqueue(1);
+fifo.Enqueue(2);
+fifo.Enqueue(3);
+fifo.Dequeue(Value =&gt; vTempInt); //Returns 1
+fifo.Enqueue(4);
+fifo.Enqueue(5);
+fifo.Enqueue(6); //Here it is not full, as the first array index is free, compared to Standard fifo, we shifted the whole array to the left, index 0 should hold 2
+vFifoFWFTOk := NOT fifo.isFull() AND fifo.Enqueue(7) AND vFifoBuffer[0] = 2;
+
+(*Test if Peek is ok, should return the next element but not remove it, it should report correct index of the buffer*)
+vTempIdx := fifo.Peek(Value =&gt; vTempInt);
+vPeekOk := fifo.NrElements = 6 AND vTempInt = 2 AND vTempIdx = 0;
+
+vRunTests := FALSE;</xhtml>
+                  </ST>
+                </body>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                    <ObjectId>ee9af653-a562-4f4a-a130-bbaec18782e1</ObjectId>
+                  </data>
+                </addData>
+              </pou>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+              <pou name="FIFO_UP_UnitTest" pouType="program">
+                <interface>
+                  <localVars>
+                    <variable name="vRunTests">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                      <documentation>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">Tap to TRUE, to run test</xhtml>
+                      </documentation>
+                    </variable>
+                    <variable name="vReturnsTrueOnSuccEnqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                      <documentation>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">Results</xhtml>
+                      </documentation>
+                    </variable>
+                    <variable name="vFillsThreeValuesOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReportsFullOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReturnsFalseOnUnSuccEnqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReturnsTrueOnSuccDeqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vDequeue1Ok">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vDequeue2Ok">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vCountingWorks">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReportsEmptyOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReturnsTrueOnUnSuccDeqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vFifoReturnsHighestPrioValue">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vPeekOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="fifo">
+                      <type>
+                        <derived name="FIFO_UP_INT" />
+                      </type>
+                    </variable>
+                    <variable name="vFifoBuffer">
+                      <type>
+                        <array>
+                          <dimension lower="0" upper="5" />
+                          <baseType>
+                            <derived name="dtFIFO_P_Element_Int" />
+                          </baseType>
+                        </array>
+                      </type>
+                    </variable>
+                    <variable name="vTempInt">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vTempPrio">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vTempIdx">
+                      <type>
+                        <UINT />
+                      </type>
+                    </variable>
+                  </localVars>
+                </interface>
+                <body>
+                  <ST>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Init FIFO*)
+fifo.FB_Init(bInitRetains := TRUE, bInCopyCode := TRUE); //Implicit function block init, curtesy of codesys. To init function block on every run
+SysMemSet(ADR(vFifoBuffer), 0, SIZEOF(vFifoBuffer));
+fifo.Buffer := ADR(vFifoBuffer);
+fifo.Size   := SIZEOF(vFifoBuffer)/SIZEOF(dtFIFO_P_Element_Int);
+
+(*Test if fifo returns TRUE on successfull enqueue*)
+vReturnsTrueOnSuccEnqOk := fifo.Enqueue(1,1);
+
+(*Test if fifo fills three values correctly*)
+fifo.Enqueue(2,2);
+fifo.Enqueue(3,3);
+
+vFillsThreeValuesOk := vFifoBuffer[0].Value = 1 AND vFifoBuffer[0].Priority = 1 AND
+                       vFifoBuffer[1].Value = 2 AND vFifoBuffer[1].Priority = 2 AND
+                       vFifoBuffer[2].Value = 3 AND vFifoBuffer[2].Priority = 3;
+
+(*Test if fifo reports FULL when full*)
+fifo.Enqueue(4,4);
+fifo.Enqueue(5,5);
+fifo.Enqueue(6,6);
+
+vReportsFullOk := fifo.isFull();
+
+(*Test if fifo reports FALSE on unsuccesfull enqueue*)
+vReturnsFalseOnUnSuccEnqOk := NOT fifo.Enqueue(7,7);
+
+(*Test if fifo returns TRUE on successfull dequeue*)
+vReturnsTrueOnSuccDeqOk := fifo.Dequeue(Value =&gt; vTempInt); //Returns 6,6
+
+(*Test if fifo dequeues values correctly*)
+fifo.Dequeue(Value =&gt; vTempInt, Priority =&gt; vTempPrio);
+vDequeue1Ok := vTempInt = 5 AND vTempPrio = 5; //Should return the highest priority value, in this case it should be 5,5
+fifo.Dequeue(Value =&gt; vTempInt, Priority =&gt; vTempPrio);
+vDequeue2Ok := vTempInt = 4 AND vTempPrio = 4; //Should return the highest priority value, in this case it should be 4,4
+
+(*Test if fifo can count correctly*)
+vCountingWorks := fifo.NrElements = 3; //At this point in the tests, there should be 3 elements
+
+(*Test if fifo reports EMPTY when EMPTY*)
+fifo.Dequeue(Value =&gt; vTempInt, Priority =&gt; vTempPrio); //Returns 3,3
+fifo.Dequeue(Value =&gt; vTempInt, Priority =&gt; vTempPrio); //Returns 2,2
+fifo.Dequeue(Value =&gt; vTempInt, Priority =&gt; vTempPrio); //Returns 1,1
+vReportsEmptyOk := fifo.isEmpty();
+
+(*Test if fifo reports FALSE on unsuccesfull dequeue*)
+vReturnsTrueOnUnSuccDeqOk := NOT fifo.Dequeue();
+
+(*Test if fifo returns the highest priority value first*)
+fifo.Enqueue(1,100);
+fifo.Enqueue(2,50);
+fifo.Enqueue(3,25);
+fifo.Enqueue(4,200);
+fifo.Enqueue(5,11);
+fifo.Enqueue(6,-6);
+fifo.Dequeue(Value =&gt; vTempInt, Priority =&gt; vTempPrio);
+vFifoReturnsHighestPrioValue := vTempInt = 4 AND vTempPrio = 200;
+
+(*Test if Peek is ok, should return the next element but not remove it, it should report correct index of the buffer*)
+vTempIdx := fifo.Peek(Value =&gt; vTempInt, Priority =&gt; vTempPrio);
+vPeekOk := fifo.NrElements = 5 AND vTempInt = 1 AND vTempIdx = 0;
+
+vRunTests := FALSE;</xhtml>
+                  </ST>
+                </body>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                    <ObjectId>ede1b49d-19ba-4dfe-aa49-e10bdd4f6a6a</ObjectId>
+                  </data>
+                </addData>
+              </pou>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+              <pou name="FIFO_OP_UnitTest" pouType="program">
+                <interface>
+                  <localVars>
+                    <variable name="vRunTests">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                      <documentation>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">Tap to TRUE, to run test</xhtml>
+                      </documentation>
+                    </variable>
+                    <variable name="vReturnsTrueOnSuccEnqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                      <documentation>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">Results</xhtml>
+                      </documentation>
+                    </variable>
+                    <variable name="vFillsThreeValuesOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReportsFullOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReturnsFalseOnUnSuccEnqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReturnsTrueOnSuccDeqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vDequeue1Ok">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vDequeue2Ok">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vCountingWorks">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReportsEmptyOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReturnsTrueOnUnSuccDeqOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vFifoReturnsHighestPrioValue">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vFifoBufferIsOrdered">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vPeekOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="fifo">
+                      <type>
+                        <derived name="FIFO_OP_INT" />
+                      </type>
+                    </variable>
+                    <variable name="vFifoBuffer">
+                      <type>
+                        <array>
+                          <dimension lower="0" upper="5" />
+                          <baseType>
+                            <derived name="dtFIFO_P_Element_Int" />
+                          </baseType>
+                        </array>
+                      </type>
+                    </variable>
+                    <variable name="vTempInt">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vTempPrio">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vTempIdx">
+                      <type>
+                        <UINT />
+                      </type>
+                    </variable>
+                  </localVars>
+                </interface>
+                <body>
+                  <ST>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Init FIFO*)
+fifo.FB_Init(bInitRetains := TRUE, bInCopyCode := TRUE); //Implicit function block init, curtesy of codesys. To init function block on every run
+SysMemSet(ADR(vFifoBuffer), 0, SIZEOF(vFifoBuffer));
+fifo.Buffer := ADR(vFifoBuffer);
+fifo.Size   := SIZEOF(vFifoBuffer)/SIZEOF(dtFIFO_P_Element_Int);
+
+(*Test if fifo returns TRUE on successfull enqueue*)
+vReturnsTrueOnSuccEnqOk := fifo.Enqueue(1,1);
+
+(*Test if fifo fills three values correctly*)
+fifo.Enqueue(2,2);
+fifo.Enqueue(3,3);
+
+vFillsThreeValuesOk := vFifoBuffer[0].Value = 1 AND vFifoBuffer[0].Priority = 1 AND
+                       vFifoBuffer[1].Value = 2 AND vFifoBuffer[1].Priority = 2 AND
+                       vFifoBuffer[2].Value = 3 AND vFifoBuffer[2].Priority = 3;
+
+(*Test if fifo reports FULL when full*)
+fifo.Enqueue(4,4);
+fifo.Enqueue(5,5);
+fifo.Enqueue(6,6);
+
+vReportsFullOk := fifo.isFull();
+
+(*Test if fifo reports FALSE on unsuccesfull enqueue*)
+vReturnsFalseOnUnSuccEnqOk := NOT fifo.Enqueue(7,7);
+
+(*Test if fifo returns TRUE on successfull dequeue*)
+vReturnsTrueOnSuccDeqOk := fifo.Dequeue(Value =&gt; vTempInt); //Returns 6,6
+
+(*Test if fifo dequeues values correctly*)
+fifo.Dequeue(Value =&gt; vTempInt, Priority =&gt; vTempPrio);
+vDequeue1Ok := vTempInt = 5 AND vTempPrio = 5; //Should return the highest priority value, in this case it should be 5,5
+fifo.Dequeue(Value =&gt; vTempInt, Priority =&gt; vTempPrio);
+vDequeue2Ok := vTempInt = 4 AND vTempPrio = 4; //Should return the highest priority value, in this case it should be 4,4
+
+(*Test if fifo can count correctly*)
+vCountingWorks := fifo.NrElements = 3; //At this point in the tests, there should be 3 elements
+
+(*Test if fifo reports EMPTY when EMPTY*)
+fifo.Dequeue(Value =&gt; vTempInt, Priority =&gt; vTempPrio); //Returns 3,3
+fifo.Dequeue(Value =&gt; vTempInt, Priority =&gt; vTempPrio); //Returns 2,2
+fifo.Dequeue(Value =&gt; vTempInt, Priority =&gt; vTempPrio); //Returns 1,1
+vReportsEmptyOk := fifo.isEmpty();
+
+(*Test if fifo reports FALSE on unsuccesfull dequeue*)
+vReturnsTrueOnUnSuccDeqOk := NOT fifo.Dequeue();
+
+(*Test if fifo returns the highest priority value first*)
+fifo.Enqueue(1,100);
+fifo.Enqueue(2,50);
+fifo.Enqueue(3,25);
+fifo.Enqueue(4,200);
+fifo.Enqueue(5,11);
+fifo.Enqueue(6,-6);
+fifo.Dequeue(Value =&gt; vTempInt, Priority =&gt; vTempPrio);
+vFifoReturnsHighestPrioValue := vTempInt = 4 AND vTempPrio = 200;
+
+(*Test if fifo has ordered the buffer correctly according to priority. The buffer is lowest : highest = 0 : N*)
+vFifoBufferIsOrdered := vFifoBuffer[0].Value = 6 AND vFifoBuffer[1].Value = 5 AND vFifoBuffer[2].Value = 3 AND vFifoBuffer[3].Value = 2 AND vFifoBuffer[4].Value = 1;
+
+(*Test if Peek is ok, should return the next element but not remove it, it should report correct index of the buffer*)
+vTempIdx := fifo.Peek(Value =&gt; vTempInt, Priority =&gt; vTempPrio);
+vPeekOk := fifo.NrElements = 5 AND vTempInt = 1 AND vTempIdx = 4;
+
+vRunTests := FALSE;</xhtml>
+                  </ST>
+                </body>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                    <ObjectId>421a8db4-187b-44ec-925a-3547527b4e68</ObjectId>
+                  </data>
+                </addData>
+              </pou>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+              <pou name="LIFO_UnitTest" pouType="program">
+                <interface>
+                  <localVars>
+                    <variable name="vRunTests">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                      <documentation>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">Tap to TRUE, to run test</xhtml>
+                      </documentation>
+                    </variable>
+                    <variable name="vReturnsTrueOnSuccPushOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                      <documentation>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">Results</xhtml>
+                      </documentation>
+                    </variable>
+                    <variable name="vFillsThreeValuesOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReportsFullOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReturnsFalseOnUnSuccPushOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReturnsTrueOnSuccPopOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vPop1Ok">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vPop2Ok">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vCountingWorks">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReportsEmptyOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vReturnsTrueOnUnSuccPopOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="vPeekOk">
+                      <type>
+                        <BOOL />
+                      </type>
+                      <initialValue>
+                        <simpleValue value="FALSE" />
+                      </initialValue>
+                    </variable>
+                    <variable name="lifo">
+                      <type>
+                        <derived name="LIFO_INT" />
+                      </type>
+                    </variable>
+                    <variable name="vLifoBuffer">
+                      <type>
+                        <array>
+                          <dimension lower="0" upper="5" />
+                          <baseType>
+                            <INT />
+                          </baseType>
+                        </array>
+                      </type>
+                    </variable>
+                    <variable name="vTempInt">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vTempIdx">
+                      <type>
+                        <UINT />
+                      </type>
+                    </variable>
+                  </localVars>
+                </interface>
+                <body>
+                  <ST>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Init LIFO*)
+lifo.FB_Init(bInitRetains := TRUE, bInCopyCode := TRUE); //Implicit function block init, curtesy of codesys. To init function block on every run
+SysMemSet(ADR(vLifoBuffer), 0, SIZEOF(vLifoBuffer));
+lifo.Buffer := ADR(vLifoBuffer);
+lifo.Size   := SIZEOF(vLifoBuffer)/SIZEOF(INT);
+
+(*Test if lifo returns TRUE on successfull Push*)
+vReturnsTrueOnSuccPushOk := lifo.Push(1);
+
+(*Test if lifo fills three values correctly*)
+lifo.Push(2);
+lifo.Push(3);
+
+vFillsThreeValuesOk := vLifoBuffer[0] = 1 AND vLifoBuffer[1] = 2 AND vLifoBuffer[2] = 3;
+
+(*Test if lifo reports FULL when full*)
+lifo.Push(4);
+lifo.Push(5);
+lifo.Push(6);
+
+vReportsFullOk := lifo.isFull();
+
+(*Test if lifo reports FALSE on unsuccesfull Push*)
+vReturnsFalseOnUnSuccPushOk := NOT lifo.Push(7);
+
+(*Test if lifo returns TRUE on successfull Pop*)
+vReturnsTrueOnSuccPopOk := lifo.Pop(Value =&gt; vTempInt); //Returns 6
+
+(*Test if lifo dequeues values correctly*)
+lifo.Pop(Value =&gt; vTempInt);
+vPop1Ok := vTempInt = 5;
+lifo.Pop(Value =&gt; vTempInt);
+vPop2Ok := vTempInt = 4;
+
+(*Test if lifo can count correctly*)
+vCountingWorks := lifo.NrElements = 3; //At this point in the tests, there should be 3 elements
+
+(*Test if lifo reports EMPTY when EMPTY*)
+lifo.Pop(Value =&gt; vTempInt); //Returns 3
+lifo.Pop(Value =&gt; vTempInt); //Returns 2
+lifo.Pop(Value =&gt; vTempInt); //Returns 1
+vReportsEmptyOk := lifo.isEmpty();
+
+(*Test if lifo reports FALSE on unsuccesfull Pop*)
+vReturnsTrueOnUnSuccPopOk := NOT lifo.Pop();
+
+(*Test if Peek is ok, should return the next element but not remove it, it should report correct index of the buffer*)
+lifo.Push(1);
+lifo.Push(2);
+lifo.Push(3);
+vTempIdx := lifo.Peek(Value =&gt; vTempInt);
+vPeekOk := lifo.NrElements = 3 AND vTempInt = 3 AND vTempIdx = 2;
+
+vRunTests := FALSE;</xhtml>
+                  </ST>
+                </body>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                    <ObjectId>826f6570-9a22-48ba-b937-be1d283c7059</ObjectId>
+                  </data>
+                </addData>
+              </pou>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+              <pou name="FIFO_C_ManTest" pouType="program">
+                <interface>
+                  <localVars>
+                    <variable name="fifo">
+                      <type>
+                        <derived name="FIFO_C_INT" />
+                      </type>
+                    </variable>
+                    <variable name="fifoa">
+                      <type>
+                        <derived name="FIFO_C_INT" />
+                      </type>
+                    </variable>
+                    <variable name="vFifoBuffer">
+                      <type>
+                        <array>
+                          <dimension lower="0" upper="20" />
+                          <baseType>
+                            <INT />
+                          </baseType>
+                        </array>
+                      </type>
+                    </variable>
+                    <variable name="vFifoaBuffer">
+                      <type>
+                        <array>
+                          <dimension lower="0" upper="20" />
+                          <baseType>
+                            <INT />
+                          </baseType>
+                        </array>
+                      </type>
+                    </variable>
+                    <variable name="vEnq">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vEnqVal">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vEnqRet">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vDeq">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vDeqVal">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vDeqRet">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="isFull">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="isEmpty">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vCounter">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vAutoDeq">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                  </localVars>
+                </interface>
+                <body>
+                  <ST>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Initialize the fifos*)
+fifo.Buffer := ADR(vFifoBuffer);
+fifo.Size   := SIZEOF(vFifoBuffer)/SIZEOF(vFifoBuffer[0]);
+
+fifoa.Buffer := ADR(vFifoaBuffer);
+fifoa.Size   := SIZEOF(vFifoaBuffer)/SIZEOF(vFifoaBuffer[0]);
+
+(*Manual testing enqueing and dequeing*)
+IF vEnq THEN
+    vEnq := FALSE;
+    vEnqRet := fifo.Enqueue(vEnqVal);
+END_IF
+
+IF vDeq THEN
+    vDeq := FALSE;
+    vDeqRet := fifo.Dequeue(Value=&gt;vDeqVal);
+END_IF
+isFull := fifo.isFull();
+isEmpty := fifo.isEmpty();
+fifo.NrElements;
+
+(*Automatic testing*)
+WHILE NOT fifoa.isFull() DO
+    vCounter := vCounter + 1;
+    fifoa.Enqueue(vCounter);
+END_WHILE
+
+IF NOT fifoa.isEmpty() THEN
+    fifoa.Dequeue(Value=&gt;vAutoDeq);
+END_IF
+IF NOT fifoa.isEmpty() THEN
+    fifoa.Dequeue(Value=&gt;vAutoDeq);
+END_IF
+fifoa.NrElements;</xhtml>
+                  </ST>
+                </body>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                    <ObjectId>4f8e01b5-9a8f-40a4-b8f7-2406e53618e6</ObjectId>
+                  </data>
+                </addData>
+              </pou>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+              <pou name="FIFO_FWFT_ManTest" pouType="program">
+                <interface>
+                  <localVars>
+                    <variable name="fifo">
+                      <type>
+                        <derived name="FIFO_FWFT_INT" />
+                      </type>
+                    </variable>
+                    <variable name="fifoa">
+                      <type>
+                        <derived name="FIFO_FWFT_INT" />
+                      </type>
+                    </variable>
+                    <variable name="vFifoBuffer">
+                      <type>
+                        <array>
+                          <dimension lower="0" upper="20" />
+                          <baseType>
+                            <INT />
+                          </baseType>
+                        </array>
+                      </type>
+                    </variable>
+                    <variable name="vFifoaBuffer">
+                      <type>
+                        <array>
+                          <dimension lower="0" upper="20" />
+                          <baseType>
+                            <INT />
+                          </baseType>
+                        </array>
+                      </type>
+                    </variable>
+                    <variable name="vEnq">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vEnqVal">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vEnqRet">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vDeq">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vDeqVal">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vDeqRet">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="isFull">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="isEmpty">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vCounter">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vAutoDeq">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                  </localVars>
+                </interface>
+                <body>
+                  <ST>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Initialize the fifos*)
+fifo.Buffer := ADR(vFifoBuffer);
+fifo.Size   := SIZEOF(vFifoBuffer)/SIZEOF(vFifoBuffer[0]);
+
+fifoa.Buffer := ADR(vFifoaBuffer);
+fifoa.Size   := SIZEOF(vFifoaBuffer)/SIZEOF(vFifoaBuffer[0]);
+
+(*Manual testing enqueing and dequeing*)
+IF vEnq THEN
+    vEnq := FALSE;
+    vEnqRet := fifo.Enqueue(vEnqVal);
+END_IF
+
+IF vDeq THEN
+    vDeq := FALSE;
+    vDeqRet := fifo.Dequeue(Value=&gt;vDeqVal);
+END_IF
+isFull := fifo.isFull();
+isEmpty := fifo.isEmpty();
+fifo.NrElements;
+
+(*Automatic testing*)
+IF NOT fifoa.isFull() THEN
+    vCounter := vCounter + 1;
+    fifoa.Enqueue(vCounter);
+    fifoa.Enqueue(vCounter+1);
+END_IF
+
+IF NOT fifoa.isEmpty() THEN
+    fifoa.Dequeue(Value=&gt;vAutoDeq);
+END_IF
+fifoa.NrElements;
+</xhtml>
+                  </ST>
+                </body>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                    <ObjectId>e7ac6df2-4164-4db3-bd12-cb2229792b72</ObjectId>
+                  </data>
+                </addData>
+              </pou>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+              <pou name="LIFO_ManTest" pouType="program">
+                <interface>
+                  <localVars>
+                    <variable name="lifo">
+                      <type>
+                        <derived name="LIFO_INT" />
+                      </type>
+                    </variable>
+                    <variable name="lifoa">
+                      <type>
+                        <derived name="LIFO_INT" />
+                      </type>
+                    </variable>
+                    <variable name="vLifoBuffer">
+                      <type>
+                        <array>
+                          <dimension lower="0" upper="20" />
+                          <baseType>
+                            <INT />
+                          </baseType>
+                        </array>
+                      </type>
+                    </variable>
+                    <variable name="vLifoaBuffer">
+                      <type>
+                        <array>
+                          <dimension lower="0" upper="20" />
+                          <baseType>
+                            <INT />
+                          </baseType>
+                        </array>
+                      </type>
+                    </variable>
+                    <variable name="vEnq">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vEnqVal">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vEnqRet">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vDeq">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vDeqVal">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vDeqRet">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="isFull">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="isEmpty">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vCounter">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vAutoDeq">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                  </localVars>
+                </interface>
+                <body>
+                  <ST>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Initialize the fifos*)
+lifo.Buffer := ADR(vLifoBuffer);
+lifo.Size   := SIZEOF(vLifoBuffer)/SIZEOF(vLifoBuffer[0]);
+
+lifoa.Buffer := ADR(vLifoaBuffer);
+lifoa.Size   := SIZEOF(vLifoaBuffer)/SIZEOF(vLifoaBuffer[0]);
+
+(*Manual testing pushing and popping*)
+IF vEnq THEN
+    vEnq := FALSE;
+    vEnqRet := lifo.Push(vEnqVal);
+END_IF
+
+IF vDeq THEN
+    vDeq := FALSE;
+    vDeqRet := lifo.Pop(Value=&gt;vDeqVal);
+END_IF
+isFull := lifo.isFull();
+isEmpty := lifo.isEmpty();
+lifo.NrElements;
+
+(*Automatic testing*)
+WHILE NOT lifoa.isFull() DO
+    vCounter := vCounter + 1;
+    lifoa.Push(vCounter);
+END_WHILE
+
+IF NOT lifoa.isEmpty() THEN
+    lifoa.Pop(Value=&gt;vAutoDeq);
+END_IF
+lifoa.NrElements;
+</xhtml>
+                  </ST>
+                </body>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                    <ObjectId>7bbf2c66-b5df-49a7-a17d-ef562a5030af</ObjectId>
+                  </data>
+                </addData>
+              </pou>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+              <pou name="FIFO_UP_ManTest" pouType="program">
+                <interface>
+                  <localVars>
+                    <variable name="fifo">
+                      <type>
+                        <derived name="FIFO_UP_INT" />
+                      </type>
+                    </variable>
+                    <variable name="vFifoBuffer">
+                      <type>
+                        <array>
+                          <dimension lower="0" upper="4" />
+                          <baseType>
+                            <derived name="dtFIFO_P_Element_Int" />
+                          </baseType>
+                        </array>
+                      </type>
+                    </variable>
+                    <variable name="fifoa">
+                      <type>
+                        <derived name="FIFO_UP_INT" />
+                      </type>
+                    </variable>
+                    <variable name="vFifoaBuffer">
+                      <type>
+                        <array>
+                          <dimension lower="0" upper="4" />
+                          <baseType>
+                            <derived name="dtFIFO_P_Element_Int" />
+                          </baseType>
+                        </array>
+                      </type>
+                    </variable>
+                    <variable name="vEnq">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vEnqVal">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vEnqPrio">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vEnqRet">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vDeq">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vDeqVal">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vDeqPrio">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vDeqRet">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="isFull">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="isEmpty">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vCounter">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vAutoDeqValue">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vAutoDeqPrio">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                  </localVars>
+                </interface>
+                <body>
+                  <ST>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Initialize the fifos*)
+fifo.Buffer := ADR(vFifoBuffer);
+fifo.Size   := SIZEOF(vFifoBuffer)/SIZEOF(vFifoBuffer[0]);
+
+fifoa.Buffer := ADR(vFifoaBuffer);
+fifoa.Size   := SIZEOF(vFifoaBuffer)/SIZEOF(vFifoaBuffer[0]);
+
+(*Manual testing enqueing and dequeing*)
+IF vEnq THEN
+    vEnq := FALSE;
+    vEnqRet := fifo.Enqueue(vEnqVal, vEnqPrio);
+END_IF
+
+IF vDeq THEN
+    vDeq := FALSE;
+    vDeqRet := fifo.Dequeue(Value=&gt;vDeqVal, Priority =&gt; vDeqPrio);
+END_IF
+isFull := fifo.isFull();
+isEmpty := fifo.isEmpty();
+fifo.NrElements;
+
+(*Automatic testing*)
+WHILE NOT fifoa.isFull() DO
+    vCounter := vCounter + 1;
+    fifoa.Enqueue(Value := vCounter, Priority := vCounter -1);
+END_WHILE
+
+IF NOT fifoa.isEmpty() THEN
+    fifoa.Dequeue(Value=&gt;vAutoDeqValue, Priority =&gt; vAutoDeqPrio);
+END_IF
+IF NOT fifoa.isEmpty() THEN
+    fifoa.Dequeue(Value=&gt;vAutoDeqValue, Priority =&gt; vAutoDeqPrio);
+END_IF
+fifoa.NrElements;</xhtml>
+                  </ST>
+                </body>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                    <ObjectId>b554950b-6370-42d8-864d-a95906a023a8</ObjectId>
+                  </data>
+                </addData>
+              </pou>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+              <pou name="FIFO_S_ManTest" pouType="program">
+                <interface>
+                  <localVars>
+                    <variable name="fifo">
+                      <type>
+                        <derived name="FIFO_S_INT" />
+                      </type>
+                    </variable>
+                    <variable name="fifoa">
+                      <type>
+                        <derived name="FIFO_S_INT" />
+                      </type>
+                    </variable>
+                    <variable name="vFifoBuffer">
+                      <type>
+                        <array>
+                          <dimension lower="0" upper="20" />
+                          <baseType>
+                            <INT />
+                          </baseType>
+                        </array>
+                      </type>
+                    </variable>
+                    <variable name="vFifoaBuffer">
+                      <type>
+                        <array>
+                          <dimension lower="0" upper="20" />
+                          <baseType>
+                            <INT />
+                          </baseType>
+                        </array>
+                      </type>
+                    </variable>
+                    <variable name="vEnq">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vEnqVal">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vEnqRet">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vDeq">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vDeqVal">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vDeqRet">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="isFull">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="isEmpty">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vCounter">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vAutoDeq">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                  </localVars>
+                </interface>
+                <body>
+                  <ST>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Initialize the fifos*)
+fifo.Buffer := ADR(vFifoBuffer);
+fifo.Size   := SIZEOF(vFifoBuffer)/SIZEOF(vFifoBuffer[0]);
+
+fifoa.Buffer := ADR(vFifoaBuffer);
+fifoa.Size   := SIZEOF(vFifoaBuffer)/SIZEOF(vFifoaBuffer[0]);
+
+(*Manual testing enqueing and dequeing*)
+IF vEnq THEN
+    vEnq := FALSE;
+    vEnqRet := fifo.Enqueue(vEnqVal);
+END_IF
+
+IF vDeq THEN
+    vDeq := FALSE;
+    vDeqRet := fifo.Dequeue(Value=&gt;vDeqVal);
+END_IF
+isFull := fifo.isFull();
+isEmpty := fifo.isEmpty();
+fifo.NrElements;
+
+(*Automatic testing*)
+WHILE NOT fifoa.isFull() DO
+    vCounter := vCounter + 1;
+    fifoa.Enqueue(vCounter);
+END_WHILE
+
+IF NOT fifoa.isEmpty() THEN
+    fifoa.Dequeue(Value=&gt;vAutoDeq);
+END_IF
+fifoa.NrElements;
+</xhtml>
+                  </ST>
+                </body>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                    <ObjectId>54a00655-fa37-44b8-ae4b-ba4d38b55d00</ObjectId>
+                  </data>
+                </addData>
+              </pou>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+              <pou name="FIFO_OP_ManTest" pouType="program">
+                <interface>
+                  <localVars>
+                    <variable name="fifo">
+                      <type>
+                        <derived name="FIFO_OP_INT" />
+                      </type>
+                    </variable>
+                    <variable name="vFifoBuffer">
+                      <type>
+                        <array>
+                          <dimension lower="0" upper="4" />
+                          <baseType>
+                            <derived name="dtFIFO_P_Element_Int" />
+                          </baseType>
+                        </array>
+                      </type>
+                    </variable>
+                    <variable name="fifoa">
+                      <type>
+                        <derived name="FIFO_OP_INT" />
+                      </type>
+                    </variable>
+                    <variable name="vFifoaBuffer">
+                      <type>
+                        <array>
+                          <dimension lower="0" upper="4" />
+                          <baseType>
+                            <derived name="dtFIFO_P_Element_Int" />
+                          </baseType>
+                        </array>
+                      </type>
+                    </variable>
+                    <variable name="vEnq">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vEnqVal">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vEnqPrio">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vEnqRet">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vDeq">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vDeqVal">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vDeqPrio">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vDeqRet">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="isFull">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="isEmpty">
+                      <type>
+                        <BOOL />
+                      </type>
+                    </variable>
+                    <variable name="vCounter">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vAutoDeqValue">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                    <variable name="vAutoDeqPrio">
+                      <type>
+                        <INT />
+                      </type>
+                    </variable>
+                  </localVars>
+                </interface>
+                <body>
+                  <ST>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">(*Initialize the fifos*)
+fifo.Buffer := ADR(vFifoBuffer);
+fifo.Size   := SIZEOF(vFifoBuffer)/SIZEOF(vFifoBuffer[0]);
+
+fifoa.Buffer := ADR(vFifoaBuffer);
+fifoa.Size   := SIZEOF(vFifoaBuffer)/SIZEOF(vFifoaBuffer[0]);
+
+(*Manual testing enqueing and dequeing*)
+IF vEnq THEN
+    vEnq := FALSE;
+    vEnqRet := fifo.Enqueue(vEnqVal, vEnqPrio);
+END_IF
+
+IF vDeq THEN
+    vDeq := FALSE;
+    vDeqRet := fifo.Dequeue(Value=&gt;vDeqVal, Priority =&gt; vDeqPrio);
+END_IF
+isFull := fifo.isFull();
+isEmpty := fifo.isEmpty();
+fifo.NrElements;
+
+(*Automatic testing*)
+WHILE NOT fifoa.isFull() DO
+    vCounter := vCounter + 1;
+    fifoa.Enqueue(Value := vCounter, Priority := vCounter -1);
+END_WHILE
+
+IF NOT fifoa.isEmpty() THEN
+    fifoa.Dequeue(Value=&gt;vAutoDeqValue, Priority =&gt; vAutoDeqPrio);
+END_IF
+IF NOT fifoa.isEmpty() THEN
+    fifoa.Dequeue(Value=&gt;vAutoDeqValue, Priority =&gt; vAutoDeqPrio);
+END_IF
+fifoa.NrElements;</xhtml>
+                  </ST>
+                </body>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                    <ObjectId>ac219d38-15ab-42a1-bb67-deda36466ca0</ObjectId>
+                  </data>
+                </addData>
+              </pou>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/libraries" handleUnknown="implementation">
+              <Libraries>
+                <Library Name="#IoStandard" Namespace="IoStandard" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="true" DefaultResolution="IoStandard, 3.5.17.0 (System)" />
+                <Library Name="#3SLicense" Namespace="_3S_LICENSE" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="3SLicense, 0.0.0.0 (3S - Smart Software Solutions GmbH)" ResolverGuid="97c3b452-d9fa-4ac2-9d0c-3d420aa6d95b" />
+                <Library Name="#CAA Device Diagnosis" Namespace="DED" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="CAA Device Diagnosis, 3.5.18.0 (CAA Technical Workgroup)" />
+                <Library Name="#BreakpointLogging" Namespace="BPLog" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="Breakpoint Logging Functions, * (3S - Smart Software Solutions GmbH)" />
+                <Library Name="#SysMem" Namespace="SysMem" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="SysMem, * (System)" />
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                    <ObjectId>0d489d59-d45c-4949-85f4-e608efdc22a7</ObjectId>
+                  </data>
+                </addData>
+              </Libraries>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+              <ObjectId>5d7f8e73-9347-4bdc-805d-fb468186243b</ObjectId>
+            </data>
+          </addData>
+        </resource>
+        <addData>
+          <data name="Device" handleUnknown="discard">
+            <Device xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="">
+              <DeviceType>
+                <DeviceIdentification>
+                  <Type>4097</Type>
+                  <Id>0000 000a</Id>
+                  <Version>3.5.18.20</Version>
+                </DeviceIdentification>
+                <Connector moduleType="256" interface="Common.PCI" connectorId="0">
+                  <HostParameterSet />
+                </Connector>
+                <Connector moduleType="769" interface="SafetyInterface" connectorId="1">
+                  <HostParameterSet />
+                </Connector>
+                <DeviceParameterSet />
+              </DeviceType>
+            </Device>
+          </data>
+          <data name="configurations" handleUnknown="discard">
+            <configurations />
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>bb8c4efb-d128-4947-bc91-d66f6ce85f9b</ObjectId>
+          </data>
+        </addData>
+      </configuration>
+    </configurations>
+  </instances>
+  <addData>
+    <data name="http://www.3s-software.com/plcopenxml/libraries" handleUnknown="implementation">
+      <Libraries>
+        <Library Name="#CAA Types" Namespace="CAA" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="CAA Types Extern, * (CAA Technical Workgroup)" />
+        <Library Name="#CAA FB Factory" Namespace="FBF" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="CAA FB Factory, * (CAA Technical Workgroup)" />
+        <Library Name="#CBML" Namespace="CBML" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="Common Behaviour Model, * (3S - Smart Software Solutions GmbH)" />
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>8c1463b5-02f2-427d-bd06-9e39d42fcbff</ObjectId>
+          </data>
+        </addData>
+      </Libraries>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/projectstructure" handleUnknown="discard">
+      <ProjectStructure>
+        <Object Name="Library Manager" ObjectId="8c1463b5-02f2-427d-bd06-9e39d42fcbff" />
+        <Object Name="Project Information" ObjectId="11c0fc3a-9bcf-4dd8-ac38-efb93363e521" />
+        <Folder Name="Libname">
+          <Folder Name="Function Blocks">
+            <Object Name="FIFO_S_INT" ObjectId="45b73b7f-50f3-4029-a39d-e68e0b18d6d4">
+              <Object Name="isEmpty" ObjectId="2a3f7d69-5795-41a1-a2a1-61a38bb53e7e" />
+              <Object Name="Dequeue" ObjectId="71d22bc4-0fa3-4d50-a39a-8a4292814edd" />
+              <Object Name="Enqueue" ObjectId="fb8b78f3-551e-482b-98a0-0aaee2021186" />
+              <Object Name="isFull" ObjectId="f6813005-ba47-40f3-83f7-e15477efa96e" />
+              <Object Name="Peek" ObjectId="e76a4e54-ada0-492d-ae5f-a0624c396dc9" />
+            </Object>
+            <Object Name="FIFO_C_INT" ObjectId="b705eb1e-a884-4f36-8bb5-304f7791a6e0">
+              <Object Name="Dequeue" ObjectId="49f37ad0-181b-42e7-a616-c8414a12aa5b" />
+              <Object Name="Enqueue" ObjectId="e9db49f4-e6cc-4aa1-82c9-f4a4e38d8c9f" />
+              <Object Name="isEmpty" ObjectId="708e502e-6708-4f3f-a4d3-9ced416139d5" />
+              <Object Name="isFull" ObjectId="8c515baa-8e53-4ea3-9bb6-51a710d4260e" />
+              <Object Name="Peek" ObjectId="a1e4467c-c1b1-4403-9dd2-1084d4f6b193" />
+            </Object>
+            <Object Name="FIFO_FWFT_INT" ObjectId="15904067-68f6-40c6-9f33-a58245de9dec">
+              <Object Name="Dequeue" ObjectId="a9149409-4035-4282-8857-0a422409a3a0" />
+              <Object Name="Enqueue" ObjectId="fb0b2470-3aaf-4bcb-80f3-ae95c28bff7c" />
+              <Object Name="isEmpty" ObjectId="39a24852-f1cd-42d2-9a78-0f08822f4584" />
+              <Object Name="isFull" ObjectId="5869ce51-03db-4694-8feb-cc4e252f9684" />
+              <Object Name="Peek" ObjectId="ed7c42e7-78d3-4759-9a6e-1655eda9859f" />
+            </Object>
+            <Object Name="FIFO_UP_INT" ObjectId="1b31b092-3bb8-497b-a1d1-f21027b0850a">
+              <Object Name="Dequeue" ObjectId="22f98c05-d336-4ec5-ad4f-ec9c5cf53418" />
+              <Object Name="Enqueue" ObjectId="1528e783-f7e0-40a5-9efd-4beb85ef7d35" />
+              <Object Name="isEmpty" ObjectId="c2002e39-9cc9-49ad-8669-5ed4d4b79bbf" />
+              <Object Name="isFull" ObjectId="e6d83d9f-3a57-4940-b867-a27c81c94240" />
+              <Object Name="Peek" ObjectId="fbac77fe-bfdf-4b26-8456-a2d2a00c4d62" />
+            </Object>
+            <Object Name="FIFO_OP_INT" ObjectId="155d2fbb-369c-4c3c-920a-4090031e75ae">
+              <Object Name="Dequeue" ObjectId="cf0a6254-23ce-4fe9-aece-2beb91ed550f" />
+              <Object Name="Enqueue" ObjectId="43461924-ca33-46e1-a49b-3e63415ff07d" />
+              <Object Name="isEmpty" ObjectId="532cf649-ee0b-4969-aff6-c484c5773b24" />
+              <Object Name="isFull" ObjectId="56f3efa8-9480-413f-b77f-0cdbb53d1ce6" />
+              <Object Name="Peek" ObjectId="9a32f38a-2610-4e4e-9de6-cc22d9efba22" />
+            </Object>
+            <Object Name="LIFO_INT" ObjectId="ad990af8-f58d-4ef1-bf7c-f35b657f1a95">
+              <Object Name="Pop" ObjectId="fb1185ad-0e5a-4ceb-b496-c839da3c3135" />
+              <Object Name="Push" ObjectId="5404b45e-e4de-494f-abcf-23793e98ccf3" />
+              <Object Name="isEmpty" ObjectId="cd1cc77e-e6d6-49ea-ba9e-16d692febcb6" />
+              <Object Name="isFull" ObjectId="49b017bf-38db-4373-9f01-6ffc35bdfa3f" />
+              <Object Name="Peek" ObjectId="fcb35072-badc-4917-85f4-174261fd7725" />
+            </Object>
+          </Folder>
+          <Folder Name="Types">
+            <Object Name="dtFIFO_P_Element_Int" ObjectId="daa99834-a7fa-49eb-9488-9e83dfb9b089" />
+          </Folder>
+        </Folder>
+        <Object Name="CODESYS_Control_Win_V3_x64" ObjectId="bb8c4efb-d128-4947-bc91-d66f6ce85f9b">
+          <Object Name="Application" ObjectId="5d7f8e73-9347-4bdc-805d-fb468186243b">
+            <Object Name="Library Manager" ObjectId="0d489d59-d45c-4949-85f4-e608efdc22a7" />
+            <Object Name="Task" ObjectId="56a6ae63-7973-4f08-821f-77b29d33570d" />
+            <Object Name="FIFO_C_UT_Task" ObjectId="7c0460a5-e3c9-4096-bc7c-748aa4f71bf0" />
+            <Object Name="FIFO_S_UT_Task" ObjectId="40ba00b2-d212-4833-b6c4-185d6e1eb92e" />
+            <Object Name="FIFO_FWFT_UT_Task" ObjectId="877402e9-83b4-4e0f-990a-23fc14f8b8a1" />
+            <Object Name="FIFO_UP_UT_Task" ObjectId="e0cfd99b-371d-4722-beb7-3c17b5d05e9a" />
+            <Object Name="FIFO_OP_UT_Task" ObjectId="4e628cc4-587f-4b86-8c82-edd06aada9a2" />
+            <Object Name="LIFO_UT_Task" ObjectId="3bfa3206-83ff-4486-b124-07743cdefb24" />
+            <Folder Name="AutomatedTests">
+              <Object Name="FIFO_C_UnitTest" ObjectId="5f730f78-32bd-429b-8ca6-e703d0ec69a8" />
+              <Object Name="FIFO_S_UnitTest" ObjectId="4dc9e17f-00ba-4ad7-936a-0b6285c8ae52" />
+              <Object Name="FIFO_FWFT_UnitTest" ObjectId="ee9af653-a562-4f4a-a130-bbaec18782e1" />
+              <Object Name="FIFO_UP_UnitTest" ObjectId="ede1b49d-19ba-4dfe-aa49-e10bdd4f6a6a" />
+              <Object Name="FIFO_OP_UnitTest" ObjectId="421a8db4-187b-44ec-925a-3547527b4e68" />
+              <Object Name="LIFO_UnitTest" ObjectId="826f6570-9a22-48ba-b937-be1d283c7059" />
+            </Folder>
+            <Folder Name="ManualTests">
+              <Object Name="FIFO_C_ManTest" ObjectId="4f8e01b5-9a8f-40a4-b8f7-2406e53618e6" />
+              <Object Name="FIFO_FWFT_ManTest" ObjectId="e7ac6df2-4164-4db3-bd12-cb2229792b72" />
+              <Object Name="LIFO_ManTest" ObjectId="7bbf2c66-b5df-49a7-a17d-ef562a5030af" />
+              <Object Name="FIFO_UP_ManTest" ObjectId="b554950b-6370-42d8-864d-a95906a023a8" />
+              <Object Name="FIFO_S_ManTest" ObjectId="54a00655-fa37-44b8-ae4b-ba4d38b55d00" />
+              <Object Name="FIFO_OP_ManTest" ObjectId="ac219d38-15ab-42a1-bb67-deda36466ca0" />
+            </Folder>
+          </Object>
+        </Object>
+      </ProjectStructure>
+    </data>
+  </addData>
+</project>

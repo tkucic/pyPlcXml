@@ -1,0 +1,2742 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="www.iec.ch/public/TC65SC65BWG7TF10"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="www.iec.ch/public/TC65SC65BWG7TF10 IEC61131_10_Ed1_0.xsd"
+	schemaVersion="1.0">
+	<FileHeader companyName="TK" companyURL="http://www.someCompany.com"
+		productName="IEC61131-10 Example1" productVersion="1.0" productRelease="2018"/>
+	<ContentHeader name="IEC_61131-10_Document_Example" version="1.0"
+		creationDateTime="2017-06-14T09:00:00Z" modificationDateTime="2018-11-04T11:56:00Z"
+		organization="Some Organization" author="TF10" language="En">
+		<CoordinateInfo>
+			<FbdScaling x="3" y="3" />
+			<LdScaling x="4" y="6" />
+			<SfcScaling x="6" y="4" />
+		</CoordinateInfo>
+		<AddDataInfo/>
+	</ContentHeader>
+	<Types>
+		<GlobalNamespace>
+			<NamespaceDecl name="AnnexC">
+				<Program name="Main">
+					<ExternalVars>
+						<Variable name="Q8_1">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="Q8_2">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="Q8_3">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="Q8_4">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="Q8_5">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="Q8_6">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+					</ExternalVars>
+					<Vars accessSpecifier="private">
+						<Variable name="IL_FB_Instance">
+							<Type>
+								<TypeName>IL_FB</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="ST_FB_Instance">
+							<Type>
+								<TypeName>ST_FB</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="LD_FB_Instance">
+							<Type>
+								<TypeName>LD_FB</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="FBD_FB_Instance">
+							<Type>
+								<TypeName>FBD_FB</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="SFC_FB_Instance">
+							<Type>
+								<TypeName>SFC_FB</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="SFC_FB2_Instance">
+							<Type>
+								<TypeName>SFC_FB2</TypeName>
+							</Type>
+						</Variable>
+					</Vars>
+					<MainBody>
+						<BodyContent xsi:type="ST">
+							<ST>
+								<![CDATA[
+									IL_FB_Instance(Output => Q8_1);
+									ST_FB_Instance(Output => Q8_2);
+									LD_FB_Instance(Output => Q8_3);
+									FBD_FB_Instance(Output => Q8_4);
+									SFC_FB_Instance(Output => Q8_5);
+									SFC_FB2_Instance(Output => Q8_6);
+									]]>
+							</ST>
+						</BodyContent>
+					</MainBody>
+				</Program>
+				<FunctionBlock name="IL_FB">
+					<Parameters>
+						<OutputVars>
+							<Variable name="Output" orderWithinParamSet="1">
+								<Type>
+									<TypeName>BOOL</TypeName>
+								</Type>
+							</Variable>
+						</OutputVars>
+					</Parameters>
+					<Vars accessSpecifier="private">
+						<Variable name="S1">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+							<InitialValue>
+								<SimpleValue value="TRUE"/>
+							</InitialValue>
+						</Variable>
+						<Variable name="S2">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="S1TON">
+							<Type>
+								<TypeName>TON</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="S2TON">
+							<Type>
+								<TypeName>TON</TypeName>
+							</Type>
+						</Variable>
+					</Vars>
+					<MainBody>
+						<BodyContent xsi:type="IL">
+							<IL>
+								<![CDATA[
+									// S1 -> S2
+									CAL S1TON(IN := S1, PT := T#1S)
+									LD S1TON.Q
+									R S1
+									S S2
+
+									// S2 -> S1
+									CAL S2TON(IN:= S2, PT := T#1s);
+									LD S2TON.Q
+									R S2
+									S S1
+
+									// Output
+									LD Output
+									ST S1
+									]]>
+							</IL>
+						</BodyContent>
+					</MainBody>
+				</FunctionBlock>
+				<FunctionBlock name="ST_FB">
+					<Parameters>
+						<OutputVars>
+							<Variable name="Output" orderWithinParamSet="1">
+								<Type>
+									<TypeName>BOOL</TypeName>
+								</Type>
+							</Variable>
+						</OutputVars>
+					</Parameters>
+					<Vars accessSpecifier="private">
+						<Variable name="S1">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+							<InitialValue>
+								<SimpleValue value="TRUE"/>
+							</InitialValue>
+						</Variable>
+						<Variable name="S2">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="S1TON">
+							<Type>
+								<TypeName>TON</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="S2TON">
+							<Type>
+								<TypeName>TON</TypeName>
+							</Type>
+						</Variable>
+					</Vars>
+					<MainBody>
+						<BodyContent xsi:type="ST">
+							<ST>
+								<![CDATA[
+									// S1 -> S2
+									S1TON(IN := S1, PT := T#1S);
+									IF S1TON.Q THEN
+									S1 := FALSE;
+									S2 := TRUE;
+									END_IF
+
+									// S2 -> S1
+									S2TON(IN:= S2, PT := T#1s);
+									IF S2TON.Q THEN
+									S2 := FALSE;
+									S1 := TRUE;
+									END_IF
+
+									// Output
+									Output := S1;
+									]]>
+							</ST>
+						</BodyContent>
+					</MainBody>
+				</FunctionBlock>
+				<FunctionBlock name="LD_FB">
+					<Parameters>
+						<OutputVars>
+							<Variable name="Output" orderWithinParamSet="1">
+								<Type>
+									<TypeName>BOOL</TypeName>
+								</Type>
+							</Variable>
+						</OutputVars>
+					</Parameters>
+					<Vars accessSpecifier="private">
+						<Variable name="S1">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+							<InitialValue>
+								<SimpleValue value="TRUE"/>
+							</InitialValue>
+						</Variable>
+						<Variable name="S2">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="S1TON">
+							<Type>
+								<TypeName>TON</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="S2TON">
+							<Type>
+								<TypeName>TON</TypeName>
+							</Type>
+						</Variable>
+					</Vars>
+					<MainBody>
+						<BodyContent xsi:type="LD">
+							<Rung evaluationOrder="1">
+								<RelPosition x="1" y="1"/>
+								<CommonObject xsi:type="Comment">
+									<RelPosition x="1" y="0"/>
+									<Content xsi:type="SimpleText">S1 -> S2</Content>
+								</CommonObject>
+								<LdObject xsi:type="LeftPowerRail">
+									<RelPosition x="1" y="0"/>
+									<ConnectionPointOut connectionPointOutId="1">
+										<RelPosition x="0" y="7"/>
+									</ConnectionPointOut>
+									<ConnectionPointOut connectionPointOutId="2">
+										<RelPosition x="0" y="15"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Contact" operand="S1">
+									<RelPosition x="4" y="4"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="1"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="3">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<FbdObject xsi:type="DataSource" identifier="T#1s">
+									<RelPosition x="8" y="9"/>
+									<ConnectionPointOut connectionPointOutId="4">
+										<RelPosition x="4.2" y="1"/>
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="Block" typeName="TON" instanceName="S1TON">
+									<RelPosition x="13" y="4"/>
+									<InputVariables>
+										<InputVariable parameterName="IN">
+											<ConnectionPointIn>
+												<RelPosition x="0" y="3"/>
+												<Connection refConnectionPointOutId="3"/>
+											</ConnectionPointIn>
+										</InputVariable>
+										<InputVariable parameterName="PT">
+											<ConnectionPointIn>
+												<RelPosition x="0" y="6"/>
+												<Connection refConnectionPointOutId="4"/>
+											</ConnectionPointIn>
+										</InputVariable>
+									</InputVariables>
+									<OutputVariables>
+										<OutputVariable parameterName="Q">
+											<ConnectionPointOut connectionPointOutId="5">
+												<RelPosition x="5" y="3"/>
+											</ConnectionPointOut>
+										</OutputVariable>
+										<OutputVariable parameterName="ET">
+											<ConnectionPointOut connectionPointOutId="6">
+												<RelPosition x="5" y="6"/>
+											</ConnectionPointOut>
+										</OutputVariable>
+									</OutputVariables>
+								</FbdObject>
+								<LdObject xsi:type="Contact" operand="S2">
+									<RelPosition x="4" y="12"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="2"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="7">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Coil" operand="S2">
+									<RelPosition x="32" y="4"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="5"/>
+										<Connection refConnectionPointOutId="7">
+											<RelPosition x="-10" y="0"/>
+											<RelPosition x="-10" y="8"/>
+										</Connection>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="8">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="RightPowerRail">
+									<RelPosition x="40" y="0"/>
+									<ConnectionPointIn>
+										<RelPosition x="0" y="7"/>
+										<Connection refConnectionPointOutId="8"/>
+									</ConnectionPointIn>
+								</LdObject>
+							</Rung>
+							<Rung evaluationOrder="2">
+								<RelPosition x="1" y="18"/>
+								<LdObject xsi:type="LeftPowerRail">
+									<RelPosition x="1" y="0"/>
+									<ConnectionPointOut connectionPointOutId="1">
+										<RelPosition x="0" y="5"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Contact" negated="true" operand="S1TON.Q">
+									<RelPosition x="4" y="2"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="1"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="2">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Contact" operand="S1">
+									<RelPosition x="11" y="2"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="2"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="3">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Coil" operand="S1">
+									<RelPosition x="32" y="2"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="3"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="4">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="RightPowerRail">
+									<RelPosition x="40" y="0"/>
+									<ConnectionPointIn>
+										<RelPosition x="0" y="5"/>
+										<Connection refConnectionPointOutId="4"/>
+									</ConnectionPointIn>
+								</LdObject>
+							</Rung>
+							<Rung evaluationOrder="3">
+								<RelPosition x="1" y="26"/>
+								<CommonObject xsi:type="Comment">
+									<RelPosition x="1" y="0"/>
+									<Content xsi:type="SimpleText">S2 -> S1</Content>
+								</CommonObject>
+								<LdObject xsi:type="LeftPowerRail">
+									<RelPosition x="1" y="0"/>
+									<ConnectionPointOut connectionPointOutId="1">
+										<RelPosition x="0" y="7"/>
+									</ConnectionPointOut>
+									<ConnectionPointOut connectionPointOutId="2">
+										<RelPosition x="0" y="15"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Contact" operand="S2">
+									<RelPosition x="4" y="4"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="1"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="3">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<FbdObject xsi:type="DataSource" identifier="T#1s">
+									<RelPosition x="8" y="9"/>
+									<ConnectionPointOut connectionPointOutId="4">
+										<RelPosition x="4.2" y="1"/>
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="Block" typeName="TON" instanceName="S2TON">
+									<RelPosition x="13" y="4"/>
+									<InputVariables>
+										<InputVariable parameterName="IN">
+											<ConnectionPointIn>
+												<RelPosition x="0" y="3"/>
+												<Connection refConnectionPointOutId="3"/>
+											</ConnectionPointIn>
+										</InputVariable>
+										<InputVariable parameterName="PT">
+											<ConnectionPointIn>
+												<RelPosition x="0" y="6"/>
+												<Connection refConnectionPointOutId="4"/>
+											</ConnectionPointIn>
+										</InputVariable>
+									</InputVariables>
+									<OutputVariables>
+										<OutputVariable parameterName="Q">
+											<ConnectionPointOut connectionPointOutId="5">
+												<RelPosition x="5" y="3"/>
+											</ConnectionPointOut>
+										</OutputVariable>
+										<OutputVariable parameterName="ET">
+											<ConnectionPointOut connectionPointOutId="6">
+												<RelPosition x="5" y="6"/>
+											</ConnectionPointOut>
+										</OutputVariable>
+									</OutputVariables>
+								</FbdObject>
+								<LdObject xsi:type="Contact" operand="S1">
+									<RelPosition x="4" y="12"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="2"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="7">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Coil" operand="S1">
+									<RelPosition x="32" y="4"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="5"/>
+										<Connection refConnectionPointOutId="7">
+											<RelPosition x="-10" y="0"/>
+											<RelPosition x="-10" y="8"/>
+										</Connection>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="8">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="RightPowerRail">
+									<RelPosition x="40" y="0"/>
+									<ConnectionPointIn>
+										<RelPosition x="0" y="7"/>
+										<Connection refConnectionPointOutId="8"/>
+									</ConnectionPointIn>
+								</LdObject>
+							</Rung>
+							<Rung evaluationOrder="4">
+								<RelPosition x="1" y="43"/>
+								<LdObject xsi:type="LeftPowerRail">
+									<RelPosition x="1" y="0"/>
+									<ConnectionPointOut connectionPointOutId="1">
+										<RelPosition x="0" y="5"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Contact" negated="true" operand="S2TON.Q">
+									<RelPosition x="4" y="2"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="1"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="2">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Contact" operand="S2">
+									<RelPosition x="11" y="2"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="2"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="3">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Coil" operand="S2">
+									<RelPosition x="32" y="2"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="3"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="4">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="RightPowerRail">
+									<RelPosition x="40" y="0"/>
+									<ConnectionPointIn>
+										<RelPosition x="0" y="5"/>
+										<Connection refConnectionPointOutId="4"/>
+									</ConnectionPointIn>
+								</LdObject>
+							</Rung>
+							<Rung evaluationOrder="5">
+								<RelPosition x="1" y="51"/>
+								<CommonObject xsi:type="Comment">
+									<RelPosition x="1" y="0"/>
+									<Content xsi:type="SimpleText">Output</Content>
+								</CommonObject>
+								<LdObject xsi:type="LeftPowerRail">
+									<RelPosition x="1" y="0"/>
+									<ConnectionPointOut connectionPointOutId="1">
+										<RelPosition x="0" y="5"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Contact" operand="S1">
+									<RelPosition x="4" y="2"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="1"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="2">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Coil" operand="Output">
+									<RelPosition x="32" y="2"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="2"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="3">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="RightPowerRail">
+									<RelPosition x="40" y="0"/>
+									<ConnectionPointIn>
+										<RelPosition x="0" y="5"/>
+										<Connection refConnectionPointOutId="3"/>
+									</ConnectionPointIn>
+								</LdObject>
+							</Rung>
+						</BodyContent>
+					</MainBody>
+				</FunctionBlock>
+				<FunctionBlock name="FBD_FB">
+					<Parameters>
+						<OutputVars>
+							<Variable name="Output" orderWithinParamSet="1">
+								<Type>
+									<TypeName>BOOL</TypeName>
+								</Type>
+							</Variable>
+						</OutputVars>
+					</Parameters>
+					<Vars accessSpecifier="private">
+						<Variable name="S1">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+							<InitialValue>
+								<SimpleValue value="TRUE"/>
+							</InitialValue>
+						</Variable>
+						<Variable name="S2">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="S1TON">
+							<Type>
+								<TypeName>TON</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="S2TON">
+							<Type>
+								<TypeName>TON</TypeName>
+							</Type>
+						</Variable>
+					</Vars>
+					<MainBody>
+						<BodyContent xsi:type="FBD">
+							<Network xsi:type="FbdNetwork" evaluationOrder="1">
+								<RelPosition x="1" y="1" />
+								<Size x="41" y="23" />
+								<CommonObject xsi:type="Comment">
+									<RelPosition x="0" y="0" />
+									<Content xsi:type="SimpleText">S1 -> S2</Content>
+								</CommonObject>
+								<FbdObject xsi:type="DataSource" identifier="S1">
+									<RelPosition x="2" y="5" />
+									<Size x="4" y="2" />
+									<ConnectionPointOut connectionPointOutId="1">
+										<RelPosition x="4" y="1" />
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="DataSource" identifier="T#1s">
+									<RelPosition x="2" y="8" />
+									<Size x="4" y="2" />
+									<ConnectionPointOut connectionPointOutId="2">
+										<RelPosition x="4" y="1" />
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="Block" typeName="TON" instanceName="S1TON">
+									<RelPosition x="7" y="2" />
+									<Size x="5" y="8" />
+									<InputVariables>
+										<InputVariable parameterName="IN">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="3" />
+												<Connection refConnectionPointOutId="1">
+													<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+										<InputVariable parameterName="PT">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="6" />
+												<Connection refConnectionPointOutId="2">
+													<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+									</InputVariables>
+									<OutputVariables>
+										<OutputVariable parameterName="Q">
+											<ConnectionPointOut connectionPointOutId="3">
+												<RelPosition x="6" y="3" />
+											</ConnectionPointOut>
+										</OutputVariable>
+										<OutputVariable parameterName="ET">
+											<ConnectionPointOut connectionPointOutId="4">
+												<!-- Although there is nothing connected to 'S1TON.ET' there is still a connection point given. -->
+												<RelPosition x="6" y="6" />
+											</ConnectionPointOut>
+										</OutputVariable>
+									</OutputVariables>
+								</FbdObject>
+								<FbdObject xsi:type="DataSource" identifier="S1">
+									<RelPosition x="18" y="8" />
+									<Size x="4" y="2" />
+									<ConnectionPointOut connectionPointOutId="5">
+										<RelPosition x="4" y="1" />
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="Block" typeName="AND">
+									<RelPosition x="23" y="3" />
+									<Size x="5" y="8" />
+									<InputVariables>
+										<InputVariable parameterName="IN1" suppressName="true" negated="true">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="3" />
+												<Connection refConnectionPointOutId="3">
+													<RelPosition x="-7" y="0" />
+													<!-- This connection is a straight horizontal line and no 'RelPosition' would be necessary. Anyhow a 'RelPostion is given to indicate
+																 a supporting point which is identical to the upper edge of the connection from 'S1TON.Q' to the 'OR' function. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+										<InputVariable parameterName="IN2" suppressName="true">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="6" />
+												<Connection refConnectionPointOutId="5">
+													<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+									</InputVariables>
+									<OutputVariables>
+										<OutputVariable parameterName="OUT" suppressName="true">
+											<ConnectionPointOut connectionPointOutId="6">
+												<RelPosition x="6" y="3" />
+											</ConnectionPointOut>
+										</OutputVariable>
+									</OutputVariables>
+								</FbdObject>
+								<FbdObject xsi:type="DataSink" identifier="S1">
+									<RelPosition x="29" y="6" />
+									<Size x="4" y="2" />
+									<ConnectionPointIn>
+										<RelPosition x="0" y="1" />
+										<Connection refConnectionPointOutId="6">
+											<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+										</Connection>
+									</ConnectionPointIn>
+								</FbdObject>
+								<FbdObject xsi:type="DataSource" identifier="S2">
+									<RelPosition x="18" y="19" />
+									<Size x="4" y="2" />
+									<ConnectionPointOut connectionPointOutId="7">
+										<RelPosition x="4" y="1" />
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="Block" typeName="OR">
+									<RelPosition x="23" y="14" />
+									<Size x="5" y="8" />
+									<InputVariables>
+										<InputVariable parameterName="IN1" suppressName="true">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="3" />
+												<Connection refConnectionPointOutId="3">
+													<RelPosition x="-7" y="0" />
+													<!-- Positions are relative to superior 'ConnectionPointIn'. -->
+													<RelPosition x="-7" y="-11" />
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+										<InputVariable parameterName="IN2" suppressName="true">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="6" />
+												<Connection refConnectionPointOutId="7">
+													<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+									</InputVariables>
+									<OutputVariables>
+										<OutputVariable parameterName="OUT" suppressName="true">
+											<ConnectionPointOut connectionPointOutId="8">
+												<RelPosition x="6" y="3" />
+											</ConnectionPointOut>
+										</OutputVariable>
+									</OutputVariables>
+								</FbdObject>
+								<FbdObject xsi:type="DataSink" identifier="S2">
+									<RelPosition x="29" y="16" />
+									<Size x="4" y="2" />
+									<ConnectionPointIn>
+										<RelPosition x="0" y="1" />
+										<Connection refConnectionPointOutId="8">
+											<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+										</Connection>
+									</ConnectionPointIn>
+								</FbdObject>
+							</Network>
+							<Network xsi:type="FbdNetwork" evaluationOrder="2">
+								<RelPosition x="1" y="26" />
+								<Size x="41" y="23" />
+								<CommonObject xsi:type="Comment">
+									<RelPosition x="0" y="0" />
+									<Content xsi:type="SimpleText">S2 -> S1</Content>
+								</CommonObject>
+								<FbdObject xsi:type="DataSource" identifier="S2">
+									<RelPosition x="2" y="5" />
+									<Size x="4" y="2" />
+									<ConnectionPointOut connectionPointOutId="1">
+										<RelPosition x="4" y="1" />
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="DataSource" identifier="T#1s">
+									<RelPosition x="2" y="8" />
+									<Size x="4" y="2" />
+									<ConnectionPointOut connectionPointOutId="2">
+										<RelPosition x="4" y="1" />
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="Block" typeName="TON" instanceName="S2TON">
+									<RelPosition x="7" y="2" />
+									<Size x="5" y="8" />
+									<InputVariables>
+										<InputVariable parameterName="IN">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="3" />
+												<Connection refConnectionPointOutId="1">
+													<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+										<InputVariable parameterName="PT">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="6" />
+												<Connection refConnectionPointOutId="2">
+													<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+									</InputVariables>
+									<OutputVariables>
+										<OutputVariable parameterName="Q">
+											<ConnectionPointOut connectionPointOutId="3">
+												<RelPosition x="6" y="3" />
+											</ConnectionPointOut>
+										</OutputVariable>
+										<OutputVariable parameterName="ET">
+											<ConnectionPointOut connectionPointOutId="4">
+												<!-- Although there is nothing connected to 'S2TON.ET' there is still a connection point given. -->
+												<RelPosition x="6" y="6" />
+											</ConnectionPointOut>
+										</OutputVariable>
+									</OutputVariables>
+								</FbdObject>
+								<FbdObject xsi:type="DataSource" identifier="S2">
+									<RelPosition x="18" y="8" />
+									<Size x="4" y="2" />
+									<ConnectionPointOut connectionPointOutId="5">
+										<RelPosition x="4" y="1" />
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="Block" typeName="AND">
+									<RelPosition x="23" y="3" />
+									<Size x="5" y="8" />
+									<InputVariables>
+										<InputVariable parameterName="IN1" suppressName="true" negated="true">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="3" />
+												<Connection refConnectionPointOutId="3">
+													<RelPosition x="-7" y="0" />
+													<!-- This connection is a straight horizontal line and no 'RelPosition' would be necessary. Anyhow a 'RelPostion is given to indicate
+																 a supporting point which is identical to the upper edge of the connection from 'S2TON.Q' to the 'OR' function. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+										<InputVariable parameterName="IN2" suppressName="true">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="6" />
+												<Connection refConnectionPointOutId="5">
+													<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+									</InputVariables>
+									<OutputVariables>
+										<OutputVariable parameterName="OUT" suppressName="true">
+											<ConnectionPointOut connectionPointOutId="6">
+												<RelPosition x="6" y="3" />
+											</ConnectionPointOut>
+										</OutputVariable>
+									</OutputVariables>
+								</FbdObject>
+								<FbdObject xsi:type="DataSink" identifier="S2">
+									<RelPosition x="29" y="6" />
+									<Size x="4" y="2" />
+									<ConnectionPointIn>
+										<RelPosition x="0" y="1" />
+										<Connection refConnectionPointOutId="6">
+											<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+										</Connection>
+									</ConnectionPointIn>
+								</FbdObject>
+								<FbdObject xsi:type="DataSource" identifier="S1">
+									<RelPosition x="18" y="19" />
+									<Size x="4" y="2" />
+									<ConnectionPointOut connectionPointOutId="7">
+										<RelPosition x="4" y="1" />
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="Block" typeName="OR">
+									<RelPosition x="23" y="14" />
+									<Size x="5" y="8" />
+									<InputVariables>
+										<InputVariable parameterName="IN1" suppressName="true">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="3" />
+												<Connection refConnectionPointOutId="3">
+													<RelPosition x="-7" y="0" />
+													<!-- Positions are relative to superior 'ConnectionPointIn'. -->
+													<RelPosition x="-7" y="-11" />
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+										<InputVariable parameterName="IN2" suppressName="true">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="6" />
+												<Connection refConnectionPointOutId="7">
+													<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+									</InputVariables>
+									<OutputVariables>
+										<OutputVariable parameterName="OUT" suppressName="true">
+											<ConnectionPointOut connectionPointOutId="8">
+												<RelPosition x="6" y="3" />
+											</ConnectionPointOut>
+										</OutputVariable>
+									</OutputVariables>
+								</FbdObject>
+								<FbdObject xsi:type="DataSink" identifier="S1">
+									<RelPosition x="29" y="16" />
+									<Size x="4" y="2" />
+									<ConnectionPointIn>
+										<RelPosition x="0" y="1" />
+										<Connection refConnectionPointOutId="8">
+											<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+										</Connection>
+									</ConnectionPointIn>
+								</FbdObject>
+							</Network>
+							<Network xsi:type="FbdNetwork" evaluationOrder="3">
+								<RelPosition x="1" y="51" />
+								<Size x="41" y="8" />
+								<CommonObject xsi:type="Comment">
+									<RelPosition x="0" y="0" />
+									<Content xsi:type="SimpleText">S1 -> OUTPUT</Content>
+								</CommonObject>
+								<FbdObject xsi:type="DataSource" identifier="S1">
+									<RelPosition x="2" y="3" />
+									<Size x="4" y="2" />
+									<ConnectionPointOut connectionPointOutId="1">
+										<RelPosition x="4" y="1" />
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="DataSink" identifier="Output">
+									<RelPosition x="20" y="3" />
+									<Size x="6" y="2" />
+									<ConnectionPointIn>
+										<RelPosition x="0" y="1" />
+										<Connection refConnectionPointOutId="1">
+											<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+										</Connection>
+									</ConnectionPointIn>
+								</FbdObject>
+							</Network>
+						</BodyContent>
+					</MainBody>
+				</FunctionBlock>
+				<FunctionBlock name="SFC_FB">
+					<Parameters>
+						<OutputVars>
+							<Variable name="Output" orderWithinParamSet="1">
+								<Documentation xsi:type="SimpleText">
+									Output flickers: for 1 second it is true and for the next second it is false
+								</Documentation>
+								<Type>
+									<TypeName>BOOL</TypeName>
+								</Type>
+							</Variable>
+						</OutputVars>
+					</Parameters>
+					<MainBody>
+						<BodyContent xsi:type="SFC">
+							<!-- SFC-->
+							<SfcObject xsi:type="Step" name="S1" initialStep="true">
+								<RelPosition x="21" y="5" />
+								<Size x="8" y="6" />
+								<ConnectionPointIn>
+									<RelPosition x="4" y="0" />
+									<Connection refConnectionPointOutId="8">
+										<!-- ### to do: correct the insert coordinates of th connection line. -->
+										<RelPosition x="0" y="-2"/>
+										<!-- Positions are relative to superior 'ConnectionPointIn'. -->
+										<RelPosition x="-23" y="-2"/>
+										<RelPosition x="-23" y="45"/>
+										<RelPosition x="0" y="45"/>
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="1">
+									<RelPosition x="4" y="6" />
+								</ConnectionPointOut>
+								<ConnectionPointOutAction connectionPointOutId="2">
+									<RelPosition x="8" y="3" />
+								</ConnectionPointOutAction>
+							</SfcObject>
+							<CommonObject xsi:type="ActionBlocks">
+								<RelPosition x="35" y="5" />
+								<Size x="10" y="6" />
+								<ConnectionPointIn>
+									<RelPosition x="0" y="3" />
+									<Connection refConnectionPointOutId="2">
+										<!-- Since this is connection is a straight horizontal line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ActionBlock>
+									<ActionQualifier qualifier="N" />
+									<ComplexOperand>Output</ComplexOperand>
+								</ActionBlock>
+							</CommonObject>
+							<SfcObject xsi:type="Transition">
+								<RelPosition x="22" y="15" />
+								<Size x="6" y="4" />
+								<ConnectionPointIn>
+									<RelPosition x="3" y="0" />
+									<Connection refConnectionPointOutId="1">
+										<!-- Since this connection is a straight vertical line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="3">
+									<RelPosition x="3" y="4" />
+								</ConnectionPointOut>
+								<Condition>
+									<GraphicalPredicate>
+										<ConnectionPointIn>
+											<RelPosition x="0" y="2" />
+											<Connection refConnectionPointOutId="4">
+												<!-- Since this connection is a straight horizontal line with known start and end point, no 'RelPosition' is necessary. -->
+											</Connection>
+										</ConnectionPointIn>
+										<GraphicalExpression xsi:type="FbdNetwork" evaluationOrder="0">
+											<RelPosition x="-17" y="-2"/>
+											<!-- Position is relative to superior 'Transition'. -->
+											<Size x="17" y="10"/>
+											<FbdObject xsi:type="Block" typeName="GT">
+												<RelPosition x="5" y="1" />
+												<Size x="5" y="8" />
+												<InputVariables>
+													<InputVariable parameterName="IN1" suppressName="true">
+														<ConnectionPointIn>
+															<RelPosition x="-1" y="3" />
+															<Connection refConnectionPointOutId="5">
+																<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+															</Connection>
+														</ConnectionPointIn>
+													</InputVariable>
+													<InputVariable parameterName="IN2" suppressName="true">
+														<ConnectionPointIn>
+															<RelPosition x="-1" y="6" />
+															<Connection refConnectionPointOutId="6">
+																<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+															</Connection>
+														</ConnectionPointIn>
+													</InputVariable>
+												</InputVariables>
+												<OutputVariables>
+													<OutputVariable parameterName="OUT" suppressName="true">
+														<ConnectionPointOut connectionPointOutId="4">
+															<RelPosition x="6" y="3" />
+														</ConnectionPointOut>
+													</OutputVariable>
+												</OutputVariables>
+											</FbdObject>
+											<FbdObject xsi:type="DataSource" identifier="S1.T">
+												<RelPosition x="0" y="3" />
+												<Size x="4" y="2" />
+												<ConnectionPointOut connectionPointOutId="5">
+													<RelPosition x="4" y="1" />
+												</ConnectionPointOut>
+											</FbdObject>
+											<FbdObject xsi:type="DataSource" identifier="T#1s">
+												<RelPosition x="0" y="6" />
+												<Size x="4" y="2" />
+												<ConnectionPointOut connectionPointOutId="6">
+													<RelPosition x="4" y="1" />
+												</ConnectionPointOut>
+											</FbdObject>
+										</GraphicalExpression>
+									</GraphicalPredicate>
+								</Condition>
+							</SfcObject>
+							<SfcObject xsi:type="Step" name="S2">
+								<RelPosition x="21" y="24" />
+								<Size x="8" y="6" />
+								<ConnectionPointIn>
+									<RelPosition x="4" y="0" />
+									<Connection refConnectionPointOutId="3">
+										<!-- Since this connection is a straight vertical line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="7">
+									<RelPosition x="3" y="4" />
+								</ConnectionPointOut>
+							</SfcObject>
+							<SfcObject xsi:type="Transition">
+								<RelPosition x="165" y="224" />
+								<Size x="6" y="4" />
+								<ConnectionPointIn>
+									<RelPosition x="3" y="0" />
+									<Connection refConnectionPointOutId="10">
+										<!-- Since this connection is a straight vertical line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="8">
+									<RelPosition x="3" y="4" />
+								</ConnectionPointOut>
+								<Condition>
+									<GraphicalPredicate>
+										<ConnectionPointIn>
+											<RelPosition x="0" y="2" />
+											<Connection refConnectionPointOutId="9">
+												<!-- Since this connection is a straight horizontal line with known start and end point, no 'RelPosition' is necessary. -->
+											</Connection>
+										</ConnectionPointIn>
+										<GraphicalExpression xsi:type="FbdNetwork" evaluationOrder="0">
+											<RelPosition x="-17" y="-2"/>
+											<!-- Position is relative to superior 'Transition'. -->
+											<Size x="17" y="10"/>
+											<FbdObject xsi:type="Block" typeName="GT">
+												<RelPosition x="5" y="1" />
+												<Size x="5" y="8" />
+												<InputVariables>
+													<InputVariable parameterName="IN1" suppressName="true">
+														<ConnectionPointIn>
+															<RelPosition x="-1" y="3" />
+															<Connection refConnectionPointOutId="10">
+																<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+															</Connection>
+														</ConnectionPointIn>
+													</InputVariable>
+													<InputVariable parameterName="IN2" suppressName="true">
+														<ConnectionPointIn>
+															<RelPosition x="-1" y="6" />
+															<Connection refConnectionPointOutId="11">
+																<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+															</Connection>
+														</ConnectionPointIn>
+													</InputVariable>
+												</InputVariables>
+												<OutputVariables>
+													<OutputVariable parameterName="OUT" suppressName="true">
+														<ConnectionPointOut connectionPointOutId="9">
+															<RelPosition x="6" y="3" />
+														</ConnectionPointOut>
+													</OutputVariable>
+												</OutputVariables>
+											</FbdObject>
+											<FbdObject xsi:type="DataSource" identifier="S2.T">
+												<RelPosition x="0" y="3" />
+												<Size x="4" y="2" />
+												<ConnectionPointOut connectionPointOutId="10">
+													<RelPosition x="4" y="1" />
+												</ConnectionPointOut>
+											</FbdObject>
+											<FbdObject xsi:type="DataSource" identifier="T#1s">
+												<RelPosition x="0" y="6" />
+												<Size x="4" y="2" />
+												<ConnectionPointOut connectionPointOutId="11">
+													<RelPosition x="4" y="1" />
+												</ConnectionPointOut>
+											</FbdObject>
+										</GraphicalExpression>
+									</GraphicalPredicate>
+								</Condition>
+							</SfcObject>
+						</BodyContent>
+					</MainBody>
+				</FunctionBlock>
+				<!-- ======================= Optional examples: ======================= -->
+				<FunctionBlock name="SFC_FB2">
+					<!-- This is another SFC example. It demonstrates:
+					             - that a "SelectionConvergence" may be used without a corresponding "SelectionDivergence"
+											 - a variable (as ST expression) directly connected to a transition
+											 - a named/coded transition
+											 - a named/coded action
+					-->
+					<Parameters>
+						<OutputVars>
+							<Variable name="Output" orderWithinParamSet="1">
+								<Documentation xsi:type="SimpleText">
+									Output flickers: for 1 second it is true and for the next second it is false
+								</Documentation>
+								<Type>
+									<TypeName>BOOL</TypeName>
+								</Type>
+							</Variable>
+						</OutputVars>
+					</Parameters>
+					<MainBody>
+						<BodyContent xsi:type="SFC">
+							<SfcObject xsi:type="Step" name="S0" initialStep="true">
+								<RelPosition x="21" y="4" />
+								<Size x="8" y="6" />
+								<ConnectionPointOut connectionPointOutId="1">
+									<RelPosition x="4" y="6" />
+								</ConnectionPointOut>
+							</SfcObject>
+							<SfcObject xsi:type="Transition">
+								<RelPosition x="22" y="14" />
+								<Size x="6" y="4" />
+								<ConnectionPointIn>
+									<RelPosition x="3" y="0" />
+									<Connection refConnectionPointOutId="1">
+										<!-- Since this connection is a straight vertical line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="2">
+									<RelPosition x="3" y="4" />
+								</ConnectionPointOut>
+								<Condition>
+									<TextualPredicate>
+										<PredicateContent xsi:type="ST">
+											<ST>TRUE</ST>
+										</PredicateContent>
+									</TextualPredicate>
+								</Condition>
+							</SfcObject>
+							<SfcObject xsi:type="SelectionConvergence">
+								<RelPosition x="2" y="20" />
+								<Size x="23" y="2" />
+								<ConnectionPointIn>
+									<RelPosition x="0" y="2" />
+									<Connection refConnectionPointOutId="10">
+										<RelPosition x="0" y="37" />
+										<!-- Positions are relative to superior 'ConnectionPointIn'. -->
+										<RelPosition x="23" y="37" />
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointIn>
+									<RelPosition x="23" y="0" />
+									<Connection refConnectionPointOutId="2">
+										<!-- Since this connection is a straight vertical line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="3">
+									<RelPosition x="23" y="2" />
+								</ConnectionPointOut>
+							</SfcObject>
+							<SfcObject xsi:type="Step" name="S1">
+								<RelPosition x="21" y="23" />
+								<Size x="8" y="6" />
+								<ConnectionPointIn>
+									<RelPosition x="4" y="0" />
+									<Connection refConnectionPointOutId="3">
+										<!-- Since this connection is a straight vertical line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="4">
+									<RelPosition x="4" y="6" />
+								</ConnectionPointOut>
+								<ConnectionPointOutAction connectionPointOutId="5">
+									<RelPosition x="8" y="3" />
+								</ConnectionPointOutAction>
+							</SfcObject>
+							<CommonObject xsi:type="ActionBlocks">
+								<RelPosition x="35" y="23" />
+								<Size x="10" y="6" />
+								<ConnectionPointIn>
+									<RelPosition x="0" y="3" />
+									<Connection refConnectionPointOutId="5">
+										<!-- Since this connection is a straight horizontal line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ActionBlock>
+									<ActionQualifier qualifier="N" />
+									<ReferenceName>Action_1</ReferenceName>
+								</ActionBlock>
+							</CommonObject>
+							<SfcObject xsi:type="Transition">
+								<RelPosition x="22" y="33" />
+								<Size x="6" y="4" />
+								<ConnectionPointIn>
+									<RelPosition x="3" y="0" />
+									<Connection refConnectionPointOutId="4">
+										<!-- Since this connection is a straight vertical line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="6">
+									<RelPosition x="3" y="4" />
+								</ConnectionPointOut>
+								<Condition>
+									<GraphicalPredicate>
+										<ConnectionPointIn>
+											<RelPosition x="0" y="2" />
+											<Connection refConnectionPointOutId="8">
+												<!-- Since this connection is a straight horizontal line with known start and end point, no 'RelPosition' is necessary. -->
+											</Connection>
+										</ConnectionPointIn>
+										<GraphicalExpression xsi:type="LadderRung" evaluationOrder="0">
+											<RelPosition x="-17" y="-4"/>
+											<!-- Position is relative to superior 'Transition'. -->
+											<Size x="17" y="9"/>
+											<LdObject xsi:type="LeftPowerRail">
+												<RelPosition x="3" y="2"/>
+												<ConnectionPointOut connectionPointOutId="7">
+													<RelPosition x="0" y="2"/>
+												</ConnectionPointOut>
+											</LdObject>
+											<LdObject xsi:type="CompareContact" compareOperator=">" operand1="S1.T" operand2="T#1s">
+												<RelPosition x="8" y="1"/>
+												<ConnectionPointIn>
+													<RelPosition x="2" y="3"/>
+													<Connection refConnectionPointOutId="7"/>
+												</ConnectionPointIn>
+												<ConnectionPointOut connectionPointOutId="8">
+													<RelPosition x="4" y="3"/>
+												</ConnectionPointOut>
+												<Type>TIME</Type>
+											</LdObject>
+										</GraphicalExpression>
+									</GraphicalPredicate>
+								</Condition>
+							</SfcObject>
+							<SfcObject xsi:type="Step" name="S2">
+								<RelPosition x="21" y="42" />
+								<Size x="8" y="6" />
+								<ConnectionPointIn>
+									<RelPosition x="4" y="0" />
+									<Connection refConnectionPointOutId="6">
+										<!-- Since this connection is a straight vertical line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="9">
+									<RelPosition x="4" y="6" />
+								</ConnectionPointOut>
+							</SfcObject>
+							<SfcObject xsi:type="Transition">
+								<RelPosition x="22" y="52" />
+								<Size x="6" y="4" />
+								<ConnectionPointIn>
+									<RelPosition x="3" y="0" />
+									<Connection refConnectionPointOutId="9">
+										<!-- Since this connection is a straight vertical line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="10">
+									<RelPosition x="3" y="4" />
+								</ConnectionPointOut>
+								<Condition>
+									<Reference name="Transition_2" />
+								</Condition>
+							</SfcObject>
+						</BodyContent>
+					</MainBody>
+					<Action name="Action_1">
+						<Body>
+							<BodyContent xsi:type="ST">
+								<ST>
+									<![CDATA[
+										Output := Action_1.Q;
+										]]>
+									<!-- Usage of ".Q" requires SFC with "final scan" logic in order to reset "Output" when Action becomes inactive. -->
+								</ST>
+							</BodyContent>
+						</Body>
+					</Action>
+					<Transition name="Transition_2">
+						<Condition>
+							<PredicateContent xsi:type="ST">
+								<ST>
+									<![CDATA[
+										Transition_2 := S2.T &gt; T#1s;
+										]]>
+								</ST>
+							</PredicateContent>
+						</Condition>
+					</Transition>
+				</FunctionBlock>
+			</NamespaceDecl>
+			<NamespaceDecl name="AnnexD">
+				<Program name="Main">
+					<ExternalVars>
+						<Variable name="Q8_1">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="Q8_2">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="Q8_3">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="Q8_4">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="Q8_5">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="Q8_6">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+					</ExternalVars>
+					<Vars accessSpecifier="private">
+						<Variable name="IL_FB_Instance">
+							<Type>
+								<TypeName>IL_FB</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="ST_FB_Instance">
+							<Type>
+								<TypeName>ST_FB</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="LD_FB_Instance">
+							<Type>
+								<TypeName>LD_FB</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="FBD_FB_Instance">
+							<Type>
+								<TypeName>FBD_FB</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="SFC_FB_Instance">
+							<Type>
+								<TypeName>SFC_FB</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="SFC_FB2_Instance">
+							<Type>
+								<TypeName>SFC_FB2</TypeName>
+							</Type>
+						</Variable>
+					</Vars>
+					<MainBody>
+						<BodyContent xsi:type="ST">
+							<ST>
+								<![CDATA[
+									IL_FB_Instance(Output => Q8_1);
+									ST_FB_Instance(Output => Q8_2);
+									LD_FB_Instance(Output => Q8_3);
+									FBD_FB_Instance(Output => Q8_4);
+									SFC_FB_Instance(Output => Q8_5);
+									SFC_FB2_Instance(Output => Q8_6);
+									]]>
+							</ST>
+						</BodyContent>
+					</MainBody>
+				</Program>
+				<FunctionBlock name="IL_FB">
+					<Parameters>
+						<OutputVars>
+							<Variable name="Output" orderWithinParamSet="1">
+								<Type>
+									<TypeName>BOOL</TypeName>
+								</Type>
+							</Variable>
+						</OutputVars>
+					</Parameters>
+					<Vars accessSpecifier="private">
+						<Variable name="S1">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+							<InitialValue>
+								<SimpleValue value="TRUE"/>
+							</InitialValue>
+						</Variable>
+						<Variable name="S2">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="S1TON">
+							<Type>
+								<TypeName>TON</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="S2TON">
+							<Type>
+								<TypeName>TON</TypeName>
+							</Type>
+						</Variable>
+					</Vars>
+					<MainBody>
+						<BodyContent xsi:type="IL">
+							<IL>
+								<![CDATA[
+									// S1 -> S2
+									CAL S1TON(IN := S1, PT := T#1S)
+									LD S1TON.Q
+									R S1
+									S S2
+
+									// S2 -> S1
+									CAL S2TON(IN:= S2, PT := T#1s);
+									LD S2TON.Q
+									R S2
+									S S1
+
+									// Output
+									LD Output
+									ST S1
+									]]>
+							</IL>
+						</BodyContent>
+					</MainBody>
+				</FunctionBlock>
+				<FunctionBlock name="ST_FB">
+					<Parameters>
+						<OutputVars>
+							<Variable name="Output" orderWithinParamSet="1">
+								<Type>
+									<TypeName>BOOL</TypeName>
+								</Type>
+							</Variable>
+						</OutputVars>
+					</Parameters>
+					<Vars accessSpecifier="private">
+						<Variable name="S1">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+							<InitialValue>
+								<SimpleValue value="TRUE"/>
+							</InitialValue>
+						</Variable>
+						<Variable name="S2">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="S1TON">
+							<Type>
+								<TypeName>TON</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="S2TON">
+							<Type>
+								<TypeName>TON</TypeName>
+							</Type>
+						</Variable>
+					</Vars>
+					<MainBody>
+						<BodyContent xsi:type="ST">
+							<ST>
+								<![CDATA[
+									// S1 -> S2
+									S1TON(IN := S1, PT := T#1S);
+									IF S1TON.Q THEN
+									S1 := FALSE;
+									S2 := TRUE;
+									END_IF
+
+									// S2 -> S1
+									S2TON(IN:= S2, PT := T#1s);
+									IF S2TON.Q THEN
+									S2 := FALSE;
+									S1 := TRUE;
+									END_IF
+
+									// Output
+									Output := S1;
+									]]>
+							</ST>
+						</BodyContent>
+					</MainBody>
+				</FunctionBlock>
+				<FunctionBlock name="LD_FB">
+					<Parameters>
+						<OutputVars>
+							<Variable name="Output" orderWithinParamSet="1">
+								<Type>
+									<TypeName>BOOL</TypeName>
+								</Type>
+							</Variable>
+						</OutputVars>
+					</Parameters>
+					<Vars accessSpecifier="private">
+						<Variable name="S1">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+							<InitialValue>
+								<SimpleValue value="TRUE"/>
+							</InitialValue>
+						</Variable>
+						<Variable name="S2">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="S1TON">
+							<Type>
+								<TypeName>TON</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="S2TON">
+							<Type>
+								<TypeName>TON</TypeName>
+							</Type>
+						</Variable>
+					</Vars>
+					<MainBody>
+						<BodyContent xsi:type="LD">
+							<Rung evaluationOrder="1">
+								<RelPosition x="1" y="1"/>
+								<CommonObject xsi:type="Comment">
+									<RelPosition x="1" y="0"/>
+									<Content xsi:type="SimpleText">S1 -> S2</Content>
+								</CommonObject>
+								<LdObject xsi:type="LeftPowerRail">
+									<RelPosition x="1" y="0"/>
+									<ConnectionPointOut connectionPointOutId="1">
+										<RelPosition x="0" y="7"/>
+									</ConnectionPointOut>
+									<ConnectionPointOut connectionPointOutId="2">
+										<RelPosition x="0" y="15"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Contact" operand="S1">
+									<RelPosition x="4" y="4"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="1"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="3">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<FbdObject xsi:type="DataSource" identifier="T#1s">
+									<RelPosition x="8" y="9"/>
+									<ConnectionPointOut connectionPointOutId="4">
+										<RelPosition x="4.2" y="1"/>
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="Block" typeName="TON" instanceName="S1TON">
+									<RelPosition x="13" y="4"/>
+									<InputVariables>
+										<InputVariable parameterName="IN">
+											<ConnectionPointIn>
+												<RelPosition x="0" y="3"/>
+												<Connection refConnectionPointOutId="3"/>
+											</ConnectionPointIn>
+										</InputVariable>
+										<InputVariable parameterName="PT">
+											<ConnectionPointIn>
+												<RelPosition x="0" y="6"/>
+												<Connection refConnectionPointOutId="4"/>
+											</ConnectionPointIn>
+										</InputVariable>
+									</InputVariables>
+									<OutputVariables>
+										<OutputVariable parameterName="Q">
+											<ConnectionPointOut connectionPointOutId="5">
+												<RelPosition x="5" y="3"/>
+											</ConnectionPointOut>
+										</OutputVariable>
+										<OutputVariable parameterName="ET">
+											<ConnectionPointOut connectionPointOutId="6">
+												<RelPosition x="5" y="6"/>
+											</ConnectionPointOut>
+										</OutputVariable>
+									</OutputVariables>
+								</FbdObject>
+								<LdObject xsi:type="Contact" operand="S2">
+									<RelPosition x="4" y="12"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="2"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="7">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Coil" operand="S2">
+									<RelPosition x="32" y="4"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="5"/>
+										<Connection refConnectionPointOutId="7">
+											<RelPosition x="-10" y="0"/>
+											<RelPosition x="-10" y="8"/>
+										</Connection>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="8">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="RightPowerRail">
+									<RelPosition x="40" y="0"/>
+									<ConnectionPointIn>
+										<RelPosition x="0" y="7"/>
+										<Connection refConnectionPointOutId="8"/>
+									</ConnectionPointIn>
+								</LdObject>
+							</Rung>
+							<Rung evaluationOrder="2">
+								<RelPosition x="1" y="18"/>
+								<LdObject xsi:type="LeftPowerRail">
+									<RelPosition x="1" y="0"/>
+									<ConnectionPointOut connectionPointOutId="1">
+										<RelPosition x="0" y="5"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Contact" negated="true" operand="S1TON.Q">
+									<RelPosition x="4" y="2"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="1"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="2">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Contact" operand="S1">
+									<RelPosition x="11" y="2"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="2"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="3">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Coil" operand="S1">
+									<RelPosition x="32" y="2"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="3"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="4">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="RightPowerRail">
+									<RelPosition x="40" y="0"/>
+									<ConnectionPointIn>
+										<RelPosition x="0" y="5"/>
+										<Connection refConnectionPointOutId="4"/>
+									</ConnectionPointIn>
+								</LdObject>
+							</Rung>
+							<Rung evaluationOrder="3">
+								<RelPosition x="1" y="26"/>
+								<CommonObject xsi:type="Comment">
+									<RelPosition x="1" y="0"/>
+									<Content xsi:type="SimpleText">S2 -> S1</Content>
+								</CommonObject>
+								<LdObject xsi:type="LeftPowerRail">
+									<RelPosition x="1" y="0"/>
+									<ConnectionPointOut connectionPointOutId="1">
+										<RelPosition x="0" y="7"/>
+									</ConnectionPointOut>
+									<ConnectionPointOut connectionPointOutId="2">
+										<RelPosition x="0" y="15"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Contact" operand="S2">
+									<RelPosition x="4" y="4"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="1"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="3">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<FbdObject xsi:type="DataSource" identifier="T#1s">
+									<RelPosition x="8" y="9"/>
+									<ConnectionPointOut connectionPointOutId="4">
+										<RelPosition x="4.2" y="1"/>
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="Block" typeName="TON" instanceName="S2TON">
+									<RelPosition x="13" y="4"/>
+									<InputVariables>
+										<InputVariable parameterName="IN">
+											<ConnectionPointIn>
+												<RelPosition x="0" y="3"/>
+												<Connection refConnectionPointOutId="3"/>
+											</ConnectionPointIn>
+										</InputVariable>
+										<InputVariable parameterName="PT">
+											<ConnectionPointIn>
+												<RelPosition x="0" y="6"/>
+												<Connection refConnectionPointOutId="4"/>
+											</ConnectionPointIn>
+										</InputVariable>
+									</InputVariables>
+									<OutputVariables>
+										<OutputVariable parameterName="Q">
+											<ConnectionPointOut connectionPointOutId="5">
+												<RelPosition x="5" y="3"/>
+											</ConnectionPointOut>
+										</OutputVariable>
+										<OutputVariable parameterName="ET">
+											<ConnectionPointOut connectionPointOutId="6">
+												<RelPosition x="5" y="6"/>
+											</ConnectionPointOut>
+										</OutputVariable>
+									</OutputVariables>
+								</FbdObject>
+								<LdObject xsi:type="Contact" operand="S1">
+									<RelPosition x="4" y="12"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="2"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="7">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Coil" operand="S1">
+									<RelPosition x="32" y="4"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="5"/>
+										<Connection refConnectionPointOutId="7">
+											<RelPosition x="-10" y="0"/>
+											<RelPosition x="-10" y="8"/>
+										</Connection>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="8">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="RightPowerRail">
+									<RelPosition x="40" y="0"/>
+									<ConnectionPointIn>
+										<RelPosition x="0" y="7"/>
+										<Connection refConnectionPointOutId="8"/>
+									</ConnectionPointIn>
+								</LdObject>
+							</Rung>
+							<Rung evaluationOrder="4">
+								<RelPosition x="1" y="43"/>
+								<LdObject xsi:type="LeftPowerRail">
+									<RelPosition x="1" y="0"/>
+									<ConnectionPointOut connectionPointOutId="1">
+										<RelPosition x="0" y="5"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Contact" negated="true" operand="S2TON.Q">
+									<RelPosition x="4" y="2"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="1"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="2">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Contact" operand="S2">
+									<RelPosition x="11" y="2"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="2"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="3">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Coil" operand="S2">
+									<RelPosition x="32" y="2"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="3"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="4">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="RightPowerRail">
+									<RelPosition x="40" y="0"/>
+									<ConnectionPointIn>
+										<RelPosition x="0" y="5"/>
+										<Connection refConnectionPointOutId="4"/>
+									</ConnectionPointIn>
+								</LdObject>
+							</Rung>
+							<Rung evaluationOrder="5">
+								<RelPosition x="1" y="51"/>
+								<CommonObject xsi:type="Comment">
+									<RelPosition x="1" y="0"/>
+									<Content xsi:type="SimpleText">Output</Content>
+								</CommonObject>
+								<LdObject xsi:type="LeftPowerRail">
+									<RelPosition x="1" y="0"/>
+									<ConnectionPointOut connectionPointOutId="1">
+										<RelPosition x="0" y="5"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Contact" operand="S1">
+									<RelPosition x="4" y="2"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="1"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="2">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="Coil" operand="Output">
+									<RelPosition x="32" y="2"/>
+									<ConnectionPointIn>
+										<RelPosition x="2" y="3"/>
+										<Connection refConnectionPointOutId="2"/>
+									</ConnectionPointIn>
+									<ConnectionPointOut connectionPointOutId="3">
+										<RelPosition x="4" y="3"/>
+									</ConnectionPointOut>
+								</LdObject>
+								<LdObject xsi:type="RightPowerRail">
+									<RelPosition x="40" y="0"/>
+									<ConnectionPointIn>
+										<RelPosition x="0" y="5"/>
+										<Connection refConnectionPointOutId="3"/>
+									</ConnectionPointIn>
+								</LdObject>
+							</Rung>
+						</BodyContent>
+					</MainBody>
+				</FunctionBlock>
+				<FunctionBlock name="FBD_FB">
+					<Parameters>
+						<OutputVars>
+							<Variable name="Output" orderWithinParamSet="1">
+								<Type>
+									<TypeName>BOOL</TypeName>
+								</Type>
+							</Variable>
+						</OutputVars>
+					</Parameters>
+					<Vars accessSpecifier="private">
+						<Variable name="S1">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+							<InitialValue>
+								<SimpleValue value="TRUE"/>
+							</InitialValue>
+						</Variable>
+						<Variable name="S2">
+							<Type>
+								<TypeName>BOOL</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="S1TON">
+							<Type>
+								<TypeName>TON</TypeName>
+							</Type>
+						</Variable>
+						<Variable name="S2TON">
+							<Type>
+								<TypeName>TON</TypeName>
+							</Type>
+						</Variable>
+					</Vars>
+					<MainBody>
+						<BodyContent xsi:type="FBD">
+							<Network xsi:type="FbdNetwork" evaluationOrder="1">
+								<RelPosition x="1" y="1" />
+								<Size x="41" y="23" />
+								<CommonObject xsi:type="Comment">
+									<RelPosition x="0" y="0" />
+									<Content xsi:type="SimpleText">S1 -> S2</Content>
+								</CommonObject>
+								<FbdObject xsi:type="DataSource" identifier="S1">
+									<RelPosition x="2" y="5" />
+									<Size x="4" y="2" />
+									<ConnectionPointOut connectionPointOutId="1">
+										<RelPosition x="4" y="1" />
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="DataSource" identifier="T#1s">
+									<RelPosition x="2" y="8" />
+									<Size x="4" y="2" />
+									<ConnectionPointOut connectionPointOutId="2">
+										<RelPosition x="4" y="1" />
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="Block" typeName="TON" instanceName="S1TON">
+									<RelPosition x="7" y="2" />
+									<Size x="5" y="8" />
+									<InputVariables>
+										<InputVariable parameterName="IN">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="3" />
+												<Connection refConnectionPointOutId="1">
+													<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+										<InputVariable parameterName="PT">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="6" />
+												<Connection refConnectionPointOutId="2">
+													<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+									</InputVariables>
+									<OutputVariables>
+										<OutputVariable parameterName="Q">
+											<ConnectionPointOut connectionPointOutId="3">
+												<RelPosition x="6" y="3" />
+											</ConnectionPointOut>
+										</OutputVariable>
+										<OutputVariable parameterName="ET">
+											<ConnectionPointOut connectionPointOutId="4">
+												<!-- Although there is nothing connected to 'S1TON.ET' there is still a connection point given. -->
+												<RelPosition x="6" y="6" />
+											</ConnectionPointOut>
+										</OutputVariable>
+									</OutputVariables>
+								</FbdObject>
+								<FbdObject xsi:type="DataSource" identifier="S1">
+									<RelPosition x="18" y="8" />
+									<Size x="4" y="2" />
+									<ConnectionPointOut connectionPointOutId="5">
+										<RelPosition x="4" y="1" />
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="Block" typeName="AND">
+									<RelPosition x="23" y="3" />
+									<Size x="5" y="8" />
+									<InputVariables>
+										<InputVariable parameterName="IN1" suppressName="true" negated="true">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="3" />
+												<Connection refConnectionPointOutId="3">
+													<RelPosition x="-7" y="0" />
+													<!-- This connection is a straight horizontal line and no 'RelPosition' would be necessary. Anyhow a 'RelPostion is given to indicate
+																 a supporting point which is identical to the upper edge of the connection from 'S1TON.Q' to the 'OR' function. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+										<InputVariable parameterName="IN2" suppressName="true">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="6" />
+												<Connection refConnectionPointOutId="5">
+													<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+									</InputVariables>
+									<OutputVariables>
+										<OutputVariable parameterName="OUT" suppressName="true">
+											<ConnectionPointOut connectionPointOutId="6">
+												<RelPosition x="6" y="3" />
+											</ConnectionPointOut>
+										</OutputVariable>
+									</OutputVariables>
+								</FbdObject>
+								<FbdObject xsi:type="DataSink" identifier="S1">
+									<RelPosition x="29" y="6" />
+									<Size x="4" y="2" />
+									<ConnectionPointIn>
+										<RelPosition x="0" y="1" />
+										<Connection refConnectionPointOutId="6">
+											<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+										</Connection>
+									</ConnectionPointIn>
+								</FbdObject>
+								<FbdObject xsi:type="DataSource" identifier="S2">
+									<RelPosition x="18" y="19" />
+									<Size x="4" y="2" />
+									<ConnectionPointOut connectionPointOutId="7">
+										<RelPosition x="4" y="1" />
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="Block" typeName="OR">
+									<RelPosition x="23" y="14" />
+									<Size x="5" y="8" />
+									<InputVariables>
+										<InputVariable parameterName="IN1" suppressName="true">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="3" />
+												<Connection refConnectionPointOutId="3">
+													<RelPosition x="-7" y="0" />
+													<!-- Positions are relative to superior 'ConnectionPointIn'. -->
+													<RelPosition x="-7" y="-11" />
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+										<InputVariable parameterName="IN2" suppressName="true">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="6" />
+												<Connection refConnectionPointOutId="7">
+													<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+									</InputVariables>
+									<OutputVariables>
+										<OutputVariable parameterName="OUT" suppressName="true">
+											<ConnectionPointOut connectionPointOutId="8">
+												<RelPosition x="6" y="3" />
+											</ConnectionPointOut>
+										</OutputVariable>
+									</OutputVariables>
+								</FbdObject>
+								<FbdObject xsi:type="DataSink" identifier="S2">
+									<RelPosition x="29" y="16" />
+									<Size x="4" y="2" />
+									<ConnectionPointIn>
+										<RelPosition x="0" y="1" />
+										<Connection refConnectionPointOutId="8">
+											<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+										</Connection>
+									</ConnectionPointIn>
+								</FbdObject>
+							</Network>
+							<Network xsi:type="FbdNetwork" evaluationOrder="2">
+								<RelPosition x="1" y="26" />
+								<Size x="41" y="23" />
+								<CommonObject xsi:type="Comment">
+									<RelPosition x="0" y="0" />
+									<Content xsi:type="SimpleText">S2 -> S1</Content>
+								</CommonObject>
+								<FbdObject xsi:type="DataSource" identifier="S2">
+									<RelPosition x="2" y="5" />
+									<Size x="4" y="2" />
+									<ConnectionPointOut connectionPointOutId="1">
+										<RelPosition x="4" y="1" />
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="DataSource" identifier="T#1s">
+									<RelPosition x="2" y="8" />
+									<Size x="4" y="2" />
+									<ConnectionPointOut connectionPointOutId="2">
+										<RelPosition x="4" y="1" />
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="Block" typeName="TON" instanceName="S2TON">
+									<RelPosition x="7" y="2" />
+									<Size x="5" y="8" />
+									<InputVariables>
+										<InputVariable parameterName="IN">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="3" />
+												<Connection refConnectionPointOutId="1">
+													<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+										<InputVariable parameterName="PT">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="6" />
+												<Connection refConnectionPointOutId="2">
+													<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+									</InputVariables>
+									<OutputVariables>
+										<OutputVariable parameterName="Q">
+											<ConnectionPointOut connectionPointOutId="3">
+												<RelPosition x="6" y="3" />
+											</ConnectionPointOut>
+										</OutputVariable>
+										<OutputVariable parameterName="ET">
+											<ConnectionPointOut connectionPointOutId="4">
+												<!-- Although there is nothing connected to 'S2TON.ET' there is still a connection point given. -->
+												<RelPosition x="6" y="6" />
+											</ConnectionPointOut>
+										</OutputVariable>
+									</OutputVariables>
+								</FbdObject>
+								<FbdObject xsi:type="DataSource" identifier="S2">
+									<RelPosition x="18" y="8" />
+									<Size x="4" y="2" />
+									<ConnectionPointOut connectionPointOutId="5">
+										<RelPosition x="4" y="1" />
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="Block" typeName="AND">
+									<RelPosition x="23" y="3" />
+									<Size x="5" y="8" />
+									<InputVariables>
+										<InputVariable parameterName="IN1" suppressName="true" negated="true">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="3" />
+												<Connection refConnectionPointOutId="3">
+													<RelPosition x="-7" y="0" />
+													<!-- This connection is a straight horizontal line and no 'RelPosition' would be necessary. Anyhow a 'RelPostion is given to indicate
+																 a supporting point which is identical to the upper edge of the connection from 'S2TON.Q' to the 'OR' function. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+										<InputVariable parameterName="IN2" suppressName="true">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="6" />
+												<Connection refConnectionPointOutId="5">
+													<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+									</InputVariables>
+									<OutputVariables>
+										<OutputVariable parameterName="OUT" suppressName="true">
+											<ConnectionPointOut connectionPointOutId="6">
+												<RelPosition x="6" y="3" />
+											</ConnectionPointOut>
+										</OutputVariable>
+									</OutputVariables>
+								</FbdObject>
+								<FbdObject xsi:type="DataSink" identifier="S2">
+									<RelPosition x="29" y="6" />
+									<Size x="4" y="2" />
+									<ConnectionPointIn>
+										<RelPosition x="0" y="1" />
+										<Connection refConnectionPointOutId="6">
+											<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+										</Connection>
+									</ConnectionPointIn>
+								</FbdObject>
+								<FbdObject xsi:type="DataSource" identifier="S1">
+									<RelPosition x="18" y="19" />
+									<Size x="4" y="2" />
+									<ConnectionPointOut connectionPointOutId="7">
+										<RelPosition x="4" y="1" />
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="Block" typeName="OR">
+									<RelPosition x="23" y="14" />
+									<Size x="5" y="8" />
+									<InputVariables>
+										<InputVariable parameterName="IN1" suppressName="true">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="3" />
+												<Connection refConnectionPointOutId="3">
+													<RelPosition x="-7" y="0" />
+													<!-- Positions are relative to superior 'ConnectionPointIn'. -->
+													<RelPosition x="-7" y="-11" />
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+										<InputVariable parameterName="IN2" suppressName="true">
+											<ConnectionPointIn>
+												<RelPosition x="-1" y="6" />
+												<Connection refConnectionPointOutId="7">
+													<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+												</Connection>
+											</ConnectionPointIn>
+										</InputVariable>
+									</InputVariables>
+									<OutputVariables>
+										<OutputVariable parameterName="OUT" suppressName="true">
+											<ConnectionPointOut connectionPointOutId="8">
+												<RelPosition x="6" y="3" />
+											</ConnectionPointOut>
+										</OutputVariable>
+									</OutputVariables>
+								</FbdObject>
+								<FbdObject xsi:type="DataSink" identifier="S1">
+									<RelPosition x="29" y="16" />
+									<Size x="4" y="2" />
+									<ConnectionPointIn>
+										<RelPosition x="0" y="1" />
+										<Connection refConnectionPointOutId="8">
+											<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+										</Connection>
+									</ConnectionPointIn>
+								</FbdObject>
+							</Network>
+							<Network xsi:type="FbdNetwork" evaluationOrder="3">
+								<RelPosition x="1" y="51" />
+								<Size x="41" y="8" />
+								<CommonObject xsi:type="Comment">
+									<RelPosition x="0" y="0" />
+									<Content xsi:type="SimpleText">S1 -> OUTPUT</Content>
+								</CommonObject>
+								<FbdObject xsi:type="DataSource" identifier="S1">
+									<RelPosition x="2" y="3" />
+									<Size x="4" y="2" />
+									<ConnectionPointOut connectionPointOutId="1">
+										<RelPosition x="4" y="1" />
+									</ConnectionPointOut>
+								</FbdObject>
+								<FbdObject xsi:type="DataSink" identifier="Output">
+									<RelPosition x="20" y="3" />
+									<Size x="6" y="2" />
+									<ConnectionPointIn>
+										<RelPosition x="0" y="1" />
+										<Connection refConnectionPointOutId="1">
+											<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+										</Connection>
+									</ConnectionPointIn>
+								</FbdObject>
+							</Network>
+						</BodyContent>
+					</MainBody>
+				</FunctionBlock>
+				<FunctionBlock name="SFC_FB">
+					<Parameters>
+						<OutputVars>
+							<Variable name="Output" orderWithinParamSet="1">
+								<Documentation xsi:type="SimpleText">
+									Output flickers: for 1 second it is true and for the next second it is false
+								</Documentation>
+								<Type>
+									<TypeName>BOOL</TypeName>
+								</Type>
+							</Variable>
+						</OutputVars>
+					</Parameters>
+					<MainBody>
+						<BodyContent xsi:type="SFC">
+							<!-- SFC-->
+							<SfcObject xsi:type="Step" name="S1" initialStep="true">
+								<RelPosition x="21" y="5" />
+								<Size x="8" y="6" />
+								<ConnectionPointIn>
+									<RelPosition x="4" y="0" />
+									<Connection refConnectionPointOutId="8">
+										<!-- ### to do: correct the insert coordinates of th connection line. -->
+										<RelPosition x="0" y="-2"/>
+										<!-- Positions are relative to superior 'ConnectionPointIn'. -->
+										<RelPosition x="-23" y="-2"/>
+										<RelPosition x="-23" y="45"/>
+										<RelPosition x="0" y="45"/>
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="1">
+									<RelPosition x="4" y="6" />
+								</ConnectionPointOut>
+								<ConnectionPointOutAction connectionPointOutId="2">
+									<RelPosition x="8" y="3" />
+								</ConnectionPointOutAction>
+							</SfcObject>
+							<CommonObject xsi:type="ActionBlocks">
+								<RelPosition x="35" y="5" />
+								<Size x="10" y="6" />
+								<ConnectionPointIn>
+									<RelPosition x="0" y="3" />
+									<Connection refConnectionPointOutId="2">
+										<!-- Since this is connection is a straight horizontal line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ActionBlock>
+									<ActionQualifier qualifier="N" />
+									<ComplexOperand>Output</ComplexOperand>
+								</ActionBlock>
+							</CommonObject>
+							<SfcObject xsi:type="Transition">
+								<RelPosition x="22" y="15" />
+								<Size x="6" y="4" />
+								<ConnectionPointIn>
+									<RelPosition x="3" y="0" />
+									<Connection refConnectionPointOutId="1">
+										<!-- Since this connection is a straight vertical line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="3">
+									<RelPosition x="3" y="4" />
+								</ConnectionPointOut>
+								<Condition>
+									<GraphicalPredicate>
+										<ConnectionPointIn>
+											<RelPosition x="0" y="2" />
+											<Connection refConnectionPointOutId="4">
+												<!-- Since this connection is a straight horizontal line with known start and end point, no 'RelPosition' is necessary. -->
+											</Connection>
+										</ConnectionPointIn>
+										<GraphicalExpression xsi:type="FbdNetwork" evaluationOrder="0">
+											<RelPosition x="-17" y="-2"/>
+											<!-- Position is relative to superior 'Transition'. -->
+											<Size x="17" y="10"/>
+											<FbdObject xsi:type="Block" typeName="GT">
+												<RelPosition x="5" y="1" />
+												<Size x="5" y="8" />
+												<InputVariables>
+													<InputVariable parameterName="IN1" suppressName="true">
+														<ConnectionPointIn>
+															<RelPosition x="-1" y="3" />
+															<Connection refConnectionPointOutId="5">
+																<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+															</Connection>
+														</ConnectionPointIn>
+													</InputVariable>
+													<InputVariable parameterName="IN2" suppressName="true">
+														<ConnectionPointIn>
+															<RelPosition x="-1" y="6" />
+															<Connection refConnectionPointOutId="6">
+																<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+															</Connection>
+														</ConnectionPointIn>
+													</InputVariable>
+												</InputVariables>
+												<OutputVariables>
+													<OutputVariable parameterName="OUT" suppressName="true">
+														<ConnectionPointOut connectionPointOutId="4">
+															<RelPosition x="6" y="3" />
+														</ConnectionPointOut>
+													</OutputVariable>
+												</OutputVariables>
+											</FbdObject>
+											<FbdObject xsi:type="DataSource" identifier="S1.T">
+												<RelPosition x="0" y="3" />
+												<Size x="4" y="2" />
+												<ConnectionPointOut connectionPointOutId="5">
+													<RelPosition x="4" y="1" />
+												</ConnectionPointOut>
+											</FbdObject>
+											<FbdObject xsi:type="DataSource" identifier="T#1s">
+												<RelPosition x="0" y="6" />
+												<Size x="4" y="2" />
+												<ConnectionPointOut connectionPointOutId="6">
+													<RelPosition x="4" y="1" />
+												</ConnectionPointOut>
+											</FbdObject>
+										</GraphicalExpression>
+									</GraphicalPredicate>
+								</Condition>
+							</SfcObject>
+							<SfcObject xsi:type="Step" name="S2">
+								<RelPosition x="21" y="24" />
+								<Size x="8" y="6" />
+								<ConnectionPointIn>
+									<RelPosition x="4" y="0" />
+									<Connection refConnectionPointOutId="3">
+										<!-- Since this connection is a straight vertical line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="7">
+									<RelPosition x="3" y="4" />
+								</ConnectionPointOut>
+							</SfcObject>
+							<SfcObject xsi:type="Transition">
+								<RelPosition x="165" y="224" />
+								<Size x="6" y="4" />
+								<ConnectionPointIn>
+									<RelPosition x="3" y="0" />
+									<Connection refConnectionPointOutId="10">
+										<!-- Since this connection is a straight vertical line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="8">
+									<RelPosition x="3" y="4" />
+								</ConnectionPointOut>
+								<Condition>
+									<GraphicalPredicate>
+										<ConnectionPointIn>
+											<RelPosition x="0" y="2" />
+											<Connection refConnectionPointOutId="9">
+												<!-- Since this connection is a straight horizontal line with known start and end point, no 'RelPosition' is necessary. -->
+											</Connection>
+										</ConnectionPointIn>
+										<GraphicalExpression xsi:type="FbdNetwork" evaluationOrder="0">
+											<RelPosition x="-17" y="-2"/>
+											<!-- Position is relative to superior 'Transition'. -->
+											<Size x="17" y="10"/>
+											<FbdObject xsi:type="Block" typeName="GT">
+												<RelPosition x="5" y="1" />
+												<Size x="5" y="8" />
+												<InputVariables>
+													<InputVariable parameterName="IN1" suppressName="true">
+														<ConnectionPointIn>
+															<RelPosition x="-1" y="3" />
+															<Connection refConnectionPointOutId="10">
+																<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+															</Connection>
+														</ConnectionPointIn>
+													</InputVariable>
+													<InputVariable parameterName="IN2" suppressName="true">
+														<ConnectionPointIn>
+															<RelPosition x="-1" y="6" />
+															<Connection refConnectionPointOutId="11">
+																<!-- Since start and end point have the same position, no 'RelPosition' is necessary. -->
+															</Connection>
+														</ConnectionPointIn>
+													</InputVariable>
+												</InputVariables>
+												<OutputVariables>
+													<OutputVariable parameterName="OUT" suppressName="true">
+														<ConnectionPointOut connectionPointOutId="9">
+															<RelPosition x="6" y="3" />
+														</ConnectionPointOut>
+													</OutputVariable>
+												</OutputVariables>
+											</FbdObject>
+											<FbdObject xsi:type="DataSource" identifier="S2.T">
+												<RelPosition x="0" y="3" />
+												<Size x="4" y="2" />
+												<ConnectionPointOut connectionPointOutId="10">
+													<RelPosition x="4" y="1" />
+												</ConnectionPointOut>
+											</FbdObject>
+											<FbdObject xsi:type="DataSource" identifier="T#1s">
+												<RelPosition x="0" y="6" />
+												<Size x="4" y="2" />
+												<ConnectionPointOut connectionPointOutId="11">
+													<RelPosition x="4" y="1" />
+												</ConnectionPointOut>
+											</FbdObject>
+										</GraphicalExpression>
+									</GraphicalPredicate>
+								</Condition>
+							</SfcObject>
+						</BodyContent>
+					</MainBody>
+				</FunctionBlock>
+				<!-- ======================= Optional examples: ======================= -->
+				<FunctionBlock name="SFC_FB2">
+					<!-- This is another SFC example. It demonstrates:
+					             - that a "SelectionConvergence" may be used without a corresponding "SelectionDivergence"
+											 - a variable (as ST expression) directly connected to a transition
+											 - a named/coded transition
+											 - a named/coded action
+					-->
+					<Parameters>
+						<OutputVars>
+							<Variable name="Output" orderWithinParamSet="1">
+								<Documentation xsi:type="SimpleText">
+									Output flickers: for 1 second it is true and for the next second it is false
+								</Documentation>
+								<Type>
+									<TypeName>BOOL</TypeName>
+								</Type>
+							</Variable>
+						</OutputVars>
+					</Parameters>
+					<MainBody>
+						<BodyContent xsi:type="SFC">
+							<SfcObject xsi:type="Step" name="S0" initialStep="true">
+								<RelPosition x="21" y="4" />
+								<Size x="8" y="6" />
+								<ConnectionPointOut connectionPointOutId="1">
+									<RelPosition x="4" y="6" />
+								</ConnectionPointOut>
+							</SfcObject>
+							<SfcObject xsi:type="Transition">
+								<RelPosition x="22" y="14" />
+								<Size x="6" y="4" />
+								<ConnectionPointIn>
+									<RelPosition x="3" y="0" />
+									<Connection refConnectionPointOutId="1">
+										<!-- Since this connection is a straight vertical line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="2">
+									<RelPosition x="3" y="4" />
+								</ConnectionPointOut>
+								<Condition>
+									<TextualPredicate>
+										<PredicateContent xsi:type="ST">
+											<ST>TRUE</ST>
+										</PredicateContent>
+									</TextualPredicate>
+								</Condition>
+							</SfcObject>
+							<SfcObject xsi:type="SelectionConvergence">
+								<RelPosition x="2" y="20" />
+								<Size x="23" y="2" />
+								<ConnectionPointIn>
+									<RelPosition x="0" y="2" />
+									<Connection refConnectionPointOutId="10">
+										<RelPosition x="0" y="37" />
+										<!-- Positions are relative to superior 'ConnectionPointIn'. -->
+										<RelPosition x="23" y="37" />
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointIn>
+									<RelPosition x="23" y="0" />
+									<Connection refConnectionPointOutId="2">
+										<!-- Since this connection is a straight vertical line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="3">
+									<RelPosition x="23" y="2" />
+								</ConnectionPointOut>
+							</SfcObject>
+							<SfcObject xsi:type="Step" name="S1">
+								<RelPosition x="21" y="23" />
+								<Size x="8" y="6" />
+								<ConnectionPointIn>
+									<RelPosition x="4" y="0" />
+									<Connection refConnectionPointOutId="3">
+										<!-- Since this connection is a straight vertical line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="4">
+									<RelPosition x="4" y="6" />
+								</ConnectionPointOut>
+								<ConnectionPointOutAction connectionPointOutId="5">
+									<RelPosition x="8" y="3" />
+								</ConnectionPointOutAction>
+							</SfcObject>
+							<CommonObject xsi:type="ActionBlocks">
+								<RelPosition x="35" y="23" />
+								<Size x="10" y="6" />
+								<ConnectionPointIn>
+									<RelPosition x="0" y="3" />
+									<Connection refConnectionPointOutId="5">
+										<!-- Since this connection is a straight horizontal line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ActionBlock>
+									<ActionQualifier qualifier="N" />
+									<ReferenceName>Action_1</ReferenceName>
+								</ActionBlock>
+							</CommonObject>
+							<SfcObject xsi:type="Transition">
+								<RelPosition x="22" y="33" />
+								<Size x="6" y="4" />
+								<ConnectionPointIn>
+									<RelPosition x="3" y="0" />
+									<Connection refConnectionPointOutId="4">
+										<!-- Since this connection is a straight vertical line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="6">
+									<RelPosition x="3" y="4" />
+								</ConnectionPointOut>
+								<Condition>
+									<GraphicalPredicate>
+										<ConnectionPointIn>
+											<RelPosition x="0" y="2" />
+											<Connection refConnectionPointOutId="8">
+												<!-- Since this connection is a straight horizontal line with known start and end point, no 'RelPosition' is necessary. -->
+											</Connection>
+										</ConnectionPointIn>
+										<GraphicalExpression xsi:type="LadderRung" evaluationOrder="0">
+											<RelPosition x="-17" y="-4"/>
+											<!-- Position is relative to superior 'Transition'. -->
+											<Size x="17" y="9"/>
+											<LdObject xsi:type="LeftPowerRail">
+												<RelPosition x="3" y="2"/>
+												<ConnectionPointOut connectionPointOutId="7">
+													<RelPosition x="0" y="2"/>
+												</ConnectionPointOut>
+											</LdObject>
+											<LdObject xsi:type="CompareContact" compareOperator=">" operand1="S1.T" operand2="T#1s">
+												<RelPosition x="8" y="1"/>
+												<ConnectionPointIn>
+													<RelPosition x="2" y="3"/>
+													<Connection refConnectionPointOutId="7"/>
+												</ConnectionPointIn>
+												<ConnectionPointOut connectionPointOutId="8">
+													<RelPosition x="4" y="3"/>
+												</ConnectionPointOut>
+												<Type>TIME</Type>
+											</LdObject>
+										</GraphicalExpression>
+									</GraphicalPredicate>
+								</Condition>
+							</SfcObject>
+							<SfcObject xsi:type="Step" name="S2">
+								<RelPosition x="21" y="42" />
+								<Size x="8" y="6" />
+								<ConnectionPointIn>
+									<RelPosition x="4" y="0" />
+									<Connection refConnectionPointOutId="6">
+										<!-- Since this connection is a straight vertical line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="9">
+									<RelPosition x="4" y="6" />
+								</ConnectionPointOut>
+							</SfcObject>
+							<SfcObject xsi:type="Transition">
+								<RelPosition x="22" y="52" />
+								<Size x="6" y="4" />
+								<ConnectionPointIn>
+									<RelPosition x="3" y="0" />
+									<Connection refConnectionPointOutId="9">
+										<!-- Since this connection is a straight vertical line with known start and end point, no 'RelPosition' is necessary. -->
+									</Connection>
+								</ConnectionPointIn>
+								<ConnectionPointOut connectionPointOutId="10">
+									<RelPosition x="3" y="4" />
+								</ConnectionPointOut>
+								<Condition>
+									<Reference name="Transition_2" />
+								</Condition>
+							</SfcObject>
+						</BodyContent>
+					</MainBody>
+					<Action name="Action_1">
+						<Body>
+							<BodyContent xsi:type="ST">
+								<ST>
+									<![CDATA[
+										Output := Action_1.Q;
+										]]>
+									<!-- Usage of ".Q" requires SFC with "final scan" logic in order to reset "Output" when Action becomes inactive. -->
+								</ST>
+							</BodyContent>
+						</Body>
+					</Action>
+					<Transition name="Transition_2">
+						<Condition>
+							<PredicateContent xsi:type="ST">
+								<ST>
+									<![CDATA[
+										Transition_2 := S2.T &gt; T#1s;
+										]]>
+								</ST>
+							</PredicateContent>
+						</Condition>
+					</Transition>
+				</FunctionBlock>
+			</NamespaceDecl>
+		</GlobalNamespace>
+	</Types>
+	<Instances>
+		<Configuration name="MyConfiguration">
+			<Resource name="CPU01" resourceTypeName="SomeResourceType">
+				<GlobalVars>
+					<Variable name="Q8_1">
+						<Type>
+							<TypeName>BOOL</TypeName>
+						</Type>
+						<Address location="Q" size="X" address="8.1"/>
+					</Variable>
+					<Variable name="Q8_2">
+						<Type>
+							<TypeName>BOOL</TypeName>
+						</Type>
+						<Address location="Q" size="X" address="8.2"/>
+					</Variable>
+					<Variable name="Q8_3">
+						<Type>
+							<TypeName>BOOL</TypeName>
+						</Type>
+						<Address location="Q" size="X" address="8.3"/>
+					</Variable>
+					<Variable name="Q8_4">
+						<Type>
+							<TypeName>BOOL</TypeName>
+						</Type>
+						<Address location="Q" size="X" address="8.4"/>
+					</Variable>
+					<Variable name="Q8_5">
+						<Type>
+							<TypeName>BOOL</TypeName>
+						</Type>
+						<Address location="Q" size="X" address="8.5"/>
+					</Variable>
+					<Variable name="Q8_6">
+						<Type>
+							<TypeName>BOOL</TypeName>
+						</Type>
+						<Address location="Q" size="X" address="8.6"/>
+					</Variable>
+				</GlobalVars>
+				<Task xsi:type="StandardTask" name="T100" interval="100000" priority="1" />
+				<ProgramInstance name="PGI1" typeName="Main" associatedTaskName="T100" />
+			</Resource>
+		</Configuration>
+	</Instances>
+</Project>

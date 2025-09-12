@@ -19,8 +19,14 @@ def parseAllExamples():
         ('TestData15', r'example_data\XML-Testproject-V201.xml')
     ]
     for ml in xmls:
+        fmt = pyPlcXml.validate(ml[1])
+        print('Format: ', fmt)
+
+        print('Trying to parse: ', ml[1])
         data = pyPlcXml.parse(ml[1], ignoredNs = ())
         fpath= os.path.join(os.path.dirname(os.path.realpath(__file__)), 'testOut', f'{ml[0]}_dataDump.json')
+        
+        print('Dumping json to: ', fpath)
         json.dump(data, open(fpath, 'w' ), indent=2)
 
 if __name__ == '__main__':

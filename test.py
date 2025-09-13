@@ -33,7 +33,30 @@ def parseAllExamples():
         ('TestData12', r'example_data\tc6_v200_Example6.xml'),
         ('TestData13', r'example_data\tc6_v201_Example1.xml'),
         ('TestData14', r'example_data\tc6_v201_Example2.xml'),
-        ('TestData15', r'example_data\XML-Testproject-V201.xml')
+        ('TestData15', r'example_data\XML-Testproject-V201.xml'),
+        ('TestData16', r'example_data\PLCOpenXML_Scenario_1.xml'),
+        ('TestData17', r'example_data\PLCOpenXML_Scenario_2.xml'),
+        ('TestData18', r'example_data\PLCOpenXML_Scenario_3.xml'),
+        ('TestData19', r'example_data\PLCOpenXML_Scenario_4a.xml'),
+        ('TestData20', r'example_data\PLCOpenXML_Scenario_4b.xml'),
+        ('TestData21', r'example_data\PLCOpenXML_Scenario_5.xml'),
+        ('TestData22', r'example_data\PLCOpenXML_Scenario_7.xml'),
+        ('TestData23', r'example_data\PLCOpenXML_Scenario_8.xml'),
+        ('TestData24', r'example_data\PLCOpenXML_Scenario_9.xml'),
+        ('TestData25', r'example_data\PLCOpenXML_Scenario_10.xml'),
+        ('TestData26', r'example_data\PLCOpenXML_Scenario_11.xml'),
+        ('TestData27', r'example_data\PLCOpenXML_Scenario_12.xml'),
+        ('TestData28', r'example_data\PLCOpenXML_Scenario_13.xml'),
+        ('TestData29', r'example_data\PLCOpenXML_Scenario_14.xml'),
+        ('TestData30', r'example_data\PLCOpenXML_Scenario_15.xml'),
+        ('TestData31', r'example_data\PLCOpenXML_Scenario_16.xml'),
+        ('TestData32', r'example_data\PLCOpenXML_Scenario_17.xml'),
+        ('TestData33', r'example_data\PLCOpenXML_Scenario_18.xml'),
+        ('TestData34', r'example_data\PLCOpenXML_Scenario_19.xml'),
+        ('TestData35', r'example_data\PLCOpenXML_Scenario_20.xml'),
+        ('TestData36', r'example_data\PLCOpenXML_Scenario_21.xml'),
+        ('TestData37', r'example_data\PLCOpenXML_Scenario_22.xml'),
+        ('TestData38', r'example_data\PLCOpenXML_Scenario_23.xml'),
     ]
     for ml in xmls:
         fmt = pyPlcXml.validate(ml[1])
@@ -43,7 +66,7 @@ def parseAllExamples():
         data = pyPlcXml.parse(ml[1], ignoredNs = ())
         fpath= os.path.join(os.path.dirname(os.path.realpath(__file__)), 'testOut', f'{ml[0]}_dataDump.json')
         
-        traverseProject(data)
+        #traverseProject(data)
         
         print('Dumping json to: ', fpath)
         json.dump(data, open(fpath, 'w' ), indent=2)

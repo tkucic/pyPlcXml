@@ -74,36 +74,66 @@ def tc6Parse(pathToXml, tc6_version=file_type.tc6v201, ignoredNs=()):
     for invalidChar in ('\n', '  '):
         data['info']['contentDescription'] = data['info']['contentDescription'].replace(invalidChar, ' ')
 
+    #Start looking for namespaces and interesting stuff
+    data['namespaces'] = []
+
     #Find global POUs and Data types
-    gNsElement = root.find('ns:types', ns)
-    gNsItem = {
+    if 'Global' not in ignoredNs:
+        globalns = parseGlobalNamespace(root)
+        if globalns:
+            data['namespaces'].append(globalns)
+
+    #Find other namespaces (dont exist in TC6 but its in add data)
+    #Support for CODESYS elements in the instance node
+    codesys_ns = parseCodesysAddData(root)
+    if codesys_ns:
+        for nspace in codesys_ns:
+            if nspace.get('name') not in ignoredNs:
+                data['namespaces'].append(nspace)
+
+    #Support for TwinCat resources in addData
+    twincat_ns = parseTwincatAddData(root)
+    if twincat_ns:
+        for nspace in twincat_ns:
+            if nspace.get('name') not in ignoredNs:
+                data['namespaces'].append(nspace)
+
+    return data
+
+def parseGlobalNamespace(root):
+
+    devNs = {
         'name' : 'Global'
     }
-    #Find all global programs, function blocks, classes and functions (POUs)
-    gNsItem['prgs'] = []
-    gNsItem['fbs'] = []
-    gNsItem['fcs'] = []
-    gNsItem['class'] = []
 
-    for pou in gNsElement.find('ns:pous', ns).findall('ns:pou', ns):
+    #Find all global programs, function blocks, classes and functions (POUs)
+    devNs['prgs'] = []
+    devNs['fbs'] = []
+    devNs['fcs'] = []
+    devNs['class'] = []
+
+    for pou in root.find('ns:types/ns:pous', ns).findall('ns:pou', ns):
         temp = _parseTc6POU(pou)
         if temp.get('type') == 'program':
-            gNsItem['prgs'].append(temp)
+            devNs['prgs'].append(temp)
         elif temp.get('type') == 'functionBlock':
-            gNsItem['fbs'].append(temp)
+            devNs['fbs'].append(temp)
         elif temp.get('type') == 'function':
-            gNsItem['fcs'].append(temp)
+            devNs['fcs'].append(temp)
         elif temp.get('type') == 'class':
-            gNsItem['class'].append(temp)
+            devNs['class'].append(temp)
 
     ## Get data types
-    gNsItem['dts'] = [_parseTc6DT(dt) for dt in gNsElement.find('ns:dataTypes', ns).findall('ns:dataType', ns)]
-    gNsItem['vars'] = []
+    devNs['dts'] = [_parseTc6DT(dt) for dt in root.find('ns:types/ns:dataTypes', ns).findall('ns:dataType', ns)]
+    devNs['vars'] = []
 
-    #Find other namespaces (dont exist in TC6)
-    data['namespaces'] = [gNsItem]
+    #Return data only if there is anything found
+    if (devNs['prgs'] or devNs['fbs'] or devNs['fcs'] or devNs['class'] or devNs['dts']):
+        return devNs
+    return None
 
-    #Support for CODESYS elements in the instance node
+def parseCodesysAddData(root):
+    nsList = []
     for config in root.findall('./ns:instances/ns:configurations/ns:configuration', ns):
         for app in config.findall('./ns:resource', ns):
             devNs = {
@@ -132,11 +162,50 @@ def tc6Parse(pathToXml, tc6_version=file_type.tc6v201, ignoredNs=()):
                     elif temp.get('type') == 'class':
                         devNs['class'].append(temp)
 
-            #Now we add this namepace to the namespaces array only if it has code or data types inside
-            if (devNs['prgs'] or devNs['fbs'] or devNs['fcs'] or devNs['class'] or devNs['dts']) and devNs['name'] not in ignoredNs:
-                data['namespaces'].append(devNs)
+            #Return data only if there is anything found
+            if (devNs['prgs'] or devNs['fbs'] or devNs['fcs'] or devNs['class'] or devNs['dts']):
+                nsList.append(devNs)
 
-    return data
+    if len(nsList) > 0:
+        return nsList
+    return None
+
+def parseTwincatAddData(root):
+    nsList = []
+    for resource in root.findall('./ns:addData/ns:data/ns:resource', ns):
+        devNs = {
+            'name' : resource.get('name')
+        }
+        devNs['prgs'] = []
+        devNs['fbs'] = []
+        devNs['fcs'] = []
+        devNs['class'] = []
+        devNs['dts'] = []
+        devNs['vars'] = []
+
+        #Find all global programs, function blocks, classes and functions (POUs) located in addData
+        for addData in resource.findall('./ns:addData/ns:data', ns):
+            dataId = addData.get('name').split('/')[-1]
+            if dataId == 'datatype':
+                devNs['dts'].append(_parseTc6DT(addData.find('./ns:dataType', ns)))
+            elif dataId == 'pou':
+                temp = _parseTc6POU(addData.find('./ns:pou', ns))
+                if temp.get('type') == 'program':
+                    devNs['prgs'].append(temp)
+                elif temp.get('type') == 'functionBlock':
+                    devNs['fbs'].append(temp)
+                elif temp.get('type') == 'function':
+                    devNs['fcs'].append(temp)
+                elif temp.get('type') == 'class':
+                    devNs['class'].append(temp)
+
+        #Now we add this namepace to the namespaces array only if it has code or data types inside
+        if (devNs['prgs'] or devNs['fbs'] or devNs['fcs'] or devNs['class'] or devNs['dts']):
+            nsList.append(devNs)
+    
+    if len(nsList) > 0:
+        return nsList
+    return None
 
 def _parseTc6POU(pouNode):
     """Returns a dictionary of format:

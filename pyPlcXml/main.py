@@ -18,7 +18,8 @@ def parse(*args, **kwargs):
         case file_type.iec61131_10:
             return iec61131_10Parse(args[0], kwargs.get('ignoredNs', ()))
         case file_type.prepped:
-            return json.loads(f.read())
+            with open(args[0]) as f:
+                return json.loads(f.read())
     return None
         
 def validate(pathToXml):

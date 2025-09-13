@@ -15,7 +15,7 @@ setuptools.setup(
   author_email = 'tkucic@gmail.com',
   url = 'https://github.com/tkucic/pyPlcXml',
   download_url = 'https://github.com/tkucic/pyPlcXml/archive/v_01.tar.gz',
-  keywords = ['IEC61131-10', 'Industrial automation', 'PLC Xml'],
+  keywords = ['IEC61131-10', 'Industrial automation', 'PLC Xml', 'Codesys', 'Twincat'],
   install_requires=['lxml'],
   classifiers=[
     'Development Status :: 4 - Beta',      # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package

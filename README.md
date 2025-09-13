@@ -2,13 +2,19 @@
 
 This package provides a way to interface with various exported PLC xml formats and project structures programmatically and to provide a common data format between PLC vendors.  
 
-Supported file types are:
+Supported formats are exports from:
 
-- Codesys tc6v200 and tc6v201
+- Codesys3
+
+- Twincat
+
+- Beremiz
 
 - B&R Automation studio 4
 
-- IEC61131-10
+Additionally, parser supports:
+
+- IEC61131-10 format
 
 - preprocessed output of the pyPlcXml (json.dumps)
 

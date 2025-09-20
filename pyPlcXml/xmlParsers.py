@@ -167,9 +167,8 @@ def parseCodesysAddData(root):
                 varList['components'] = [_parseTc6Var(var, 'Resource Global') for var in varNode.findall('ns:variable', ns)]
                 devNs['vars'].append(varList)
 
-            datatypesNode = resource.find('.ns:dataTypes', ns)
-            if datatypesNode:
-                devNs['dts'] = [_parseTc6VarList(dt) for dt in datatypesNode.findall('ns:dataType', ns)]
+            for dt in resource.findall('./ns:addData/ns:data/ns:dataType', ns):
+                devNs['dts'].append(_parseTc6VarList(dt))
 
             for pou in resource.findall('./ns:addData/ns:data/ns:pou', ns):
                 temp = _parseTc6POU(pou)
@@ -397,14 +396,15 @@ def _parseTc6VarList(dtNode):
     }"""
     dtSet = {
         'name' : dtNode.get('name'),
-        'baseType' : dtNode[0][0].tag[37:],
+        'baseType' : '',
         'initialValue' : '',
         'attribute' : '', 
         'description' : _extractTc6Docs(dtNode.find('./ns:documentation', ns))
         }
     
-    baseType = dtSet.get('baseType')
+    baseType = dtNode[0][0].tag[37:]
     if baseType == 'enum':
+        dtSet['baseType'] = 'enum'
         dtSet['components'] = []
         for cpt in dtNode.findall('./ns:baseType/ns:enum/ns:values/ns:value', ns):
             dtSet['components'].append({
@@ -416,15 +416,36 @@ def _parseTc6VarList(dtNode):
             })
 
     elif baseType == 'struct':
+        dtSet['baseType'] = 'struct'
         dtSet['components'] = []
         for cpt in dtNode.findall('./ns:baseType/ns:struct/ns:variable', ns):
             dtSet['components'].append(_parseTc6Var(cpt, ''))
+    
+    elif baseType == 'array':
+        #If its an datatype converted to array this is handled different and has no components
+        dtSet['components'] = []
+        dtSet['baseType'] = _parseTc6Array(dtNode)
+
     else:
         #This is some generic varlist or error
         pass
 
     return dtSet
 
+def _parseTc6Array(node):
+    '''Takes in the root node of the type'''
+    derivedType = _parseTc6VarType(node.find('ns:baseType', ns))
+    dimNodes = node.findall('ns:dimension', ns)
+    dimTxt = ''
+    if dimNodes:
+        dimTxt = '['
+        for dim in dimNodes:
+            dimTxt += f"{dim.get('lower')}..{dim.get('upper')}"
+            dimTxt += ', '
+        dimTxt = dimTxt[:-2] #Remove last elements comma and space
+        dimTxt += ']'
+    return f"ARRAY{dimTxt} OF {derivedType[1]}"
+       
 def _parseTc6VarType(node):
     """Parses type node and returns then name of the data type used
      in this variable. Returns a tuple"""
@@ -443,22 +464,7 @@ def _parseTc6VarType(node):
 
     #Check if type is array
     elif node.find('ns:array', ns) != None:
-        arr = node.find('ns:array', ns)
-
-        #Find base type.
-        baseType = _parseTc6VarType(arr.find('ns:baseType', ns))
-
-        #Get dimensions
-        dims = arr.findall('ns:dimension', ns)
-        if len(dims) == 1:
-            dim = f"[{dims[0].get('lower')}..{dims[0].get('upper')}]"
-        elif len(dims) == 2:
-            dim = f"[{dims[0].get('lower')}..{dims[0].get('upper')}, {dims[1].get('lower')}..{dims[1].get('upper')}]"
-        else:
-            dim = f"[{dims[0].get('lower')}..{dims[0].get('upper')}, {dims[1].get('lower')}..{dims[1].get('upper')}, {dims[2].get('lower')}..{dims[2].get('upper')}]"
-        
-        #Finally assemble the type of the array
-        return ('array', f"ARRAY{dim} OF {baseType[1]}")
+        return ('array', _parseTc6Array(node.find('ns:array', ns)))
 
     else:
         #It can only be a elementary value

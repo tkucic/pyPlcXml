@@ -12,6 +12,8 @@ Supported formats are exports from:
 
 - B&R Automation studio 4
 
+- ABB Automation Builder
+
 Additionally, parser supports:
 
 - IEC61131-10 format

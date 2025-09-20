@@ -90,14 +90,15 @@ def tc6Parse(pathToXml, tc6_version=file_type.tc6v201, ignoredNs=()):
         for nspace in codesys_ns:
             if nspace.get('name') not in ignoredNs:
                 data['namespaces'].append(nspace)
-
+        return data
     #Support for TwinCat resources in addData
     twincat_ns = parseTwincatAddData(root)
     if twincat_ns:
         for nspace in twincat_ns:
             if nspace.get('name') not in ignoredNs:
                 data['namespaces'].append(nspace)
-
+        return data
+    
     return data
 
 def parseGlobalNamespace(root):
@@ -107,10 +108,25 @@ def parseGlobalNamespace(root):
     }
 
     #Find all global programs, function blocks, classes and functions (POUs)
+    devNs['vars'] = []
+    devNs['dts'] = []
     devNs['prgs'] = []
     devNs['fbs'] = []
     devNs['fcs'] = []
     devNs['class'] = []
+
+    #there can be multiple globalVar lists, each with name
+    for varNode in root.findall('ns:types/ns:globalVars', ns):
+        varList = {
+            'name' : varNode.get('name'),
+            'vars' : []
+        }
+        varList['vars'] = [_parseTc6Var(var, 'Global') for var in varNode.findall('ns:variable', ns)]
+        devNs['vars'].append(varList)
+    
+    datatypesNode = root.find('ns:types/ns:dataTypes', ns)
+    if datatypesNode:
+        devNs['dts'] = [_parseTc6VarList(dt) for dt in datatypesNode.findall('ns:dataType', ns)]
 
     for pou in root.find('ns:types/ns:pous', ns).findall('ns:pou', ns):
         temp = _parseTc6POU(pou)
@@ -123,47 +139,51 @@ def parseGlobalNamespace(root):
         elif temp.get('type') == 'class':
             devNs['class'].append(temp)
 
-    ## Get data types
-    devNs['dts'] = [_parseTc6DT(dt) for dt in root.find('ns:types/ns:dataTypes', ns).findall('ns:dataType', ns)]
-    devNs['vars'] = []
-
     #Return data only if there is anything found
-    if (devNs['prgs'] or devNs['fbs'] or devNs['fcs'] or devNs['class'] or devNs['dts']):
+    if (devNs['prgs'] or devNs['fbs'] or devNs['fcs'] or devNs['class'] or devNs['dts'] or devNs['vars']):
         return devNs
     return None
 
 def parseCodesysAddData(root):
     nsList = []
     for config in root.findall('./ns:instances/ns:configurations/ns:configuration', ns):
-        for app in config.findall('./ns:resource', ns):
+        for resource in config.findall('./ns:resource', ns):
             devNs = {
                 'name' : config.get('name')
             }
+            devNs['vars'] = []
+            devNs['dts'] = []
             devNs['prgs'] = []
             devNs['fbs'] = []
             devNs['fcs'] = []
             devNs['class'] = []
-            devNs['dts'] = []
-            devNs['vars'] = []
 
-            #Find all global programs, function blocks, classes and functions (POUs) located in addData
-            for addData in app.findall('./ns:addData/ns:data', ns):
-                dataId = addData.get('name').split('/')[-1]
-                if dataId == 'datatype':
-                    devNs['dts'].append(_parseTc6DT(addData.find('./ns:dataType', ns)))
-                elif dataId == 'pou':
-                    temp = _parseTc6POU(addData.find('./ns:pou', ns))
-                    if temp.get('type') == 'program':
-                        devNs['prgs'].append(temp)
-                    elif temp.get('type') == 'functionBlock':
-                        devNs['fbs'].append(temp)
-                    elif temp.get('type') == 'function':
-                        devNs['fcs'].append(temp)
-                    elif temp.get('type') == 'class':
-                        devNs['class'].append(temp)
+            #there can be multiple globalVar lists, each with name
+            for varNode in resource.findall('.ns:globalVars', ns):
+                varList = {
+                    'name' : varNode.get('name'),
+                    'components' : []
+                }
+                varList['components'] = [_parseTc6Var(var, 'Resource Global') for var in varNode.findall('ns:variable', ns)]
+                devNs['vars'].append(varList)
 
+            datatypesNode = resource.find('.ns:dataTypes', ns)
+            if datatypesNode:
+                devNs['dts'] = [_parseTc6VarList(dt) for dt in datatypesNode.findall('ns:dataType', ns)]
+
+            for pou in resource.findall('./ns:addData/ns:data/ns:pou', ns):
+                temp = _parseTc6POU(pou)
+                if temp.get('type') == 'program':
+                    devNs['prgs'].append(temp)
+                elif temp.get('type') == 'functionBlock':
+                    devNs['fbs'].append(temp)
+                elif temp.get('type') == 'function':
+                    devNs['fcs'].append(temp)
+                elif temp.get('type') == 'class':
+                    devNs['class'].append(temp)
+            
             #Return data only if there is anything found
-            if (devNs['prgs'] or devNs['fbs'] or devNs['fcs'] or devNs['class'] or devNs['dts']):
+            if (devNs['prgs'] or devNs['fbs'] or devNs['fcs'] or devNs['class'] or devNs['dts'] or devNs['vars']):
                 nsList.append(devNs)
 
     if len(nsList) > 0:
@@ -176,31 +196,39 @@ def parseTwincatAddData(root):
         devNs = {
             'name' : resource.get('name')
         }
+        devNs['vars'] = []
+        devNs['dts'] = []
         devNs['prgs'] = []
         devNs['fbs'] = []
         devNs['fcs'] = []
         devNs['class'] = []
-        devNs['dts'] = []
-        devNs['vars'] = []
 
-        #Find all global programs, function blocks, classes and functions (POUs) located in addData
-        for addData in resource.findall('./ns:addData/ns:data', ns):
-            dataId = addData.get('name').split('/')[-1]
-            if dataId == 'datatype':
-                devNs['dts'].append(_parseTc6DT(addData.find('./ns:dataType', ns)))
-            elif dataId == 'pou':
-                temp = _parseTc6POU(addData.find('./ns:pou', ns))
-                if temp.get('type') == 'program':
-                    devNs['prgs'].append(temp)
-                elif temp.get('type') == 'functionBlock':
-                    devNs['fbs'].append(temp)
-                elif temp.get('type') == 'function':
-                    devNs['fcs'].append(temp)
-                elif temp.get('type') == 'class':
-                    devNs['class'].append(temp)
+        #there can be multiple globalVar lists, each with name
+        for varNode in resource.findall('.ns:globalVars', ns):
+            varList = {
+                'name' : varNode.get('name'),
+                'components' : []
+            }
+            varList['components'] = [_parseTc6Var(var, 'Resource Global') for var in varNode.findall('ns:variable', ns)]
+            devNs['vars'].append(varList)
+    
+        datatypesNode = resource.find('.ns:dataTypes', ns)
+        if datatypesNode:
+            devNs['dts'] = [_parseTc6VarList(dt) for dt in datatypesNode.findall('ns:dataType', ns)]
+
+        for pou in resource.findall('./ns:addData/ns:data/ns:pou', ns):
+            temp = _parseTc6POU(pou)
+            if temp.get('type') == 'program':
+                devNs['prgs'].append(temp)
+            elif temp.get('type') == 'functionBlock':
+                devNs['fbs'].append(temp)
+            elif temp.get('type') == 'function':
+                devNs['fcs'].append(temp)
+            elif temp.get('type') == 'class':
+                devNs['class'].append(temp)
 
         #Now we add this namepace to the namespaces array only if it has code or data types inside
-        if (devNs['prgs'] or devNs['fbs'] or devNs['fcs'] or devNs['class'] or devNs['dts']):
+        if (devNs['prgs'] or devNs['fbs'] or devNs['fcs'] or devNs['class'] or devNs['dts'] or devNs['vars']):
             nsList.append(devNs)
     
     if len(nsList) > 0:
@@ -349,11 +377,13 @@ def _parseTc6VarBlock(block, typ):
     
     return varBlock
 
-def _parseTc6DT(dtNode):
+def _parseTc6VarList(dtNode):
     """Returns a dictionary of format:
     {
-        'name' : 'data type name',
-        'baseType' : 'enum/struct/etc',
+        'name' : 'Var List name',
+        'baseType' : 'enum/struct/varlist',
+        'description' : ''
+        #Only for data types
         'components' : [
             {
                 'name' : 'variable name',
@@ -362,7 +392,7 @@ def _parseTc6DT(dtNode):
                 'initialValue' : 'variable initialization value',
                 'description' : 'description of the value'
             }
-        'description' : ''
+        
         ]
     }"""
     dtSet = {
@@ -372,10 +402,10 @@ def _parseTc6DT(dtNode):
         'attribute' : '', 
         'description' : _extractTc6Docs(dtNode.find('./ns:documentation', ns))
         }
-    dtSet['components'] = []
-
+    
     baseType = dtSet.get('baseType')
     if baseType == 'enum':
+        dtSet['components'] = []
         for cpt in dtNode.findall('./ns:baseType/ns:enum/ns:values/ns:value', ns):
             dtSet['components'].append({
                 'name' : cpt.get('name'),
@@ -386,10 +416,11 @@ def _parseTc6DT(dtNode):
             })
 
     elif baseType == 'struct':
-        #If data type has variable components then this
+        dtSet['components'] = []
         for cpt in dtNode.findall('./ns:baseType/ns:struct/ns:variable', ns):
             dtSet['components'].append(_parseTc6Var(cpt, ''))
     else:
+        #This is some generic varlist or error
         pass
 
     return dtSet

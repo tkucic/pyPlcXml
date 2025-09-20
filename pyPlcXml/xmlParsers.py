@@ -211,9 +211,8 @@ def parseTwincatAddData(root):
             varList['components'] = [_parseTc6Var(var, 'Resource Global') for var in varNode.findall('ns:variable', ns)]
             devNs['vars'].append(varList)
     
-        datatypesNode = resource.find('.ns:dataTypes', ns)
-        if datatypesNode:
-            devNs['dts'] = [_parseTc6VarList(dt) for dt in datatypesNode.findall('ns:dataType', ns)]
+        for dt in resource.findall('./ns:addData/ns:data/ns:dataType', ns):
+                devNs['dts'].append(_parseTc6VarList(dt))
 
         for pou in resource.findall('./ns:addData/ns:data/ns:pou', ns):
             temp = _parseTc6POU(pou)

@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 from .helpers import ns, file_type
 
 #----------------- TC6 v200 and v201 PARSER-----------------------------
-def tc6Parse(pathToXml, tc6_version=file_type.tc6v201, ignoredNs=()):
+def tc6Parse(pathToXml, tc6_version=file_type.tc6v201, ignoredNs=[]):
     """Returns a data dictionary of format:
     {
         #Project information

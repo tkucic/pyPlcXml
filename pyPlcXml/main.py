@@ -10,13 +10,13 @@ def parse(*args, **kwargs):
             ignoredNs : list() - list of strings of namespaces to ignore"""
     match validate(args[0]):
         case file_type.bnr:
-            return brParse(args[0], kwargs.get('ignoredNs', ()))
+            return brParse(args[0], kwargs.get('ignoredNs', []))
         case file_type.tc6v200:
-            return tc6Parse(args[0], file_type.tc6v200, kwargs.get('ignoredNs', ()))
+            return tc6Parse(args[0], file_type.tc6v200, kwargs.get('ignoredNs', []))
         case file_type.tc6v201:
-            return tc6Parse(args[0], file_type.tc6v201, kwargs.get('ignoredNs', ()))
+            return tc6Parse(args[0], file_type.tc6v201, kwargs.get('ignoredNs', []))
         case file_type.iec61131_10:
-            return iec61131_10Parse(args[0], kwargs.get('ignoredNs', ()))
+            return iec61131_10Parse(args[0], kwargs.get('ignoredNs', []))
         case file_type.prepped:
             with open(args[0]) as f:
                 return json.loads(f.read())

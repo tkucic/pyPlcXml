@@ -6,7 +6,7 @@ with open("README.md", 'r') as fh:
 setuptools.setup(
   name = 'pyPlcXml',
   packages = setuptools.find_packages(),
-  version = '0.0.3',
+  version = '0.0.4',
   license='None',
   description = 'Python library that can parse popular xml project files from vendors like Codesys',
   long_description=long_description,
